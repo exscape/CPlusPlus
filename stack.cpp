@@ -10,11 +10,12 @@
 /* Written: 2009-11-02, 2009-11-03, XXX */
 
 namespace exscape {
+	template <typename Type>
 	class stack {
 
 		typedef struct _node {
 			struct _node *next;
-			int data;
+			Type data;
 		} node;
 
 		private:
@@ -24,23 +25,23 @@ namespace exscape {
 			stack();
 			~stack();
 			size_t size(void);
-			void push(int const &elem);
-			int pop(void);
+			void push(Type const &elem);
+			Type pop(void);
 			void free();
-			int &top(void);
+			Type &top(void);
 	};
 
-	stack::stack() {
+	template <typename Type> stack<Type>::stack() {
 		std::cout << "Hello, stack!" << std::endl;
 		this->head = NULL;
 	}
 
-	stack::~stack() {
+	template <typename Type> stack<Type>::~stack() {
 		stack::free();
 		std::cout << "Goodbye, stack." << std::endl;
 	}
 
-	size_t stack::size(void) {
+	template <typename Type> size_t stack<Type>::size(void) {
 		size_t len = 0;
 		for (node *n = this->head; n != NULL; n = n->next)
 			len++;
@@ -48,7 +49,7 @@ namespace exscape {
 		return len;
 	}
 
-	void stack::push(int const &elem) {
+	template <typename Type> void stack<Type>::push(Type const &elem) {
 		node *n = new node;
 		n->data = elem;
 		n->next = this->head;
@@ -56,11 +57,11 @@ namespace exscape {
 		std::cout << "Push " << elem << std::endl;
 	}
 
-	int stack::pop(void) {
+	template <typename Type> Type stack<Type>::pop(void) {
 		if (stack::size() == 0)
 			throw StackUnderflowException();
 
-		int data = this->head->data;
+		Type data = this->head->data;
 		node *new_head = this->head->next;
 		delete this->head;
 		this->head = new_head;
@@ -68,14 +69,14 @@ namespace exscape {
 		return data;
 	}
 
-	int &stack::top(void) {
+	template <typename Type> Type &stack<Type>::top(void) {
 		if (stack::size() == 0)
 			throw StackUnderflowException();
-		int &data = this->head->data;
+		Type &data = this->head->data;
 		return data;
 	}
 
-	void stack::free() {
+	template <typename Type> void stack<Type>::free() {
 		node *cur = this->head;
 		node *next;
 		while (cur != NULL) {
@@ -88,22 +89,17 @@ namespace exscape {
 }
 
 int main() {
-	exscape::stack *s = new exscape::stack;
-	s->push(10);
-	s->push(20);
-	s->push(30);
-//	std::cout << "Pop " << s->pop() << std::endl;
-//	std::cout << "Pop " << s->pop() << std::endl;
-//	std::cout << "Pop " << s->pop() << std::endl;
+	exscape::stack<std::string> *s = new exscape::stack<std::string>;
+	s->push(std::string("Alpha"));
+	s->push(std::string("Beta"));
+	s->push(std::string("Gamma"));
 	try {
-		std::cout << "Pop " << s->pop() << std::endl; // One pop too much
+		std::cout << "Pop " << s->pop() << std::endl;
 	}
 	catch (std::exception &e) {
 		std::cout << e.what() << std::endl;
 	}
 	std::cout << "Top: " << s->top() << std::endl;
-	s->top() -= 3;
-	std::cout << "Top is now " << s->top() << std::endl;
 	std::cout << "Pop " << s->pop() << std::endl;
 	delete s;
 	return 0;
