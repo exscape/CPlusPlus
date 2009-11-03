@@ -49,6 +49,10 @@ namespace exscape {
 			stack<Type> & operator=(const stack<Type> &other);
 	};
 
+	template <typename Type> void stack<Type>::copy(stack<Type> &dst, stack<Type> const &src) {
+		std::cout << "In stack::copy() for destination stack=" << &dst << " and source stack=" << &src << std::endl;
+	}
+
 	/* Initialize the member variables to an empty stack-state */
 	template <typename Type> void stack<Type>::init() {
 		std::cout << "In init() for stack " << this << std::endl;
@@ -72,6 +76,9 @@ namespace exscape {
 	/* Copy constructor; create an exact copy of "other" */
 	template <typename Type> stack<Type>::stack(stack<Type> const &other) {
 		std::cout << "In copy constructor" << std::endl;
+
+		stack::copy(*this, other); // XXX
+
 		this->init();
 
 		// XXX: MEMORY WASTING!
@@ -202,14 +209,23 @@ namespace exscape {
 }
 
 int main() {
+	exscape::stack<int> s;
+	s.push(1);
+	s.push(2);
+	s.push(3);
+	exscape::stack<int> s2 (s);
+
+	s.dump();
+	s2.dump();
+	/*
 	exscape::stack<std::string> s;
 	s.push(std::string("Alpha"));
 	s.push(std::string("Beta"));
 	s.push(std::string("Gamma"));
 	s.dump();
 
-	exscape::stack<std::string> s2;
-	s2 = s;
+	exscape::stack<std::string> s2 (s);
+//	s2 = s;
 	if (s != s2)
 		std::cout << "Just copied stacks ARE NOT equal!" << std::endl;
 	else
@@ -227,6 +243,6 @@ int main() {
 		std::cout << "Two new, empty stacks are equal" << std::endl;
 	else
 		std::cout << "ERROR: Two new, empty stacks ARE NOT equal" << std::endl;
-
+*/
 	return 0;
 }
