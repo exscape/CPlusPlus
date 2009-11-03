@@ -4,7 +4,7 @@
 
 /*
  * This file implements a stack with automatic memory management, based on linked lists.
- * Its sole purpose is for me to learn C++, and I do know about std::stack.
+ * Its sole purpose to teach me C++; I do know about std::stack.
  */
 
 /* Written: 2009-11-02, 2009-11-03, XXX */
