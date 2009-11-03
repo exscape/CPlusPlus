@@ -32,6 +32,7 @@ namespace exscape {
 			Type pop(void);
 			void free();
 			Type &top(void);
+			void dump(void); // For debugging purposes
 	};
 
 	template <typename Type> void stack<Type>::init() {
@@ -87,7 +88,7 @@ namespace exscape {
 		return data;
 	}
 
-	template <typename Type> void stack<Type>::free() {
+	template <typename Type> void stack<Type>::free(void) {
 		node *cur = this->head;
 		node *next;
 		while (cur != NULL) {
@@ -98,6 +99,14 @@ namespace exscape {
 		this->_size = 0;
 		this->head = NULL;
 	}
+
+	template <typename Type> void stack<Type>::dump(void) {
+		std::cout << std::endl << "Dumping stack at " << this << ":" << std::endl;
+		for (node *n = this->head; n != NULL; n = n->next) {
+			std::cout << n->data << std::endl;
+		}
+		std::cout << "Done dumping stack at " << this << "." << std::endl << std::endl;
+	}
 }
 
 int main() {
@@ -106,6 +115,7 @@ int main() {
 	s->push(std::string("Alpha"));
 	s->push(std::string("Beta"));
 	s->push(std::string("Gamma"));
+	s->dump();
 	std::cout << "Stack size: " << s->size() << " elements" << std::endl;
 	try {
 		std::cout << "Pop " << s->pop() << std::endl;
@@ -116,6 +126,8 @@ int main() {
 	std::cout << "Top: " << s->top() << std::endl;
 	std::cout << "Pop " << s->pop() << std::endl;
 	std::cout << "Stack size: " << s->size() << " elements" << std::endl;
+
+	s->dump();
 
 	delete s;
 	return 0;
