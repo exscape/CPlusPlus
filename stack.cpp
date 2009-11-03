@@ -23,7 +23,9 @@ namespace exscape {
 
 		public:
 			stack();
+			stack(Type const &elem);
 			~stack();
+			void init(void);
 			size_t size(void);
 			void push(Type const &elem);
 			Type pop(void);
@@ -31,9 +33,18 @@ namespace exscape {
 			Type &top(void);
 	};
 
+	template <typename Type> void stack<Type>::init() {
+		this->head = NULL;
+	}
 	template <typename Type> stack<Type>::stack() {
 		std::cout << "Hello, stack!" << std::endl;
-		this->head = NULL;
+		stack::init();
+	}
+
+	template <typename Type> stack<Type>::stack(Type const &elem) {
+		stack::init();
+		std::cout << "Hello, stack, with an argument!" << std::endl;
+		stack::push(elem);
 	}
 
 	template <typename Type> stack<Type>::~stack() {
@@ -90,6 +101,7 @@ namespace exscape {
 
 int main() {
 	exscape::stack<std::string> *s = new exscape::stack<std::string>;
+//	exscape::stack<std::string> *s = new exscape::stack<std::string>("First");
 	s->push(std::string("Alpha"));
 	s->push(std::string("Beta"));
 	s->push(std::string("Gamma"));
