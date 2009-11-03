@@ -22,10 +22,13 @@ namespace exscape {
 		} node;
 
 		private:
+		/* Member variables */
 			node *head;
 			size_t _size;
+		/* Private methods */
 			void init(void);
 			void free();
+			static void copy(stack<Type> &dst, stack<Type> const &src);
 
 		public:
 		/* Constructors */
@@ -34,34 +37,39 @@ namespace exscape {
 			stack(stack<Type> const &other);
 		/* Descructor */
 			~stack();
-		/* Various public functions */
+		/* Various public methods */
 			size_t size(void) const;
 			void push(Type const &elem);
 			Type pop(void);
 			Type &top(void) const;
 			void dump(void) const; // For debugging purposes
+		/* Overloaded operators */
 			bool operator==(const stack<Type> &other) const;
 			bool operator!=(const stack<Type> &other) const;
 			stack<Type> & operator=(const stack<Type> &other);
 	};
 
+	/* Initialize the member variables to an empty stack-state */
 	template <typename Type> void stack<Type>::init() {
 		std::cout << "In init() for stack " << this << std::endl;
 		this->head = NULL;
 		this->_size = 0;
 	}
 
+	/* Default constructor; create an empty stack */
 	template <typename Type> stack<Type>::stack() {
 		std::cout << "Hello, stack!" << std::endl;
 		this->init();
 	}
 
+	/* Create a stack containing "elem" */
 	template <typename Type> stack<Type>::stack(Type const &elem) {
 		std::cout << "Hello, stack, with an argument!" << std::endl;
 		this->init();
 		this->push(elem);
 	}
 
+	/* Copy constructor; create an exact copy of "other" */
 	template <typename Type> stack<Type>::stack(stack<Type> const &other) {
 		std::cout << "In copy constructor" << std::endl;
 		this->init();
@@ -79,15 +87,18 @@ namespace exscape {
 		delete [] arr;
 	}
 
+	/* Destructor */
 	template <typename Type> stack<Type>::~stack() {
 		this->free();
 		std::cout << "Goodbye, stack " << this << "." << std::endl;
 	}
 
+	/* Returns the list size/length */
 	template <typename Type> size_t stack<Type>::size(void) const {
 		return this->_size;
 	}
 
+	/* Adds an element to the top of the stack */
 	template <typename Type> void stack<Type>::push(Type const &elem) {
 		node *n = new node;
 		n->data = elem;
@@ -97,6 +108,7 @@ namespace exscape {
 		this->_size++;
 	}
 
+	/* Removes the top element and returns it - if one exists */
 	template <typename Type> Type stack<Type>::pop(void) {
 		if (this->size() == 0)
 			throw StackUnderflowException();
@@ -110,6 +122,7 @@ namespace exscape {
 		return data;
 	}
 
+	/* Returns a reference to the top element, without removing it */
 	template <typename Type> Type &stack<Type>::top(void) const {
 		if (this->size() == 0)
 			throw StackUnderflowException();
@@ -117,6 +130,7 @@ namespace exscape {
 		return data;
 	}
 
+	/* Frees the memory for the storage list and (re)sets size to 0 */
 	template <typename Type> void stack<Type>::free(void) {
 		node *cur = this->head;
 		node *next;
@@ -129,6 +143,7 @@ namespace exscape {
 		this->head = NULL;
 	}
 
+	/* Dump the contents of the stack, if possible with the type contained; used for debugging */
 	template <typename Type> void stack<Type>::dump(void) const {
 		std::cout << std::endl << "Dumping stack at " << this << ":" << std::endl;
 		for (node *n = this->head; n != NULL; n = n->next) {
@@ -136,6 +151,8 @@ namespace exscape {
 		}
 		std::cout << "Done dumping stack at " << this << "." << std::endl << std::endl;
 	}
+
+	/* operator==, check if two stacks are equal (in size, elements and order) */
 	template <typename Type> bool stack<Type>::operator==(const stack<Type> &other) const {
 		std::cout << "Comparing stack " << this << " with stack " << &other << std::endl;
 		if (this == &other)
@@ -153,10 +170,12 @@ namespace exscape {
 		return true;
 	}
 
+	/* operator!=, check if two stacks are NOT equal - see operator== above */
 	template <typename Type> bool stack<Type>::operator!=(const stack<Type> &other) const {
 		return !(*this == other);
 	}
 
+	/* operator=, replace the contents of this stack with "other" */
 	template <typename Type> stack<Type> & stack<Type>::operator=(const stack<Type> &other) {
 		std::cout << "In operator= for stacks " << this << " and " << &other << std::endl;
 		if (this == &other)
@@ -202,6 +221,12 @@ int main() {
 
 	s.dump();
 	s2.dump();
+
+	exscape::stack<std::string> s3, s4;
+	if (s3==s4)
+		std::cout << "Two new, empty stacks are equal" << std::endl;
+	else
+		std::cout << "ERROR: Two new, empty stacks ARE NOT equal" << std::endl;
 
 	return 0;
 }
