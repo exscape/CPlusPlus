@@ -21,6 +21,7 @@ namespace exscape {
 			size_t size(void);
 			void push(int const &elem);
 			int pop(void);
+			void free();
 	};
 
 	stack::stack() {
@@ -29,6 +30,7 @@ namespace exscape {
 	}
 
 	stack::~stack() {
+		stack::free();
 		std::cout << "Goodbye, stack." << std::endl;
 	}
 
@@ -58,6 +60,17 @@ namespace exscape {
 
 		return data;
 	}
+
+	void stack::free() {
+		node *cur = this->head;
+		node *next;
+		while (cur != NULL) {
+			next = cur->next;
+			delete cur;
+			cur = next;
+		}
+		this->head = NULL;
+	}
 }
 
 int main() {
@@ -65,9 +78,9 @@ int main() {
 	s->push(10);
 	s->push(20);
 	s->push(30);
-	std::cout << "Pop " << s->pop() << std::endl;
-	std::cout << "Pop " << s->pop() << std::endl;
-	std::cout << "Pop " << s->pop() << std::endl;
+//	std::cout << "Pop " << s->pop() << std::endl;
+//	std::cout << "Pop " << s->pop() << std::endl;
+//	std::cout << "Pop " << s->pop() << std::endl;
 	try {
 		std::cout << "Pop " << s->pop() << std::endl; // One pop too much
 	}
