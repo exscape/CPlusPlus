@@ -36,6 +36,7 @@ namespace exscape {
 			void dump(void) const; // For debugging purposes
 			bool operator==(const stack<Type> &other) const;
 			bool operator!=(const stack<Type> &other) const;
+			stack<Type> & operator=(const stack<Type> &other);
 	};
 
 	template <typename Type> void stack<Type>::init() {
@@ -149,6 +150,30 @@ namespace exscape {
 	template <typename Type> bool stack<Type>::operator!=(const stack<Type> &other) const {
 		return !(*this == other);
 	}
+
+	template <typename Type> stack<Type> & stack<Type>::operator=(const stack<Type> &other) {
+		std::cout << "In operator= for stacks " << this << " and " << &other << std::endl;
+		if (this == &other)
+			return *this;
+
+		stack::free();
+		if (other.size() == 0)
+			return *this; // Other stack is empty, so we're done
+
+		// XXX: MEMORY WASTING + DRY!
+		Type *arr = new Type[other._size];
+		int i = 0;
+		for (node *n = other.head; n != NULL; n = n->next, i++) {
+			arr[i] = n->data;
+		}
+
+		for (int j = i-1; j >= 0; j--)
+			stack::push(arr[j]);
+
+		delete [] arr;
+
+		return *this;
+	}
 }
 
 int main() {
@@ -158,8 +183,8 @@ int main() {
 	s.push(std::string("Gamma"));
 	s.dump();
 
-
-	exscape::stack<std::string> s2 = s;
+	exscape::stack<std::string> s2;
+	s2 = s;
 	if (s != s2)
 		std::cout << "Just copied stacks ARE NOT equal!" << std::endl;
 	else
@@ -168,6 +193,9 @@ int main() {
 	s.pop();
 	if (s != s2)
 		std::cout << "Stacks aren't equal anymore; things are as they should be" << std::endl;
+
+	s.dump();
+	s2.dump();
 
 	return 0;
 }
