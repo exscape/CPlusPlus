@@ -13,6 +13,9 @@ namespace exscape {
 	template <typename Type>
 	class stack {
 
+		/*
+		 * The linked list struct that holds all the data.
+		 */
 		typedef struct _node {
 			struct _node *next;
 			Type data;
@@ -21,17 +24,20 @@ namespace exscape {
 		private:
 			node *head;
 			size_t _size;
+			void init(void);
+			void free();
 
 		public:
+		/* Constructors */
 			stack();
 			stack(Type const &elem);
 			stack(stack<Type> const &other);
+		/* Descructor */
 			~stack();
-			void init(void);
+		/* Various public functions */
 			size_t size(void) const;
 			void push(Type const &elem);
 			Type pop(void);
-			void free();
 			Type &top(void) const;
 			void dump(void) const; // For debugging purposes
 			bool operator==(const stack<Type> &other) const;
@@ -47,18 +53,18 @@ namespace exscape {
 
 	template <typename Type> stack<Type>::stack() {
 		std::cout << "Hello, stack!" << std::endl;
-		stack::init();
+		this->init();
 	}
 
 	template <typename Type> stack<Type>::stack(Type const &elem) {
 		std::cout << "Hello, stack, with an argument!" << std::endl;
-		stack::init();
-		stack::push(elem);
+		this->init();
+		this->push(elem);
 	}
 
 	template <typename Type> stack<Type>::stack(stack<Type> const &other) {
 		std::cout << "In copy constructor" << std::endl;
-		stack::init();
+		this->init();
 
 		// XXX: MEMORY WASTING!
 		Type *arr = new Type[other._size];
@@ -68,13 +74,13 @@ namespace exscape {
 		}
 
 		for (int j = i-1; j >= 0; j--)
-			stack::push(arr[j]);
+			this->push(arr[j]);
 
 		delete [] arr;
 	}
 
 	template <typename Type> stack<Type>::~stack() {
-		stack::free();
+		this->free();
 		std::cout << "Goodbye, stack " << this << "." << std::endl;
 	}
 
@@ -92,7 +98,7 @@ namespace exscape {
 	}
 
 	template <typename Type> Type stack<Type>::pop(void) {
-		if (stack::size() == 0)
+		if (this->size() == 0)
 			throw StackUnderflowException();
 
 		Type data = this->head->data;
@@ -105,7 +111,7 @@ namespace exscape {
 	}
 
 	template <typename Type> Type &stack<Type>::top(void) const {
-		if (stack::size() == 0)
+		if (this->size() == 0)
 			throw StackUnderflowException();
 		Type &data = this->head->data;
 		return data;
@@ -134,7 +140,7 @@ namespace exscape {
 		std::cout << "Comparing stack " << this << " with stack " << &other << std::endl;
 		if (this == &other)
 			return true;
-		if (stack::size() != other.size())
+		if (this->size() != other.size())
 			return false;
 
 		node *a = this->head;
@@ -156,7 +162,7 @@ namespace exscape {
 		if (this == &other)
 			return *this;
 
-		stack::free();
+		this->free();
 		if (other.size() == 0)
 			return *this; // Other stack is empty, so we're done
 
@@ -168,7 +174,7 @@ namespace exscape {
 		}
 
 		for (int j = i-1; j >= 0; j--)
-			stack::push(arr[j]);
+			this->push(arr[j]);
 
 		delete [] arr;
 
