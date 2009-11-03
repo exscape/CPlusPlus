@@ -2,7 +2,12 @@
 #include <exception>
 #include "stack.hpp"
 
-/* Written: 2009-11-02, XXX */
+/*
+ * This file implements a stack with automatic memory management, based on linked lists.
+ * Its sole purpose is for me to learn C++, and I do know about std::stack.
+ */
+
+/* Written: 2009-11-02, 2009-11-03, XXX */
 
 namespace exscape {
 	class stack {
@@ -54,6 +59,7 @@ namespace exscape {
 	int stack::pop(void) {
 		if (stack::size() == 0)
 			throw StackUnderflowException();
+
 		int data = this->head->data;
 		node *new_head = this->head->next;
 		delete this->head;
