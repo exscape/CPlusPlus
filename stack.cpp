@@ -22,6 +22,7 @@ namespace exscape {
 			void push(int const &elem);
 			int pop(void);
 			void free();
+			int &top(void);
 	};
 
 	stack::stack() {
@@ -61,6 +62,13 @@ namespace exscape {
 		return data;
 	}
 
+	int &stack::top(void) {
+		if (stack::size() == 0)
+			throw StackUnderflowException();
+		int &data = this->head->data;
+		return data;
+	}
+
 	void stack::free() {
 		node *cur = this->head;
 		node *next;
@@ -87,6 +95,10 @@ int main() {
 	catch (std::exception &e) {
 		std::cout << e.what() << std::endl;
 	}
+	std::cout << "Top: " << s->top() << std::endl;
+	s->top() -= 3;
+	std::cout << "Top is now " << s->top() << std::endl;
+	std::cout << "Pop " << s->pop() << std::endl;
 	delete s;
 	return 0;
 }
