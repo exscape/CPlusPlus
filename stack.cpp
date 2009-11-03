@@ -34,6 +34,8 @@ namespace exscape {
 			void free();
 			Type &top(void) const;
 			void dump(void) const; // For debugging purposes
+			bool operator==(const stack<Type> &other) const;
+			bool operator!=(const stack<Type> &other) const;
 	};
 
 	template <typename Type> void stack<Type>::init() {
@@ -84,7 +86,7 @@ namespace exscape {
 		n->data = elem;
 		n->next = this->head;
 		this->head = n;
-		std::cout << "Push " << elem << std::endl;
+		std::cout << "Stack " << this << ": push " << elem << std::endl;
 		this->_size++;
 	}
 
@@ -127,20 +129,45 @@ namespace exscape {
 		}
 		std::cout << "Done dumping stack at " << this << "." << std::endl << std::endl;
 	}
+	template <typename Type> bool stack<Type>::operator==(const stack<Type> &other) const {
+		std::cout << "Comparing stack " << this << " with stack " << &other << std::endl;
+		if (this == &other)
+			return true;
+		if (stack::size() != other.size())
+			return false;
+
+		node *a = this->head;
+		node *b = other.head;
+		for (; a != NULL; a = a->next, b = b->next) {
+			if (a->data != b->data)
+				return false;
+		}
+
+		return true;
+	}
+
+	template <typename Type> bool stack<Type>::operator!=(const stack<Type> &other) const {
+		return !(*this == other);
+	}
 }
 
 int main() {
-	exscape::stack<std::string> *s = new exscape::stack<std::string>;
-	s->push(std::string("Alpha"));
-	s->push(std::string("Beta"));
-	s->push(std::string("Gamma"));
-	s->dump();
+	exscape::stack<std::string> s;
+	s.push(std::string("Alpha"));
+	s.push(std::string("Beta"));
+	s.push(std::string("Gamma"));
+	s.dump();
 
-	exscape::stack<std::string> s2 = *s;
-	s2.dump();
 
-	s->dump();
-	delete s;
+	exscape::stack<std::string> s2 = s;
+	if (s != s2)
+		std::cout << "Just copied stacks ARE NOT equal!" << std::endl;
+	else
+		std::cout << "Just copied stacks are equal; all is well." << std::endl;
+
+	s.pop();
+	if (s != s2)
+		std::cout << "Stacks aren't equal anymore; things are as they should be" << std::endl;
 
 	return 0;
 }
