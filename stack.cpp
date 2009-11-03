@@ -27,12 +27,12 @@ namespace exscape {
 			stack(Type const &elem);
 			~stack();
 			void init(void);
-			size_t size(void);
+			size_t size(void) const;
 			void push(Type const &elem);
 			Type pop(void);
 			void free();
-			Type &top(void);
-			void dump(void); // For debugging purposes
+			Type &top(void) const;
+			void dump(void) const; // For debugging purposes
 	};
 
 	template <typename Type> void stack<Type>::init() {
@@ -55,7 +55,7 @@ namespace exscape {
 		std::cout << "Goodbye, stack." << std::endl;
 	}
 
-	template <typename Type> size_t stack<Type>::size(void) {
+	template <typename Type> size_t stack<Type>::size(void) const {
 		return this->_size;
 	}
 
@@ -81,7 +81,7 @@ namespace exscape {
 		return data;
 	}
 
-	template <typename Type> Type &stack<Type>::top(void) {
+	template <typename Type> Type &stack<Type>::top(void) const {
 		if (stack::size() == 0)
 			throw StackUnderflowException();
 		Type &data = this->head->data;
@@ -100,7 +100,7 @@ namespace exscape {
 		this->head = NULL;
 	}
 
-	template <typename Type> void stack<Type>::dump(void) {
+	template <typename Type> void stack<Type>::dump(void) const {
 		std::cout << std::endl << "Dumping stack at " << this << ":" << std::endl;
 		for (node *n = this->head; n != NULL; n = n->next) {
 			std::cout << n->data << std::endl;
