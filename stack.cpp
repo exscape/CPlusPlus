@@ -25,6 +25,7 @@ namespace exscape {
 		public:
 			stack();
 			stack(Type const &elem);
+			stack(stack<Type> const &other);
 			~stack();
 			void init(void);
 			size_t size(void) const;
@@ -36,23 +37,42 @@ namespace exscape {
 	};
 
 	template <typename Type> void stack<Type>::init() {
+		std::cout << "In init() for stack " << this << std::endl;
 		this->head = NULL;
 		this->_size = 0;
 	}
+
 	template <typename Type> stack<Type>::stack() {
 		std::cout << "Hello, stack!" << std::endl;
 		stack::init();
 	}
 
 	template <typename Type> stack<Type>::stack(Type const &elem) {
-		stack::init();
 		std::cout << "Hello, stack, with an argument!" << std::endl;
+		stack::init();
 		stack::push(elem);
+	}
+
+	template <typename Type> stack<Type>::stack(stack<Type> const &other) {
+		std::cout << "In copy constructor" << std::endl;
+		stack::init();
+
+		// XXX: MEMORY WASTING!
+		Type *arr = new Type[other._size];
+		int i = 0;
+		for (node *n = other.head; n != NULL; n = n->next, i++) {
+			arr[i] = n->data;
+		}
+
+		for (int j = i-1; j >= 0; j--)
+			stack::push(arr[j]);
+
+		delete [] arr;
 	}
 
 	template <typename Type> stack<Type>::~stack() {
 		stack::free();
-		std::cout << "Goodbye, stack." << std::endl;
+		std::cout << "Goodbye, stack " << this << "." << std::endl;
 	}
 
 	template <typename Type> size_t stack<Type>::size(void) const {
@@ -111,24 +131,16 @@ namespace exscape {
 
 int main() {
 	exscape::stack<std::string> *s = new exscape::stack<std::string>;
-//	exscape::stack<std::string> *s = new exscape::stack<std::string>("First");
 	s->push(std::string("Alpha"));
 	s->push(std::string("Beta"));
 	s->push(std::string("Gamma"));
 	s->dump();
-	std::cout << "Stack size: " << s->size() << " elements" << std::endl;
-	try {
-		std::cout << "Pop " << s->pop() << std::endl;
-	}
-	catch (std::exception &e) {
-		std::cout << e.what() << std::endl;
-	}
-	std::cout << "Top: " << s->top() << std::endl;
-	std::cout << "Pop " << s->pop() << std::endl;
-	std::cout << "Stack size: " << s->size() << " elements" << std::endl;
+
+	exscape::stack<std::string> s2 = *s;
+	s2.dump();
 
 	s->dump();
-
 	delete s;
+
 	return 0;
 }
