@@ -20,6 +20,7 @@ namespace exscape {
 
 		private:
 			node *head;
+			size_t _size;
 
 		public:
 			stack();
@@ -35,6 +36,7 @@ namespace exscape {
 
 	template <typename Type> void stack<Type>::init() {
 		this->head = NULL;
+		this->_size = 0;
 	}
 	template <typename Type> stack<Type>::stack() {
 		std::cout << "Hello, stack!" << std::endl;
@@ -53,11 +55,7 @@ namespace exscape {
 	}
 
 	template <typename Type> size_t stack<Type>::size(void) {
-		size_t len = 0;
-		for (node *n = this->head; n != NULL; n = n->next)
-			len++;
-
-		return len;
+		return this->_size;
 	}
 
 	template <typename Type> void stack<Type>::push(Type const &elem) {
@@ -66,6 +64,7 @@ namespace exscape {
 		n->next = this->head;
 		this->head = n;
 		std::cout << "Push " << elem << std::endl;
+		this->_size++;
 	}
 
 	template <typename Type> Type stack<Type>::pop(void) {
@@ -76,6 +75,7 @@ namespace exscape {
 		node *new_head = this->head->next;
 		delete this->head;
 		this->head = new_head;
+		this->_size--;
 
 		return data;
 	}
@@ -95,6 +95,7 @@ namespace exscape {
 			delete cur;
 			cur = next;
 		}
+		this->_size = 0;
 		this->head = NULL;
 	}
 }
@@ -105,6 +106,7 @@ int main() {
 	s->push(std::string("Alpha"));
 	s->push(std::string("Beta"));
 	s->push(std::string("Gamma"));
+	std::cout << "Stack size: " << s->size() << " elements" << std::endl;
 	try {
 		std::cout << "Pop " << s->pop() << std::endl;
 	}
@@ -113,6 +115,8 @@ int main() {
 	}
 	std::cout << "Top: " << s->top() << std::endl;
 	std::cout << "Pop " << s->pop() << std::endl;
+	std::cout << "Stack size: " << s->size() << " elements" << std::endl;
+
 	delete s;
 	return 0;
 }
