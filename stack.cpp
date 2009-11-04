@@ -21,21 +21,22 @@ namespace exscape {
 			Type data;
 		} node;
 
-		private:
+		protected:
 		/* Member variables */
 			node *head;
 			size_t _size;
-		/* Private methods */
+		/* Protected methods */
 			void init(void);
 			void free();
-			static void copy(stack<Type> &dst, stack<Type> const &src);
 
 		public:
+		/* Only temporarily public */
+			static void copy(stack<Type> &dst, stack<Type> const &src);
 		/* Constructors */
 			stack();
 			stack(Type const &elem);
 			stack(stack<Type> const &other);
-		/* Descructor */
+		/* Destructor */
 			~stack();
 		/* Various public methods */
 			size_t size(void) const;
@@ -49,8 +50,38 @@ namespace exscape {
 			stack<Type> & operator=(const stack<Type> &other);
 	};
 
+	/* A STATIC class method that copies one stack to another, freeing the destination first if needed. */
 	template <typename Type> void stack<Type>::copy(stack<Type> &dst, stack<Type> const &src) {
 		std::cout << "In stack::copy() for destination stack=" << &dst << " and source stack=" << &src << std::endl;
+		
+		if (&dst == &src) /* Don't copy self to self */
+			return;
+		
+		dst.free();
+		dst.init();
+
+		if (src.size() == 0)
+			return;
+		
+		for (node *src_node = src.head; src_node != NULL; src_node = src_node->next) {
+			node *dst_node = new node;
+			dst_node->data = src_node->data;
+			dst_node->next = NULL; // XXX
+			dst._size++;
+			if (src_node == src.head) { // If this is the head soure node...
+				dst.head = dst_node; // ... make it the head destination node
+			}
+		}
+
+		// XXX: DEBUGGING ONLY!
+		if (dst.size() != src.size()) {
+			std::cerr << "COPY FAILED! Sizes differ!" << std::endl;
+		}
+
+		// XXX: DEBUGGING ONLY!
+		if (dst != src) {
+			std::cerr << "COPY FAILED! operator!= returned true!" << std::endl;
+		}
 	}
 
 	/* Initialize the member variables to an empty stack-state */
@@ -77,9 +108,10 @@ namespace exscape {
 	template <typename Type> stack<Type>::stack(stack<Type> const &other) {
 		std::cout << "In copy constructor" << std::endl;
 
-		stack::copy(*this, other); // XXX
-
 		this->init();
+
+//		stack::copy(*this, other); // XXX
+
 
 		// XXX: MEMORY WASTING!
 		Type *arr = new Type[other._size];
@@ -169,7 +201,7 @@ namespace exscape {
 
 		node *a = this->head;
 		node *b = other.head;
-		for (; a != NULL; a = a->next, b = b->next) {
+		for (; b != NULL; a = a->next, b = b->next) {
 			if (a->data != b->data)
 				return false;
 		}
@@ -209,14 +241,16 @@ namespace exscape {
 }
 
 int main() {
-	exscape::stack<int> s;
+	exscape::stack<int> s, s3;
 	s.push(1);
 	s.push(2);
 	s.push(3);
-	exscape::stack<int> s2 (s);
+	exscape::stack<int> s2 (s); // use copy constructor
+	exscape::stack<int>::copy(s3, s2); // test ::copy, s2 to s3
 
 	s.dump();
 	s2.dump();
+	s3.dump();
 	/*
 	exscape::stack<std::string> s;
 	s.push(std::string("Alpha"));
