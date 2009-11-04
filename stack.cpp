@@ -13,9 +13,8 @@ namespace exscape {
 	template <typename Type>
 	class stack {
 
-		/*
-		 * The linked list struct that holds all the data.
-		 */
+		private:
+		/* The linked list struct that holds all the data. */
 		typedef struct _node {
 			struct _node *next;
 			Type data;
@@ -74,7 +73,6 @@ namespace exscape {
 				tail->next = NULL;
 			}
 		}
-		std::cout << "Copy finished, perhaps not successfully though..." << std::endl;
 
 		// XXX: DEBUGGING ONLY!
 		if (dst.size() != src.size()) {
@@ -85,6 +83,8 @@ namespace exscape {
 		if (dst != src) {
 			std::cerr << "COPY FAILED! operator!= returned true!" << std::endl;
 		}
+		else
+			std::cout << "Copy successful!" << std::endl;
 	}
 
 	/* Initialize the member variables to an empty stack-state */
@@ -96,20 +96,20 @@ namespace exscape {
 
 	/* Default constructor; create an empty stack */
 	template <typename Type> stack<Type>::stack() {
-		std::cout << "Hello, stack!" << std::endl;
+		std::cout << "Hello, stack " << this << "!" << std::endl;
 		this->init();
 	}
 
 	/* Create a stack containing "elem" */
 	template <typename Type> stack<Type>::stack(Type const &elem) {
-		std::cout << "Hello, stack, with an argument!" << std::endl;
+		std::cout << "Hello, stack " << this << ", with an argument!" << std::endl;
 		this->init();
 		this->push(elem);
 	}
 
 	/* Copy constructor; create an exact copy of "other" */
 	template <typename Type> stack<Type>::stack(stack<Type> const &other) {
-		std::cout << "In copy constructor" << std::endl;
+		std::cout << "In copy constructor for stack " << this << std::endl;
 
 		this->init();
 		stack::copy(*this, other);
