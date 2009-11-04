@@ -5,13 +5,14 @@
 
 namespace exscape {
 	class string {
-		protected:
+//		protected:
+		// XXX: TESTING ONLY
+		public:
 			char *buf;
 			size_t _length; // string length
 			size_t _size; // bytes allocated
 
 			void init();
-			void resize(size_t) throw();
 
 		public:
 			string() { init(); }
@@ -19,18 +20,27 @@ namespace exscape {
 //			string(string &);
 			~string();
 			void dealloc(void);
+			void resize(size_t) throw();
 			const char *c_str(void) const;
 			size_t length(void) const;
 			bool empty(void) const;
+			// XXX:
+			// string & operator+=(const char *);
+			// string & operator+=(const string &);
+			// operator+, using the above
+			// operator==
+			// operator[]
 	};
 
 	void string::init(void) {
+		std::cerr << "In init() for string " << this << std::endl;
 		this->buf = NULL;
 		this->_length = 0;
 		this->_size = 0;
 	}
 
 	void string::dealloc(void) {
+		std::cerr << "In dealloc() for string " << this << std::endl;
 		if (this->buf != NULL)
 			free(this->buf);
 		this->_length = 0;
@@ -38,11 +48,16 @@ namespace exscape {
 	}
 
 	void string::resize(size_t target) throw() {
+		std::cerr << "In resize() for string " << this << ", current size=" << this->_size << ", target size=" << target << std::endl;
 		char *new_buf = (char *)realloc(this->buf, target);
-		if (new_buf)
+		if (new_buf) {
 			this->buf = new_buf;
+			this->_size = target;
+		}
 		else {
 			free(this->buf);
+			this->_size = 0;
+			this->_length = 0;
 			throw std::runtime_error("realloc() returned NULL");
 		}
 	}
@@ -54,6 +69,7 @@ namespace exscape {
 	}
 
 	string::~string() {
+		std::cerr << "In destructor for string " << this << std::endl;
 		this->dealloc();
 	}
 
@@ -70,6 +86,9 @@ namespace exscape {
 int main() {
 	exscape::string str = "Hello, world!";
 	std::cout << str.c_str() << std::endl; // XXX: overload <<
+	std::cout << "String: \"" << str.c_str() << "\", string length: "<< str._length << ", size: " << str._size << std::endl;
+	str.resize(256);
+	std::cout << "String: \"" << str.c_str() << "\", string length: "<< str._length << ", size: " << str._size << std::endl;
 
 	return 0;
 }
