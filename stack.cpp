@@ -63,7 +63,25 @@ namespace exscape {
 		if (src.size() == 0)
 			return;
 		
-		for (node *src_node = src.head; src_node != NULL; src_node = src_node->next) {
+		node *dst_head = NULL; // pointer to the new head
+		node *tail = NULL; // pointer to the last element in the new list
+		for (node *src_node = src.head; src_node != NULL; src_node = src_node->next, dst._size++) {
+			if (dst_head == NULL) { // First node
+				dst_head = new node;
+				dst_head->data = src_node->data;
+				dst_head->next = NULL;
+				tail = dst_head;
+			}
+			else { // Any other node
+				tail->next = new node;
+				tail = tail->next;
+				tail->data = src_node->data;
+				tail->next = NULL;
+			}
+
+			dst.head = dst_head;
+
+			/*
 			node *dst_node = new node;
 			dst_node->data = src_node->data;
 			dst_node->next = NULL; // XXX
@@ -71,7 +89,9 @@ namespace exscape {
 			if (src_node == src.head) { // If this is the head soure node...
 				dst.head = dst_node; // ... make it the head destination node
 			}
+			*/
 		}
+		std::cout << "Copy finished, perhaps not successfully though..." << std::endl;
 
 		// XXX: DEBUGGING ONLY!
 		if (dst.size() != src.size()) {
