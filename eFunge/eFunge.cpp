@@ -1,9 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include <stack>
-#include <deque>
 #include <sstream>
-#include <cstdio>
 #include <cstdlib>
 #include <ctime>
 #include <stdint.h>
@@ -43,7 +40,6 @@ short rnd()
 	return i;
 }
 
-//static std::stack <int64_t, std::deque<int64_t> > stack;
 static exscape::stack<int64_t> stack;
 static enum { RIGHT, LEFT, UP, DOWN } dir;
 int64_t space[50][80];
@@ -311,7 +307,7 @@ int main(int argc, char *argv[])
 		{
 			if (!stack.empty())
 			{
-				std::cout << stack.top();
+				std::cout << stack.top() << std::endl;
 				stack.pop();
 			}
 			else

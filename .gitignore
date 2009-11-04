@@ -6,3 +6,4 @@ a.out
 !*.hpp
 stack
 *.bf
+eFunge
