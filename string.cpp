@@ -13,22 +13,24 @@ namespace exscape {
 			size_t _size; // bytes allocated
 
 			void init();
+			void append(const char *);
 
 		public:
 			string() { init(); }
+			string(string &);
 			string(const char *);
-//			string(string &);
 			~string();
 			void dealloc(void);
 			void resize(size_t) throw();
 			const char *c_str(void) const;
 			size_t length(void) const;
 			bool empty(void) const;
+			string & operator+=(const char *);
+			string & operator+=(const string &);
 			// XXX:
-			// string & operator+=(const char *);
-			// string & operator+=(const string &);
 			// operator+, using the above
-			// operator==
+			// operator=
+			// operator== and operator!=
 			// operator[]
 	};
 
@@ -68,27 +70,67 @@ namespace exscape {
 		this->_size = this->_length + 1; // NUL
 	}
 
+	string::string(string &in) {
+		this->buf = strdup(in.c_str());
+		this->_length = strlen(this->buf);
+		this->_size = this->_length + 1; // NUL
+	} 
+
 	string::~string() {
 		std::cerr << "In destructor for string " << this << std::endl;
 		this->dealloc();
+	}
+
+	size_t string::length(void) const {
+		return this->_length;
+	}
+
+	bool string::empty(void) const {
+		return (this->_length == 0);
 	}
 
 	const char *string::c_str() const {
 		return this->buf;
 	}
 
-/*	string::string(string &in) {
-		this->buf = strdup(in.c_str());
-		this->_length = strlen(this->buf);
-	} */
+	void string::append(const char *str) {
+		std::cerr << "In string::append() for destination string " << this << std::endl;
+		if (str == NULL)
+			return;
+
+		size_t new_size = this->_length + strlen(str);
+		this->resize(new_size + 1);
+		strcat(this->buf, str);
+		this->_length = new_size;
+	}
+
+	string & string::operator+=(const char *str) {
+		std::cerr << "In operator+=(const char *) for string " << this << std::endl;
+		this->append(str);
+		return *this;
+	}
+
+	string & string::operator+=(const string &str) {
+		std::cerr << "In operator+=(const string &) for string " << this << std::endl;
+		this->append(str.c_str());
+		return *this;
+	}
 }
 
 int main() {
-	exscape::string str = "Hello, world!";
+	exscape::string str ("Hello, world!");
 	std::cout << str.c_str() << std::endl; // XXX: overload <<
 	std::cout << "String: \"" << str.c_str() << "\", string length: "<< str._length << ", size: " << str._size << std::endl;
-	str.resize(256);
-	std::cout << "String: \"" << str.c_str() << "\", string length: "<< str._length << ", size: " << str._size << std::endl;
+
+	exscape::string str2 (str);
+	std::cout << "String: \"" << str2.c_str() << "\", string length: "<< str2._length << ", size: " << str2._size << std::endl;
+
+	str2 += " How are you doing?";
+	std::cout << "String: \"" << str2.c_str() << "\", string length: "<< str2._length << ", size: " << str2._size << std::endl;
+
+	exscape::string str3;
+	str3 += str += str2;
+	std::cout << "String: \"" << str3.c_str() << "\", string length: "<< str3._length << ", size: " << str3._size << std::endl;
 
 	return 0;
 }
