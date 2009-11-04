@@ -28,10 +28,9 @@ namespace exscape {
 		/* Protected methods */
 			void init(void);
 			void free();
+			static void copy(stack<Type> &dst, stack<Type> const &src);
 
 		public:
-		/* Only temporarily public */
-			static void copy(stack<Type> &dst, stack<Type> const &src);
 		/* Constructors */
 			stack();
 			stack(Type const &elem);
@@ -57,10 +56,6 @@ namespace exscape {
 		if (&dst == &src) /* Don't copy self to self */
 			return;
 		
-		// Shouldn't do any harm if this is already an empty stack
-		dst.free();
-		dst.init();
-
 		if (src.size() == 0)
 			return; // We're copying an empty stack - we have an empty stack. Our work here is done.
 		
@@ -117,21 +112,7 @@ namespace exscape {
 		std::cout << "In copy constructor" << std::endl;
 
 		this->init();
-
-//		stack::copy(*this, other); // XXX
-
-
-		// XXX: MEMORY WASTING!
-		Type *arr = new Type[other._size];
-		int i = 0;
-		for (node *n = other.head; n != NULL; n = n->next, i++) {
-			arr[i] = n->data;
-		}
-
-		for (int j = i-1; j >= 0; j--)
-			this->push(arr[j]);
-
-		delete [] arr;
+		stack::copy(*this, other);
 	}
 
 	/* Destructor */
@@ -232,18 +213,7 @@ namespace exscape {
 		if (other.size() == 0)
 			return *this; // Other stack is empty, so we're done
 
-		// XXX: MEMORY WASTING + DRY!
-		Type *arr = new Type[other._size];
-		int i = 0;
-		for (node *n = other.head; n != NULL; n = n->next, i++) {
-			arr[i] = n->data;
-		}
-
-		for (int j = i-1; j >= 0; j--)
-			this->push(arr[j]);
-
-		delete [] arr;
-
+		stack::copy(*this, other);
 		return *this;
 	}
 }
@@ -253,8 +223,8 @@ int main() {
 	s1.push(1);
 	s1.push(2);
 	s1.push(3);
-	exscape::stack<int> s2 (s1); // use copy constructor
-	exscape::stack<int>::copy(s3, s2); // test ::copy, s2 to s3
+	exscape::stack<int> s2 (s1); // test copy constructor
+	s3 = s1; // test operator=
 
 	s1.dump();
 	s2.dump();
