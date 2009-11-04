@@ -49,7 +49,7 @@ namespace exscape {
 			stack<Type> & operator=(const stack<Type> &other);
 	};
 
-	/* A STATIC class method that copies one stack to another, freeing the destination first if needed. */
+	/* A STATIC class method that copies one stack to another */
 	template <typename Type> void stack<Type>::copy(stack<Type> &dst, stack<Type> const &src) {
 		std::cout << "In stack::copy() for destination stack=" << &dst << " and source stack=" << &src << std::endl;
 		
@@ -219,45 +219,21 @@ namespace exscape {
 }
 
 int main() {
-	exscape::stack<int> s1, s3;
-	s1.push(1);
-	s1.push(2);
-	s1.push(3);
-	exscape::stack<int> s2 (s1); // test copy constructor
-	s3 = s1; // test operator=
+	exscape::stack<std::string> *s = new exscape::stack<std::string>(std::string("Alpha"));
+	s->push(std::string("Beta"));
+	s->push(std::string("Gamma"));
 
-	s1.dump();
-	s2.dump();
-	s3.dump();
+	exscape::stack<std::string> s2(*s);
 
-	if (s1 != s2 || s1 != s3 || s2 != s3)
-		std::cerr << "ALL STACKS ARE NOT EQUAL!" << std::endl;
-	/*
-	exscape::stack<std::string> s;
-	s.push(std::string("Alpha"));
-	s.push(std::string("Beta"));
-	s.push(std::string("Gamma"));
-	s.dump();
-
-	exscape::stack<std::string> s2 (s);
-//	s2 = s;
-	if (s != s2)
-		std::cout << "Just copied stacks ARE NOT equal!" << std::endl;
+	if (*s == s2)
+		std::cout << "EQUAL" << std::endl;
 	else
-		std::cout << "Just copied stacks are equal; all is well." << std::endl;
+		std::cout << "NOT EQUAL" << std::endl;
 
-	s.pop();
-	if (s != s2)
-		std::cout << "Stacks aren't equal anymore; things are as they should be" << std::endl;
-
-	s.dump();
+	s->dump();
 	s2.dump();
 
-	exscape::stack<std::string> s3, s4;
-	if (s3==s4)
-		std::cout << "Two new, empty stacks are equal" << std::endl;
-	else
-		std::cout << "ERROR: Two new, empty stacks ARE NOT equal" << std::endl;
-*/
+	delete s;
+
 	return 0;
 }
