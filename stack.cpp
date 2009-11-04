@@ -64,7 +64,7 @@ namespace exscape {
 		if (src.size() == 0)
 			return; // We're copying an empty stack - we have an empty stack. Our work here is done.
 		
-		node *tail = NULL; // pointer to the last element in the new list
+		node *tail = NULL; // Pointer to the last element in the new list
 		for (node *src_node = src.head; src_node != NULL; src_node = src_node->next, dst._size++) {
 			if (dst.head == NULL) { // First node
 				dst.head = new node;
@@ -249,16 +249,19 @@ namespace exscape {
 }
 
 int main() {
-	exscape::stack<int> s, s3;
-	s.push(1);
-	s.push(2);
-	s.push(3);
-	exscape::stack<int> s2 (s); // use copy constructor
+	exscape::stack<int> s1, s3;
+	s1.push(1);
+	s1.push(2);
+	s1.push(3);
+	exscape::stack<int> s2 (s1); // use copy constructor
 	exscape::stack<int>::copy(s3, s2); // test ::copy, s2 to s3
 
-	s.dump();
+	s1.dump();
 	s2.dump();
 	s3.dump();
+
+	if (s1 != s2 || s1 != s3 || s2 != s3)
+		std::cerr << "ALL STACKS ARE NOT EQUAL!" << std::endl;
 	/*
 	exscape::stack<std::string> s;
 	s.push(std::string("Alpha"));
