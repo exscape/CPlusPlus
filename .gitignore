@@ -5,3 +5,4 @@ a.out
 !*.h
 !*.hpp
 stack
+*.bf

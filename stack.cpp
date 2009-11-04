@@ -38,6 +38,7 @@ namespace exscape {
 			~stack();
 		/* Various public methods */
 			size_t size(void) const;
+			bool empty(void) const;
 			void push(Type const &elem);
 			Type pop(void);
 			Type &top(void) const;
@@ -50,7 +51,7 @@ namespace exscape {
 
 	/* A STATIC class method that copies one stack to another */
 	template <typename Type> void stack<Type>::copy(stack<Type> &dst, stack<Type> const &src) {
-		std::cout << "In stack::copy() for destination stack=" << &dst << " and source stack=" << &src << std::endl;
+		std::cerr << "In stack::copy() for destination stack=" << &dst << " and source stack=" << &src << std::endl;
 		
 		if (&dst == &src) /* Don't copy self to self */
 			return;
@@ -84,32 +85,32 @@ namespace exscape {
 			std::cerr << "COPY FAILED! operator!= returned true!" << std::endl;
 		}
 		else
-			std::cout << "Copy successful!" << std::endl;
+			std::cerr << "Copy successful!" << std::endl;
 	}
 
 	/* Initialize the member variables to an empty stack-state */
 	template <typename Type> void stack<Type>::init() {
-		std::cout << "In init() for stack " << this << std::endl;
+		std::cerr << "In init() for stack " << this << std::endl;
 		this->head = NULL;
 		this->_size = 0;
 	}
 
 	/* Default constructor; create an empty stack */
 	template <typename Type> stack<Type>::stack() {
-		std::cout << "Hello, stack " << this << "!" << std::endl;
+		std::cerr << "Hello, stack " << this << "!" << std::endl;
 		this->init();
 	}
 
 	/* Create a stack containing "elem" */
 	template <typename Type> stack<Type>::stack(Type const &elem) {
-		std::cout << "Hello, stack " << this << ", with an argument!" << std::endl;
+		std::cerr << "Hello, stack " << this << ", with an argument!" << std::endl;
 		this->init();
 		this->push(elem);
 	}
 
 	/* Copy constructor; create an exact copy of "other" */
 	template <typename Type> stack<Type>::stack(stack<Type> const &other) {
-		std::cout << "In copy constructor for stack " << this << std::endl;
+		std::cerr << "In copy constructor for stack " << this << std::endl;
 
 		this->init();
 		stack::copy(*this, other);
@@ -118,12 +119,16 @@ namespace exscape {
 	/* Destructor */
 	template <typename Type> stack<Type>::~stack() {
 		this->free();
-		std::cout << "Goodbye, stack " << this << "." << std::endl;
+		std::cerr << "Goodbye, stack " << this << "." << std::endl;
 	}
 
 	/* Returns the list size/length */
 	template <typename Type> size_t stack<Type>::size(void) const {
 		return this->_size;
+	}
+
+	template <typename Type> bool stack<Type>::empty(void) const {
+		return (this->_size == 0);
 	}
 
 	/* Adds an element to the top of the stack */
@@ -132,7 +137,7 @@ namespace exscape {
 		n->data = elem;
 		n->next = this->head;
 		this->head = n;
-		std::cout << "Stack " << this << ": push " << elem << std::endl;
+		std::cerr << "Stack " << this << ": push " << elem << std::endl;
 		this->_size++;
 	}
 
@@ -173,16 +178,16 @@ namespace exscape {
 
 	/* Dump the contents of the stack, if possible with the type contained; used for debugging */
 	template <typename Type> void stack<Type>::dump(void) const {
-		std::cout << std::endl << "Dumping stack at " << this << ":" << std::endl;
+		std::cerr << std::endl << "Dumping stack at " << this << ":" << std::endl;
 		for (node *n = this->head; n != NULL; n = n->next) {
-			std::cout << n->data << std::endl;
+			std::cerr << n->data << std::endl;
 		}
-		std::cout << "Done dumping stack at " << this << "." << std::endl << std::endl;
+		std::cerr << "Done dumping stack at " << this << "." << std::endl << std::endl;
 	}
 
 	/* operator==, check if two stacks are equal (in size, elements and order) */
 	template <typename Type> bool stack<Type>::operator==(const stack<Type> &other) const {
-		std::cout << "Comparing stack " << this << " with stack " << &other << std::endl;
+		std::cerr << "Comparing stack " << this << " with stack " << &other << std::endl;
 		if (this == &other)
 			return true;
 		if (this->size() != other.size())
@@ -205,7 +210,7 @@ namespace exscape {
 
 	/* operator=, replace the contents of this stack with "other" */
 	template <typename Type> stack<Type> & stack<Type>::operator=(const stack<Type> &other) {
-		std::cout << "In operator= for stacks " << this << " and " << &other << std::endl;
+		std::cerr << "In operator= for stacks " << this << " and " << &other << std::endl;
 		if (this == &other)
 			return *this;
 
@@ -217,7 +222,7 @@ namespace exscape {
 		return *this;
 	}
 }
-
+/*
 int main() {
 	exscape::stack<std::string> *s = new exscape::stack<std::string>(std::string("Alpha"));
 	s->push(std::string("Beta"));
@@ -226,9 +231,9 @@ int main() {
 	exscape::stack<std::string> s2(*s);
 
 	if (*s == s2)
-		std::cout << "EQUAL" << std::endl;
+		std::cerr << "EQUAL" << std::endl;
 	else
-		std::cout << "NOT EQUAL" << std::endl;
+		std::cerr << "NOT EQUAL" << std::endl;
 
 	s->dump();
 	s2.dump();
@@ -237,3 +242,4 @@ int main() {
 
 	return 0;
 }
+*/

@@ -4,7 +4,11 @@
 #include <deque>
 #include <sstream>
 #include <cstdio>
-#include "stack.cpp"
+#include <cstdlib>
+#include <ctime>
+#include <stdint.h>
+#include <assert.h>
+#include "../stack.cpp"
 
 /*
  * PLEASE NOTE:
@@ -33,12 +37,16 @@ inline void WarnUnderflow()
 
 short rnd()
 {
-    return int((rand()<<2)/(RAND_MAX + 1.0));
+//    return int((rand()<<2)/(RAND_MAX + 1.0));
+	short i = rand() % 4;
+	assert(i >= 0 && i <= 3);
+	return i;
 }
 
-static std::stack <__int64, std::deque<__int64> > stack;
-enum { RIGHT, LEFT, UP, DOWN } dir;
-__int64 space[50][80];
+//static std::stack <int64_t, std::deque<int64_t> > stack;
+static exscape::stack<int64_t> stack;
+static enum { RIGHT, LEFT, UP, DOWN } dir;
+int64_t space[50][80];
 
 //
 // Moves the IP (Instruction Pointer) to the next cell
@@ -64,7 +72,7 @@ void next(unsigned short &x, unsigned short &y, int dir)
 	}
 }
 
-__int64 peek(unsigned short x, unsigned short y, int dir)
+int64_t peek(unsigned short x, unsigned short y, int dir)
 {
 	switch (dir)
 	{
@@ -104,7 +112,7 @@ int main(int argc, char *argv[])
 
 	if (argc == 2)
 		writedelay = 0;
-	else if (argc = 4)
+	else if (argc == 4)
 		writedelay = Convert<unsigned int>(argv[2]);
 	else
 	{
@@ -128,7 +136,7 @@ int main(int argc, char *argv[])
 	//
 	for (int a=0; a<50; a++)
 		for (int b=0; b<80; b++)
-			space[a][b] = 32; /* __int64(' ') */
+			space[a][b] = 32; /* int64_t(' ') */
 
 	//
 	// Read the file
@@ -164,7 +172,7 @@ int main(int argc, char *argv[])
 			std::cout << char(space[a][b]);
 	*/
 
-	srand(GetTickCount());
+	srand((unsigned)time(0));
 	
 	//
 	// Create basic variables that will be used a *lot*...
@@ -283,7 +291,6 @@ int main(int argc, char *argv[])
 		if (c == '@')
 		{
 			std::cout << std::endl << std::endl << "Program ended at [" << x << ", " << y << "]." << std::endl;
-			system("pause");
 			exit(0);
 		}
 
@@ -314,7 +321,7 @@ int main(int argc, char *argv[])
 			}
 
 			if (writedelay)
-				Sleep(writedelay);
+				usleep(writedelay * 1000);
 
 			next(x, y, dir);
 			continue;
@@ -332,7 +339,7 @@ int main(int argc, char *argv[])
 			}
 						
 			if (writedelay)
-				Sleep(writedelay);
+				usleep(writedelay * 1000);
 			next(x, y, dir);
 			continue;
 		}
@@ -342,7 +349,7 @@ int main(int argc, char *argv[])
 		//
 		if (c == '+')
 		{
-			__int64 a=0, b=0;
+			int64_t a=0, b=0;
 			if (!stack.empty())
 			{
 				a = stack.top();
@@ -374,7 +381,7 @@ int main(int argc, char *argv[])
 		//
 		if (c == '-')
 		{
-			__int64 a=0, b=0;
+			int64_t a=0, b=0;
 			if (!stack.empty())
 			{
 				a = stack.top();
@@ -406,7 +413,7 @@ int main(int argc, char *argv[])
 		//
 		if (c == '*')
 		{
-			__int64 a=0, b=0;
+			int64_t a=0, b=0;
 			if (!stack.empty())
 			{
 				a = stack.top();
@@ -438,7 +445,7 @@ int main(int argc, char *argv[])
 		//
 		if (c == '/')
 		{
-			__int64 a=0, b=0;
+			int64_t a=0, b=0;
 			if (!stack.empty())
 			{
 				a = stack.top();
@@ -476,7 +483,7 @@ int main(int argc, char *argv[])
 		//
 		if (c == '%')
 		{
-			__int64 a=0, b=0;
+			int64_t a=0, b=0;
 			if (!stack.empty())
 			{
 				a = stack.top();
@@ -542,7 +549,7 @@ int main(int argc, char *argv[])
 		//
 		if (c == '`')
 		{
-			__int64 a=0, b=0;
+			int64_t a=0, b=0;
 			if (!stack.empty())
 			{
 				a = stack.top();
@@ -578,7 +585,6 @@ int main(int argc, char *argv[])
 		//
 		if (c == '_')
 		{
-			__int64 a=0;
 			if (!stack.empty())
 			{
 				if (stack.top() == 0)
@@ -607,7 +613,6 @@ int main(int argc, char *argv[])
 		//
 			if (c == '|')
 		{
-			__int64 a=0;
 			if (!stack.empty())
 			{
 				if (stack.top() == 0)
@@ -636,7 +641,6 @@ int main(int argc, char *argv[])
 		//
 		if (c == ':')
 		{
-			__int64 a=0;
 			if (!stack.empty())
 			{
 				stack.push(stack.top());
@@ -657,7 +661,7 @@ int main(int argc, char *argv[])
 		//
 		if (c == '\\')
 		{
-			__int64 a=0, b=0;
+			int64_t a=0, b=0;
 			if (!stack.empty())
 			{
 				a = stack.top();
@@ -712,7 +716,7 @@ int main(int argc, char *argv[])
 		//
 		if (c == 'g')
 		{
-			__int64 a=0, b=0;
+			int64_t a=0, b=0;
 			if (!stack.empty())
 			{
 				a = stack.top();
@@ -756,7 +760,7 @@ int main(int argc, char *argv[])
 		//
 		if (c == 'p')
 		{
-			__int64 a=0, b=0, v=0;
+			int64_t a=0, b=0, v=0;
 			if (!stack.empty())
 			{
 				a = stack.top();
@@ -807,7 +811,7 @@ int main(int argc, char *argv[])
 
 		if (c == '&')
 		{
-			__int64 a;
+			int64_t a;
 			std::cout << "Enter a number: ";
 			std::cin >> a;
 
@@ -830,6 +834,5 @@ int main(int argc, char *argv[])
 		
 	}
 
-	system("pause");
 	return 0;
 }
