@@ -7,7 +7,7 @@
  * Its sole purpose to teach me C++; I do know about std::stack.
  */
 
-/* Written: 2009-11-02, 2009-11-03, XXX */
+/* Written: 2009-11-02, 2009-11-03, 2009-11-04, XXX */
 
 namespace exscape {
 	template <typename Type>
@@ -111,7 +111,6 @@ namespace exscape {
 	/* Copy constructor; create an exact copy of "other" */
 	template <typename Type> stack<Type>::stack(stack<Type> const &other) {
 		std::cerr << "In copy constructor for stack " << this << std::endl;
-
 		this->init();
 		stack::copy(*this, other);
 	}

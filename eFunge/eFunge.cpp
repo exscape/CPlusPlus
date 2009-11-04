@@ -15,6 +15,8 @@
  *
  * I had to port it from Windows-only to POSIX, so there are some other modifications. 
  * Still, most of the bad code is old. ;)
+ *
+ * Ported 2009-11-04.
  */
 
 template <class out_type, class in_type>
