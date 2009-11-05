@@ -13,7 +13,7 @@ namespace exscape {
 
 			void init();
 			void append(const char *);
-			void set(const char *);
+			void assign(const char *);
 
 		public:
 			string() { init(); }
@@ -21,7 +21,7 @@ namespace exscape {
 			string(const char *);
 			~string();
 			void dealloc(void);
-			void resize(size_t) throw();
+			void alloc(size_t) throw();
 			const char *c_str(void) const;
 			size_t length(void) const;
 			bool empty(void) const;
@@ -49,28 +49,48 @@ namespace exscape {
 
 	/* Deallocates the memory associated with a string */
 	void string::dealloc(void) {
-		std::cerr << "in dealloc() for string " << this << std::endl;
+		std::cerr << " In dealloc() for string " << this << std::endl;
 		if (this->buf != NULL) {
-			std::cerr << "  calling free(" << &(this->buf) << ")" << std::endl;
+			std::cerr << "  Calling free(" << &(this->buf) << ")" << std::endl;
 			free(this->buf);
 		}
+		else
+			std::cerr <<  "Nothing to free, string was NULL" << std::endl;
 		this->_length = 0;
 		this->_size = 0;
 	}
 
-	/* Resizes the buffer using realloc */
-	void string::resize(size_t target) throw() {
-		std::cerr << "In resize() for string " << this << ", current size=" << this->_size << ", target size=" << target << std::endl;
-		char *new_buf = (char *)realloc(this->buf, target);
-		if (new_buf) {
-			this->buf = new_buf;
-			this->_size = target;
+	/* Allocates/reallocates memory for a string */
+	void string::alloc(size_t target_size) throw() {
+		std::cerr << " In alloc() for string " << this << ", current size=" << this->_size << ", target_size=" << target_size << std::endl;
+
+		if (this->buf == NULL) { // Allocate a new string
+			this->buf = (char *)calloc(1, target_size);
+			if (this->buf != NULL) { // Allocation succeeded
+				this->_size = target_size;
+				this->_length = 0;
+			}
+			else { // Allocation failed
+				this->_size = 0;
+				this->_length = 0;
+				throw std::runtime_error("calloc() returned NULL");
+			}
 		}
-		else {
-			free(this->buf);
-			this->_size = 0;
-			this->_length = 0;
-			throw std::runtime_error("realloc() returned NULL");
+		else { // Reallocate to a larger memory area
+			char *new_buf = (char *)realloc(this->buf, target_size);
+			if (new_buf != NULL) { // Allocation succeeded
+				// Set all newly allocated memory to 0, while leaving the old string be
+				memset(new_buf + this->_size, 0, target_size - this->_size);
+				this->buf = new_buf;
+				this->_size = target_size;
+			}
+			else { // Allocation failed
+				free(this->buf);
+				this->buf = NULL;
+				this->_size = 0;
+				this->_length = 0;
+				throw std::runtime_error("realloc() returned NULL");
+			}
 		}
 	}
 
@@ -115,10 +135,10 @@ namespace exscape {
 		if (str == NULL)
 			return;
 
-		size_t new_size = this->_length + strlen(str);
-		this->resize(new_size + 1);
+		size_t new_length = this->_length + strlen(str);
+		this->alloc(new_length + 1);
 		strcat(this->buf, str);
-		this->_length = new_size;
+		this->_length = new_length;
 	}
 
 	/* Concatenate this string with a C-style string */
@@ -160,7 +180,7 @@ namespace exscape {
 	}
 	
 	/* Set this string to str, by starting over and "appending" it */
-	void string::set(const char *str) {
+	void string::assign(const char *str) {
 		this->dealloc();
 		this->init();
 		this->append(str);
@@ -171,13 +191,13 @@ namespace exscape {
 		if (this == &str)
 			return *this;
 
-		this->set(str.c_str());
+		this->assign(str.c_str());
 		return *this;
 	}
 
 	/* Set this string to C-string str */
 	string & string::operator=(const char *str) {
-		this->set(str);
+		this->assign(str);
 		return *this;
 	}
 
@@ -185,16 +205,10 @@ namespace exscape {
 	void string::dump(void) const {
 		std::cerr << "String \"" << this->c_str() << "\", length=" << this->_length << ", size=" << this->_size << std::endl;
 	}
-
 }
 
 int main() {
-	exscape::string s, s2;
-	s = "abc";
-	s2 = "def" + s;
 
-	s.dump();
-	s2.dump();
 	return 0;
 }
 
