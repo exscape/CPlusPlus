@@ -27,17 +27,19 @@ namespace exscape {
 			bool empty(void) const;
 			string & operator+=(const char *);
 			string & operator+=(const string &);
-			string operator+(const char *); // XXX: WHY can't this be const?
-			friend string operator+(const char *, const string &); // XXX: can this be const?
-			string operator+(const string &); // XXX: WHY can't this be const?
+			string operator+(const char *);
+			string operator+(const string &);
+			friend string operator+(const char *, const string &);
 			string & operator=(const char *);
 			string & operator=(const string &);
 			void dump(void) const; // XXX: Debugging
 			// XXX:
 			// operator== and operator!=
 			// operator[]
+			// operator<<
 	};
 
+	/* Initialiazes a string to an empty state */
 	void string::init(void) {
 		std::cerr << "In init() for string " << this << std::endl;
 		this->buf = NULL;
@@ -45,16 +47,18 @@ namespace exscape {
 		this->_size = 0;
 	}
 
+	/* Deallocates the memory associated with a string */
 	void string::dealloc(void) {
-		std::cerr << "In dealloc() for string " << this << std::endl;
+		std::cerr << "in string::dealloc() for string " << this << std::endl;
 		if (this->buf != NULL) {
-			std::cerr << "  calling free(" << &(this->buf) << ")" << std::endl;
+			std::cerr << "  calling dealloc(" << &(this->buf) << ")" << std::endl;
 			free(this->buf);
 		}
 		this->_length = 0;
 		this->_size = 0;
 	}
 
+	/* Resizes the buffer using realloc */
 	void string::resize(size_t target) throw() {
 		std::cerr << "In resize() for string " << this << ", current size=" << this->_size << ", target size=" << target << std::endl;
 		char *new_buf = (char *)realloc(this->buf, target);
@@ -70,35 +74,42 @@ namespace exscape {
 		}
 	}
 
+	/* Copy constructor from const char * */
 	string::string(const char *in) {
 		this->buf = strdup(in);
 		this->_length = strlen(this->buf);
 		this->_size = this->_length + 1; // NUL
 	}
 
+	/* Copy constructor from another string instance */
 	string::string(string &in) {
 		this->buf = strdup(in.c_str());
 		this->_length = strlen(this->buf);
 		this->_size = this->_length + 1; // NUL
 	} 
 
+	/* Destructor */
 	string::~string() {
 		std::cerr << "In destructor for string " << this << std::endl;
 		this->dealloc();
 	}
 
+	/* Returns the string length, equal to strlen(this->buf) */
 	size_t string::length(void) const {
 		return this->_length;
 	}
 
+	/* Returns whether the string is empty or not */
 	bool string::empty(void) const {
 		return (this->_length == 0);
 	}
 
+	/* Returns a const char * pointer to the data store, just like std::string */
 	const char *string::c_str() const {
 		return this->buf;
 	}
 
+	/* Internal function that appends a given C-style string to this exscape::string */
 	void string::append(const char *str) {
 		std::cerr << "In string::append() for destination string " << this << std::endl;
 		if (str == NULL)
@@ -110,17 +121,21 @@ namespace exscape {
 		this->_length = new_size;
 	}
 
+	/* Concatenate this string with a C-style string */
 	string & string::operator+=(const char *str) {
 		std::cerr << "In operator+=(const char *) for string " << this << std::endl;
 		this->append(str);
 		return *this;
 	}
 
+	/* Concatenate this string with another string instance */
 	string & string::operator+=(const string &str) {
 		std::cerr << "In operator+=(const string &) for string " << this << std::endl;
 		this->append(str.c_str());
 		return *this;
 	}
+
+	/* Return a new string consisting of this + a C-style string */
 	string string::operator+(const char *str) {
 		std::cerr << "In operator+(const char *) for string " << this << std::endl;
 		string result = *this;
@@ -128,14 +143,7 @@ namespace exscape {
 		return result;
 	}
 
-	/* Friend function */
-	string operator+(const char *lhs, const string &rhs) {
-		std::cerr << "In operator+(const char *, const string &)" << std::endl;
-		string result (lhs);
-		result += rhs;
-		return result;
-	}
-	
+	/* Return a new string consisting of this + another string instance */
 	string string::operator+(const string &str) {
 		std::cerr << "In operator+(const string &) for string " << this << std::endl;
 		string result = *this;
@@ -143,12 +151,22 @@ namespace exscape {
 		return result;
 	}
 
+	/* Friend function, to handle cases such as "abc" + string */
+	string operator+(const char *lhs, const string &rhs) {
+		std::cerr << "In operator+(const char *, const string &)" << std::endl;
+		string result (lhs);
+		result += rhs;
+		return result;
+	}
+	
+	/* Set this string to str, by starting over and "appending" it */
 	void string::set(const char *str) {
 		this->dealloc();
 		this->init();
 		this->append(str);
 	}
 
+	/* Set this string to other string instance sstr */
 	string & string::operator=(const string &str) {
 		if (this == &str)
 			return *this;
@@ -157,12 +175,14 @@ namespace exscape {
 		return *this;
 	}
 
+	/* Set this string to C-string str */
 	string & string::operator=(const char *str) {
 		this->set(str);
 		return *this;
 	}
 
-	void string::dump(void) const { // XXX: Debugging
+	/* XXX: Debug function */
+	void string::dump(void) const {
 		std::cerr << "String \"" << this->c_str() << "\", length=" << this->_length << ", size=" << this->_size << std::endl;
 	}
 
