@@ -5,8 +5,7 @@
 
 namespace exscape {
 	class string {
-//		protected:
-		// XXX: TESTING ONLY
+		protected:
 		public:
 			char *buf;
 			size_t _length; // string length
@@ -28,10 +27,12 @@ namespace exscape {
 			bool empty(void) const;
 			string & operator+=(const char *);
 			string & operator+=(const string &);
-			const string operator+(const char *);
-			const string operator+(const string &);
+			string operator+(const char *); // XXX: WHY can't this be const?
+			friend string operator+(const char *, const string &); // XXX: can this be const?
+			string operator+(const string &); // XXX: WHY can't this be const?
 			string & operator=(const char *);
 			string & operator=(const string &);
+			void dump(void) const; // XXX: Debugging
 			// XXX:
 			// operator== and operator!=
 			// operator[]
@@ -120,14 +121,22 @@ namespace exscape {
 		this->append(str.c_str());
 		return *this;
 	}
-	const string string::operator+(const char *str) {
+	string string::operator+(const char *str) {
 		std::cerr << "In operator+(const char *) for string " << this << std::endl;
 		string result = *this;
 		result += str;
 		return result;
 	}
 
-	const string string::operator+(const string &str) {
+	/* Friend function */
+	string operator+(const char *lhs, const string &rhs) {
+		std::cerr << "In operator+(const char *, const string &)" << std::endl;
+		string result (lhs);
+		result += rhs;
+		return result;
+	}
+	
+	string string::operator+(const string &str) {
 		std::cerr << "In operator+(const string &) for string " << this << std::endl;
 		string result = *this;
 		result += str.c_str();
@@ -153,24 +162,19 @@ namespace exscape {
 		return *this;
 	}
 
+	void string::dump(void) const { // XXX: Debugging
+		std::cerr << "String \"" << this->c_str() << "\", length=" << this->_length << ", size=" << this->_size << std::endl;
+	}
+
 }
 
 int main() {
-	exscape::string str ("Word1");
-	std::cout << str.c_str() << std::endl; // XXX: overload <<
-	std::cout << "String: \"" << str.c_str() << "\", string length: "<< str._length << ", size: " << str._size << std::endl;
+	exscape::string s, s2;
+	s = "abc";
+	s2 = "def" + s;
 
-	exscape::string str2 (str);
-	std::cout << "String: \"" << str2.c_str() << "\", string length: "<< str2._length << ", size: " << str2._size << std::endl;
-
-	str2 += "Word2";
-	std::cout << "String: \"" << str2.c_str() << "\", string length: "<< str2._length << ", size: " << str2._size << std::endl;
-
-	exscape::string str3;
-	 str3 = "abc" + str;
-	//str3 = str + "abc";
-	std::cout << "String: \"" << str3.c_str() << "\", string length: "<< str3._length << ", size: " << str3._size << std::endl;
-
+	s.dump();
+	s2.dump();
 	return 0;
 }
 
