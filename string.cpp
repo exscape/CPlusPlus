@@ -32,10 +32,11 @@ namespace exscape {
 			friend string operator+(const char *, const string &);
 			string & operator=(const char *);
 			string & operator=(const string &);
-			void dump(void) const; // XXX: Debugging
 			char operator[](size_t) const;
+			bool operator==(const string &) const;
+			bool operator!=(const string &) const;
+			void dump(void) const; // XXX: Debugging
 			// XXX:
-			// operator== and operator!=
 			// operator<<
 	};
 
@@ -207,6 +208,23 @@ namespace exscape {
 			throw std::out_of_range("Index is out of bounds");
 
 		return this->buf[index];
+	}
+	bool string::operator==(const string &rhs) const {
+		std::cerr << "In operator== for strings " << this << " and " << &rhs << std::endl;
+
+		if (this->_length != rhs.length())
+			return false;
+		if (this->buf == NULL && rhs.buf == NULL)
+			return true;
+		else if (this->buf == NULL || rhs.buf == NULL)
+			return false;
+
+		return (strcmp(this->buf, rhs.buf) == 0);
+	}
+
+	bool string::operator!=(const string &rhs) const {
+		std::cerr << "In operator!= for strings " << this << " and " << &rhs << std::endl;
+		return !(*this == rhs);
 	}
 
 	/* XXX: Debug function */
