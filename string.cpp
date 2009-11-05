@@ -35,9 +35,9 @@ namespace exscape {
 			char operator[](size_t) const;
 			bool operator==(const string &) const;
 			bool operator!=(const string &) const;
+			friend std::ostream &operator<<(std::ostream &, string);
+			friend std::istream &operator>>(std::istream &, string &);
 			void dump(void) const; // XXX: Debugging
-			// XXX:
-			// operator<<
 	};
 
 	/* Initialiazes a string to an empty state */
@@ -56,7 +56,7 @@ namespace exscape {
 			free(this->buf);
 		}
 		else
-			std::cerr <<  "Nothing to free, string was NULL" << std::endl;
+			std::cerr <<  "  Nothing to free, string was NULL" << std::endl;
 		this->_length = 0;
 		this->_size = 0;
 	}
@@ -97,6 +97,10 @@ namespace exscape {
 
 	/* Copy constructor from const char * */
 	string::string(const char *in) {
+		if (in == NULL) {
+			this->init();
+			return;
+		}
 		this->buf = strdup(in);
 		this->_length = strlen(this->buf);
 		this->_size = this->_length + 1; // NUL
@@ -104,6 +108,10 @@ namespace exscape {
 
 	/* Copy constructor from another string instance */
 	string::string(string &in) {
+		if (in == NULL || in.c_str() == NULL) {
+			this->init();
+			return;
+		}
 		this->buf = strdup(in.c_str());
 		this->_length = strlen(this->buf);
 		this->_size = this->_length + 1; // NUL
@@ -209,6 +217,8 @@ namespace exscape {
 
 		return this->buf[index];
 	}
+
+	/* Compares two strings; if their lengths don't match, compare byte for byte */
 	bool string::operator==(const string &rhs) const {
 		std::cerr << "In operator== for strings " << this << " and " << &rhs << std::endl;
 
@@ -222,9 +232,25 @@ namespace exscape {
 		return (strcmp(this->buf, rhs.buf) == 0);
 	}
 
+	/* The inverse of operator== */
 	bool string::operator!=(const string &rhs) const {
 		std::cerr << "In operator!= for strings " << this << " and " << &rhs << std::endl;
 		return !(*this == rhs);
+	}
+
+	/* Allow the class to be used with output streams, i.e. cout << str */
+	std::ostream &operator<<(std::ostream &stream, string str) {
+		stream << str.c_str();
+		return stream;
+	}
+
+	std::istream &operator>>(std::istream &stream, string &str) {
+	/*
+	 	// XXX: FIXME!
+		str.alloc(stream.width());
+		stream >> str.buf;
+	*/
+		return stream;
 	}
 
 	/* XXX: Debug function */
@@ -234,6 +260,11 @@ namespace exscape {
 }
 
 int main() {
+	exscape::string in;
+	std::cout << "Give me something: ";
+	std::cin >> in;
+	std::cout << "You gave me \"" << in << "\"!" << std::endl;
+
 	return 0;
 }
 
