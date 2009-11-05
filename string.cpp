@@ -33,9 +33,9 @@ namespace exscape {
 			string & operator=(const char *);
 			string & operator=(const string &);
 			void dump(void) const; // XXX: Debugging
+			char operator[](size_t) const;
 			// XXX:
 			// operator== and operator!=
-			// operator[]
 			// operator<<
 	};
 
@@ -179,14 +179,14 @@ namespace exscape {
 		return result;
 	}
 	
-	/* Set this string to str, by starting over and "appending" it */
+	/* Set this string to str, by starting over and "appending" to it */
 	void string::assign(const char *str) {
 		this->dealloc();
 		this->init();
 		this->append(str);
 	}
 
-	/* Set this string to other string instance sstr */
+	/* Set this string to other string instance str */
 	string & string::operator=(const string &str) {
 		if (this == &str)
 			return *this;
@@ -201,6 +201,14 @@ namespace exscape {
 		return *this;
 	}
 
+	/* Return a single character, just like you'd expect from string indexing */
+	char string::operator[](size_t index) const {
+		if (index >= this->_length)
+			throw std::out_of_range("Index is out of bounds");
+
+		return this->buf[index];
+	}
+
 	/* XXX: Debug function */
 	void string::dump(void) const {
 		std::cerr << "String \"" << this->c_str() << "\", length=" << this->_length << ", size=" << this->_size << std::endl;
@@ -208,7 +216,6 @@ namespace exscape {
 }
 
 int main() {
-
 	return 0;
 }
 
