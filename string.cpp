@@ -49,9 +49,9 @@ namespace exscape {
 
 	/* Deallocates the memory associated with a string */
 	void string::dealloc(void) {
-		std::cerr << "in string::dealloc() for string " << this << std::endl;
+		std::cerr << "in dealloc() for string " << this << std::endl;
 		if (this->buf != NULL) {
-			std::cerr << "  calling dealloc(" << &(this->buf) << ")" << std::endl;
+			std::cerr << "  calling free(" << &(this->buf) << ")" << std::endl;
 			free(this->buf);
 		}
 		this->_length = 0;
