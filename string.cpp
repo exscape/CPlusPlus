@@ -243,22 +243,18 @@ namespace exscape {
 		stream << str.c_str();
 		return stream;
 	}
-
+	
+	/* Allows the class to be used with input stream, i.e. cin >> str */
 	std::istream &operator>>(std::istream &stream, string &str) {
-		// XXX: FIXME!
-		char *tmp = new char[128];
-		memset(tmp, 0, 128);
-
-		while (!stream.eof()) { // XXX: FIXME
-			memset(tmp, 0, 128);
-			stream.read(tmp, 128);
-			if (tmp != NULL && strlen(tmp) > 0)
-				str.append(tmp);
-			else
-				break;
+		// XXX: A way that didn't reallocate the string for every SINGLE BYTE
+		// would be preferable...
+		char tmp[2] = {0};
+		char c;
+		while (stream.get(c) && c != '\n') {
+			tmp[0] = c;
+			str.append(tmp);
 		}
 
-		delete [] tmp;
 		return stream;
 	}
 
