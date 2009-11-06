@@ -12,14 +12,14 @@ namespace exscape {
 			size_t _size; // bytes allocated
 
 			void init();
-			void append(const char *);
-			void assign(const char *);
-			void dealloc(void);
 			void alloc(size_t) throw();
+			void dealloc(void);
+			void assign(const char *);
+			void append(const char *);
 
 		public:
 			string() { init(); }
-			string(string &);
+			string(const string &);
 			string(const char *);
 			~string();
 			const char *c_str(void) const;
@@ -53,17 +53,23 @@ namespace exscape {
 		this->_size = 0;
 	}
 
-	/* Deallocates the memory associated with a string */
-	void string::dealloc(void) {
-		std::cerr << " In dealloc() for string " << this << std::endl;
-		if (this->buf != NULL) {
-			std::cerr << "  Calling free(" << &(this->buf) << ")" << std::endl;
-			free(this->buf);
-		}
-		else
-			std::cerr <<  "  Nothing to free, string was NULL" << std::endl;
-		this->_length = 0;
-		this->_size = 0;
+	/* Copy constructor from const char * */
+	string::string(const char *in) {
+		std::cerr << "In const char* copy constructor for string " << this << std::endl;
+		this->init();
+		this->append(in);
+	}
+
+	/* Copy constructor from another string instance */
+	string::string(const string &in) {
+		this->init();
+		this->append(in.c_str());
+	} 
+
+	/* Destructor */
+	string::~string() {
+		std::cerr << "In destructor for string " << this << std::endl;
+		this->dealloc();
 	}
 
 	/* Allocates/reallocates memory for a string */
@@ -100,23 +106,17 @@ namespace exscape {
 		}
 	}
 
-	/* Copy constructor from const char * */
-	string::string(const char *in) {
-		std::cerr << "In const char* copy constructor for string " << this << std::endl;
-		this->init();
-		this->append(in);
-	}
-
-	/* Copy constructor from another string instance */
-	string::string(string &in) {
-		this->init();
-		this->append(in.c_str());
-	} 
-
-	/* Destructor */
-	string::~string() {
-		std::cerr << "In destructor for string " << this << std::endl;
-		this->dealloc();
+	/* Deallocates the memory associated with a string */
+	void string::dealloc(void) {
+		std::cerr << " In dealloc() for string " << this << std::endl;
+		if (this->buf != NULL) {
+			std::cerr << "  Calling free(" << &(this->buf) << ")" << std::endl;
+			free(this->buf);
+		}
+		else
+			std::cerr <<  "  Nothing to free, string was NULL" << std::endl;
+		this->_length = 0;
+		this->_size = 0;
 	}
 
 	/* Returns the string length, equal to strlen(this->buf) */
@@ -134,6 +134,13 @@ namespace exscape {
 		return this->buf;
 	}
 
+	/* Set this string to str, by starting over and "appending" to it */
+	void string::assign(const char *str) {
+		this->dealloc();
+		this->init();
+		this->append(str);
+	}
+
 	/* Internal function that appends a given C-style string to this exscape::string */
 	void string::append(const char *str) {
 		std::cerr << "In string::append() for destination string " << this << std::endl;
@@ -144,6 +151,19 @@ namespace exscape {
 		this->alloc(new_length + 1);
 		strcat(this->buf, str);
 		this->_length = new_length;
+	}
+
+	/* Compares two strings; if their lengths don't match, compare byte for byte */
+	bool string::equals(const char *str) const {
+		std::cerr << " in equals() for " << this << " and const char *" << &str << std::endl;
+		if (this->buf == NULL && str == NULL)
+			return true;
+		else if (this->buf == NULL || str == NULL)
+			return false;
+		if (this->_length != strlen(str))
+			return false;
+
+		return (strcmp(this->buf, str) == 0);
 	}
 
 	/* Concatenate this string with a C-style string */
@@ -184,13 +204,6 @@ namespace exscape {
 		return result;
 	}
 	
-	/* Set this string to str, by starting over and "appending" to it */
-	void string::assign(const char *str) {
-		this->dealloc();
-		this->init();
-		this->append(str);
-	}
-
 	/* Set this string to other string instance str */
 	string & string::operator=(const string &str) {
 		if (this == &str)
@@ -212,19 +225,6 @@ namespace exscape {
 			throw std::out_of_range("Index is out of bounds");
 
 		return this->buf[index];
-	}
-
-	/* Compares two strings; if their lengths don't match, compare byte for byte */
-	bool string::equals(const char *str) const {
-		std::cerr << " in equals() for " << this << " and const char *" << &str << std::endl;
-		if (this->buf == NULL && str == NULL)
-			return true;
-		else if (this->buf == NULL || str == NULL)
-			return false;
-		if (this->_length != strlen(str))
-			return false;
-
-		return (strcmp(this->buf, str) == 0);
 	}
 
 	bool string::operator==(const string &rhs) const {
@@ -287,18 +287,6 @@ namespace exscape {
 }
 
 int main() {
-	typedef exscape::string str;
-	str s;
-	str s2 ("s2");
-	str s3;
-	s3 = s2 + "Test";
-	str s4 (s3);
-	s4 += "ing";
-
-	s.dump();
-	s2.dump();
-	s3.dump();
-	s4.dump();
 
 	return 0;
 }
