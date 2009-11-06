@@ -3,6 +3,10 @@
 #include <cstdlib>
 #include <stdexcept>
 
+// TODO: 
+// * Fix memory allocation problem with >>
+// * Add substr()
+
 namespace exscape {
 	class string {
 		protected:
@@ -26,6 +30,7 @@ namespace exscape {
 			size_t length(void) const;
 			bool empty(void) const;
 			bool equals(const char *str) const;
+			string reverse(void) const;
 			string & operator+=(const char *);
 			string & operator+=(const string &);
 			string operator+(const char *);
@@ -277,12 +282,24 @@ namespace exscape {
 		return stream;
 	}
 
-	/* XXX: Debug function */
+	string string::reverse(void) const {
+		string rev;
+		rev.alloc(this->_length + 1);
+
+		for (size_t i=0; i<this->_length; i++) {
+			rev.buf[this->_length-i-1] = this->buf[i];
+		}
+
+		rev._length = this->_length;
+
+		return rev;
+	}
+
 	void string::dump(void) const {
-		if (this->c_str() == NULL)
+		if (this->buf == NULL)
 			std::cerr << "String (null) length=" << this->_length << ", size=" << this->_size << std::endl;
 		else
-			std::cerr << "String \"" << this->c_str() << "\", length=" << this->_length << ", size=" << this->_size << std::endl;
+			std::cerr << "String \"" << this->buf << "\", length=" << this->_length << ", size=" << this->_size << std::endl;
 	}
 }
 
@@ -292,20 +309,6 @@ int main() {
 }
 
 /*
-char *reverse(const char *str) {
-	int len = strlen(str);
-	char *rev = malloc(len+1); // +1 for NUL
-	if (rev == NULL)
-		return NULL;
-	memset(rev, 0, len+1);
-
-	for (uint32_t i=0; i<len; i++) {
-		rev[len-i-1] = str[i];
-	}
-
-	return rev;
-}
-
 //
 // * str: the string to work on
 // * start: the starting offset (0 for the first position, 1 for the second etc.; negative offsets count from the end of the string, -1 being the last)
