@@ -14,14 +14,14 @@ namespace exscape {
 			void init();
 			void append(const char *);
 			void assign(const char *);
+			void dealloc(void);
+			void alloc(size_t) throw();
 
 		public:
 			string() { init(); }
 			string(string &);
 			string(const char *);
 			~string();
-			void dealloc(void);
-			void alloc(size_t) throw();
 			const char *c_str(void) const;
 			size_t length(void) const;
 			bool empty(void) const;
@@ -36,6 +36,8 @@ namespace exscape {
 			char operator[](size_t) const;
 			bool operator==(const char *) const;
 			bool operator!=(const char *) const;
+			friend bool operator==(const char *, string &);
+			friend bool operator!=(const char *, string &);
 			bool operator==(const string &) const;
 			bool operator!=(const string &) const;
 			friend std::ostream &operator<<(std::ostream &, string);
@@ -240,6 +242,14 @@ namespace exscape {
 	bool string::operator==(const char *str) const { 
 		std::cerr << "In operator== (const char *)" << std::endl;
 		return this->equals(str);
+	}
+
+	bool operator==(const char *lhs, string &rhs) {
+		return (rhs == lhs);
+	}
+	
+	bool operator!=(const char *lhs, string &rhs) {
+		return !(rhs == lhs);
 	}
 
 	/* The inverse of operator== */
