@@ -104,18 +104,12 @@ namespace exscape {
 	string::string(const char *in) {
 		std::cerr << "In const char* copy constructor for string " << this << std::endl;
 		this->init();
-		if (in == NULL) { // XXX: Is this still needed?
-			return;
-		}
 		this->append(in);
 	}
 
 	/* Copy constructor from another string instance */
 	string::string(string &in) {
 		this->init();
-		if (in.c_str() == NULL) {
-			return;
-		}
 		this->append(in.c_str());
 	} 
 
