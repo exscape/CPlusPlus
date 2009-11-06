@@ -245,11 +245,20 @@ namespace exscape {
 	}
 
 	std::istream &operator>>(std::istream &stream, string &str) {
-	/*
-	 	// XXX: FIXME!
-		str.alloc(stream.width());
-		stream >> str.buf;
-	*/
+		// XXX: FIXME!
+		char *tmp = new char[128];
+		memset(tmp, 0, 128);
+
+		while (!stream.eof()) { // XXX: FIXME
+			memset(tmp, 0, 128);
+			stream.read(tmp, 128);
+			if (tmp != NULL && strlen(tmp) > 0)
+				str.append(tmp);
+			else
+				break;
+		}
+
+		delete [] tmp;
 		return stream;
 	}
 
