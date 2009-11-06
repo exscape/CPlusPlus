@@ -101,24 +101,20 @@ namespace exscape {
 	/* Copy constructor from const char * */
 	string::string(const char *in) {
 		std::cerr << "In const char* copy constructor for string " << this << std::endl;
-		if (in == NULL) {
-			this->init();
+		this->init();
+		if (in == NULL) { // XXX: Is this still needed?
 			return;
 		}
-		this->buf = strdup(in);
-		this->_length = strlen(this->buf);
-		this->_size = this->_length + 1; // NUL
+		this->append(in);
 	}
 
 	/* Copy constructor from another string instance */
 	string::string(string &in) {
-		if (in == NULL || in.c_str() == NULL) {
-			this->init();
+		this->init();
+		if (in.c_str() == NULL) {
 			return;
 		}
-		this->buf = strdup(in.c_str());
-		this->_length = strlen(this->buf);
-		this->_size = this->_length + 1; // NUL
+		this->append(in.c_str());
 	} 
 
 	/* Destructor */
@@ -279,11 +275,27 @@ namespace exscape {
 
 	/* XXX: Debug function */
 	void string::dump(void) const {
-		std::cerr << "String \"" << this->c_str() << "\", length=" << this->_length << ", size=" << this->_size << std::endl;
+		if (this->c_str() == NULL)
+			std::cerr << "String (null) length=" << this->_length << ", size=" << this->_size << std::endl;
+		else
+			std::cerr << "String \"" << this->c_str() << "\", length=" << this->_length << ", size=" << this->_size << std::endl;
 	}
 }
 
 int main() {
+	typedef exscape::string str;
+	str s;
+	str s2 ("s2");
+	str s3;
+	s3 = s2 + "Test";
+	str s4 (s3);
+	s4 += "ing";
+
+	s.dump();
+	s2.dump();
+	s3.dump();
+	s4.dump();
+
 	return 0;
 }
 
