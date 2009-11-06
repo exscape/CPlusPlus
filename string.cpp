@@ -4,24 +4,28 @@
 #include <stdexcept>
 
 // TODO: 
-// * Fix memory allocation problem with >>
+// Rewrite operator>> to read chunks, and not call append() on single bytes
 // * Add substr()
 
 namespace exscape {
 	class string {
 		protected:
-		public:
+		/* Protected member variables */
 			char *buf;
 			size_t _length; // string length
 			size_t _size; // bytes allocated
 
+		protected:
+		/* Protected methods */
 			void init();
 			void alloc(size_t) throw();
 			void dealloc(void);
+			void compress(void) throw();
 			void assign(const char *);
 			void append(const char *);
 
 		public:
+		/* Public methods */
 			string() { init(); }
 			string(const string &);
 			string(const char *);
@@ -81,6 +85,11 @@ namespace exscape {
 	void string::alloc(size_t target_size) throw() {
 		std::cerr << " In alloc() for string " << this << ", current size=" << this->_size << ", target_size=" << target_size << std::endl;
 
+		if (this->_size >= target_size) {
+			std::cerr << "  _size >= target_size, not reallocating string " << this << std::endl;
+			return;
+		}
+
 		if (this->buf == NULL) { // Allocate a new string
 			this->buf = (char *)calloc(1, target_size);
 			if (this->buf != NULL) { // Allocation succeeded
@@ -108,6 +117,30 @@ namespace exscape {
 				this->_length = 0;
 				throw std::runtime_error("realloc() returned NULL");
 			}
+		}
+	}
+
+	/* "Compress" the string, i.e. realloc to use as little memory as required, length+1 bytes */
+	void string::compress(void) throw() {
+		size_t target_size = this->_length+1;
+		std::cerr << "In compress() for string " << this << ", current size=" << this->_size << ", target=" << this->_length+1 << std::endl;
+
+		if (this->buf == NULL || this->_length == 0 || this->_size == this->_length + 1) {
+			std::cerr << " no need to compress (buf==NULL, _length=0 or string already compressed), returning" << std::endl;
+			return;
+		}
+
+		char *new_buf = (char *)realloc(this->buf, target_size);
+		if (new_buf != NULL) {
+			this->buf = new_buf;
+			this->_size = target_size;
+		}
+		else {
+			free(this->buf);
+			this->buf = NULL;
+			this->_size = 0;
+			this->_length = 0;
+			throw std::runtime_error("realloc() returned NULL in compress()");
 		}
 	}
 
@@ -270,14 +303,18 @@ namespace exscape {
 	
 	/* Allows the class to be used with input stream, i.e. cin >> str */
 	std::istream &operator>>(std::istream &stream, string &str) {
-		// XXX: A way that didn't reallocate the string for every SINGLE BYTE
-		// would be preferable...
 		char tmp[2] = {0};
 		char c;
+
+		// Ugly hack to reduce realloc()s
+		str.alloc(str._size + 256);
+
 		while (stream.get(c) && c != '\n') {
 			tmp[0] = c;
 			str.append(tmp);
 		}
+
+		str.compress();
 
 		return stream;
 	}
