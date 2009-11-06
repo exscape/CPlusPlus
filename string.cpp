@@ -2,9 +2,10 @@
 #include <cstring>
 #include <cstdlib>
 #include <stdexcept>
+#include <fstream>
 
 // TODO: 
-// Rewrite operator>> to read chunks, and not call append() on single bytes
+// Fix operator>>? Only works for cin >>, and doesn't act like it's supposed to...
 // * Add substr()
 
 namespace exscape {
@@ -182,7 +183,7 @@ namespace exscape {
 	/* Internal function that appends a given C-style string to this exscape::string */
 	void string::append(const char *str) {
 		std::cerr << "In string::append() for destination string " << this << std::endl;
-		if (str == NULL)
+		if (str == NULL || strlen(str) <= 0)
 			return;
 
 		size_t new_length = this->_length + strlen(str);
@@ -301,20 +302,44 @@ namespace exscape {
 		return stream;
 	}
 	
-	/* Allows the class to be used with input stream, i.e. cin >> str */
+	/* Allows the class to be used with input streams, i.e. cin >> str */
 	std::istream &operator>>(std::istream &stream, string &str) {
-		char tmp[2] = {0};
+		// XXX: This does NOT work with *fstream. cin >> appears to be fine, but that's about it...
+		// Very ugly code, too.
+		#define TEMP_SIZE 128
+		char tmp[TEMP_SIZE] = {0};
+		char *p;
 		char c;
 
-		// Ugly hack to reduce realloc()s
-		str.alloc(str._size + 256);
+		str.dealloc();
+		str.init();
 
-		while (stream.get(c) && c != '\n') {
-			tmp[0] = c;
+		bool stop = false;
+		while (stop == false) {
+			memset(tmp, 0, TEMP_SIZE);
+			p = tmp;
+			int i = 0;
+			while (i < TEMP_SIZE - 1) {
+				stream.get(c);
+				if (c != '\n') {
+					*p++ = c;
+					i++;
+				}
+				else {
+					stop = true;
+					break;
+				}
+				if (stream.eof() || stream.fail()) {
+					stop = true;
+					break;
+				}
+			}
+
 			str.append(tmp);
 		}
 
-		str.compress();
+//		std::cerr << "STRING DUMP after operator>> is finished: " << std::endl;
+//		str.dump();
 
 		return stream;
 	}
@@ -341,6 +366,24 @@ namespace exscape {
 }
 
 int main() {
+	using std::cin;
+	using std::cout;
+	using std::endl;
+	exscape::string s;
+
+/*
+	std::fstream file("test.txt");
+	if (file.is_open()) {
+		while (!file.eof()) {
+			file >> s;
+			std::cout << s << std::endl;
+		}
+	}
+*/
+
+	cout << "Give me anything ";
+	cin >> s;
+	cout << "You gave me \"" << s << "\"." << endl;
 
 	return 0;
 }
