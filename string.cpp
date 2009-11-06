@@ -25,6 +25,7 @@ namespace exscape {
 			const char *c_str(void) const;
 			size_t length(void) const;
 			bool empty(void) const;
+			bool equals(const char *str) const;
 			string & operator+=(const char *);
 			string & operator+=(const string &);
 			string operator+(const char *);
@@ -33,6 +34,8 @@ namespace exscape {
 			string & operator=(const char *);
 			string & operator=(const string &);
 			char operator[](size_t) const;
+			bool operator==(const char *) const;
+			bool operator!=(const char *) const;
 			bool operator==(const string &) const;
 			bool operator!=(const string &) const;
 			friend std::ostream &operator<<(std::ostream &, string);
@@ -97,6 +100,7 @@ namespace exscape {
 
 	/* Copy constructor from const char * */
 	string::string(const char *in) {
+		std::cerr << "In const char* copy constructor for string " << this << std::endl;
 		if (in == NULL) {
 			this->init();
 			return;
@@ -219,23 +223,38 @@ namespace exscape {
 	}
 
 	/* Compares two strings; if their lengths don't match, compare byte for byte */
-	bool string::operator==(const string &rhs) const {
-		std::cerr << "In operator== for strings " << this << " and " << &rhs << std::endl;
-
-		if (this->_length != rhs.length())
-			return false;
-		if (this->buf == NULL && rhs.buf == NULL)
+	bool string::equals(const char *str) const {
+		std::cerr << " in equals() for " << this << " and const char *" << &str << std::endl;
+		if (this->buf == NULL && str == NULL)
 			return true;
-		else if (this->buf == NULL || rhs.buf == NULL)
+		else if (this->buf == NULL || str == NULL)
+			return false;
+		if (this->_length != strlen(str))
 			return false;
 
-		return (strcmp(this->buf, rhs.buf) == 0);
+		return (strcmp(this->buf, str) == 0);
+	}
+
+	bool string::operator==(const string &rhs) const {
+		std::cerr << "In operator== for strings " << this << " (" << this->c_str()  << ") and " << &rhs << " (" << rhs.c_str() << ")"<< std::endl;
+
+		return this->equals(rhs.c_str());
+	}
+
+	bool string::operator==(const char *str) const { 
+		std::cerr << "In operator== (const char *)" << std::endl;
+		return this->equals(str);
 	}
 
 	/* The inverse of operator== */
 	bool string::operator!=(const string &rhs) const {
 		std::cerr << "In operator!= for strings " << this << " and " << &rhs << std::endl;
 		return !(*this == rhs);
+	}
+
+	bool string::operator!=(const char *str) const { 
+		std::cerr << "In operator!= (const char *)" << std::endl;
+		return !(this->equals(str));
 	}
 
 	/* Allow the class to be used with output streams, i.e. cout << str */
@@ -265,11 +284,6 @@ namespace exscape {
 }
 
 int main() {
-	exscape::string in;
-	std::cout << "Give me something: ";
-	std::cin >> in;
-	std::cout << "You gave me \"" << in << "\"!" << std::endl;
-
 	return 0;
 }
 
@@ -336,5 +350,5 @@ char *substr(const char *str, int start, int length) {
 	}
 
 	return out;
-}
+	}
 */
