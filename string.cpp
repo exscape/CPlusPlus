@@ -4,10 +4,11 @@
 #include <stdexcept>
 #include <fstream>
 
-#define DEBUG 0
+#define DEBUG 1
 
 // TODO: 
-// Fix operator>>? Only works for cin >>, and doesn't act like it's supposed to...
+// * Fix operator>>? Only works for cin >>, and doesn't act like it's supposed to...
+// * Iterators
 
 namespace exscape {
 	class string {
@@ -36,6 +37,9 @@ namespace exscape {
 			size_t length(void) const;
 			bool empty(void) const;
 			bool equals(const char *str) const;
+			size_t find (const char *) const;
+			size_t find(const string &) const;
+			void clear(void);
 			string reverse(void) const;
 			string substr(ssize_t, ssize_t) const throw();
 			string & operator+=(const char *);
@@ -205,6 +209,32 @@ namespace exscape {
 			return false;
 
 		return (strcmp(this->buf, str) == 0);
+	}
+
+	size_t string::find (const char *str) const {
+		// The return value of -1 with an unsigned type in intentional; the same
+		// method is used by std::string.
+		if (str == NULL)
+			return -1;
+
+		size_t len = strlen(str);
+		if (len == 0 || len > this->_length)
+			return -1;
+
+		char *p = strstr(this->buf, str);
+		if (p == NULL)
+			return -1;
+		else
+			return (p - this->buf);
+	}
+
+	size_t string::find(const string &str) const {
+		return this->find(str.c_str());
+	}
+
+	void string::clear(void) {
+		this->dealloc()
+		this->init();
 	}
 
 	/* Concatenate this string with a C-style string */
@@ -380,7 +410,7 @@ namespace exscape {
 		}
 
 		if (length < 0) {
-			throw std::out_of_range("start/length combo for string::substr() resulting in a negative length");
+			throw std::out_of_range("start/length combo for string::substr() results in a negative length");
 		}
 		if (length == 0)
 			return exscape::string("");
