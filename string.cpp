@@ -4,9 +4,10 @@
 #include <stdexcept>
 #include <fstream>
 
+#define DEBUG 0
+
 // TODO: 
 // Fix operator>>? Only works for cin >>, and doesn't act like it's supposed to...
-// * Add substr()
 
 namespace exscape {
 	class string {
@@ -36,6 +37,7 @@ namespace exscape {
 			bool empty(void) const;
 			bool equals(const char *str) const;
 			string reverse(void) const;
+			string substr(ssize_t, ssize_t) const throw();
 			string & operator+=(const char *);
 			string & operator+=(const string &);
 			string operator+(const char *);
@@ -57,7 +59,7 @@ namespace exscape {
 
 	/* Initialiazes a string to an empty state */
 	void string::init(void) {
-		std::cerr << "In init() for string " << this << std::endl;
+		if (DEBUG) std::cerr << "In init() for string " << this << std::endl;
 		this->buf = NULL;
 		this->_length = 0;
 		this->_size = 0;
@@ -65,7 +67,7 @@ namespace exscape {
 
 	/* Copy constructor from const char * */
 	string::string(const char *in) {
-		std::cerr << "In const char* copy constructor for string " << this << std::endl;
+		if (DEBUG) std::cerr << "In const char* copy constructor for string " << this << std::endl;
 		this->init();
 		this->append(in);
 	}
@@ -78,16 +80,16 @@ namespace exscape {
 
 	/* Destructor */
 	string::~string() {
-		std::cerr << "In destructor for string " << this << std::endl;
+		if (DEBUG) std::cerr << "In destructor for string " << this << std::endl;
 		this->dealloc();
 	}
 
 	/* Allocates/reallocates memory for a string */
 	void string::alloc(size_t target_size) throw() {
-		std::cerr << " In alloc() for string " << this << ", current size=" << this->_size << ", target_size=" << target_size << std::endl;
+		if (DEBUG) std::cerr << " In alloc() for string " << this << ", current size=" << this->_size << ", target_size=" << target_size << std::endl;
 
 		if (this->_size >= target_size) {
-			std::cerr << "  _size >= target_size, not reallocating string " << this << std::endl;
+			if (DEBUG) std::cerr << "  _size >= target_size, not reallocating string " << this << std::endl;
 			return;
 		}
 
@@ -124,10 +126,10 @@ namespace exscape {
 	/* "Compress" the string, i.e. realloc to use as little memory as required, length+1 bytes */
 	void string::compress(void) throw() {
 		size_t target_size = this->_length+1;
-		std::cerr << "In compress() for string " << this << ", current size=" << this->_size << ", target=" << this->_length+1 << std::endl;
+		if (DEBUG) std::cerr << "In compress() for string " << this << ", current size=" << this->_size << ", target=" << this->_length+1 << std::endl;
 
 		if (this->buf == NULL || this->_length == 0 || this->_size == this->_length + 1) {
-			std::cerr << " no need to compress (buf==NULL, _length=0 or string already compressed), returning" << std::endl;
+			if (DEBUG) std::cerr << " no need to compress (buf==NULL, _length=0 or string already compressed), returning" << std::endl;
 			return;
 		}
 
@@ -147,13 +149,13 @@ namespace exscape {
 
 	/* Deallocates the memory associated with a string */
 	void string::dealloc(void) {
-		std::cerr << " In dealloc() for string " << this << std::endl;
+		if (DEBUG) std::cerr << " In dealloc() for string " << this << std::endl;
 		if (this->buf != NULL) {
-			std::cerr << "  Calling free(" << &(this->buf) << ")" << std::endl;
+			if (DEBUG) std::cerr << "  Calling free(" << &(this->buf) << ")" << std::endl;
 			free(this->buf);
 		}
 		else
-			std::cerr <<  "  Nothing to free, string was NULL" << std::endl;
+			if (DEBUG) std::cerr <<  "  Nothing to free, string was NULL" << std::endl;
 		this->_length = 0;
 		this->_size = 0;
 	}
@@ -182,8 +184,8 @@ namespace exscape {
 
 	/* Internal function that appends a given C-style string to this exscape::string */
 	void string::append(const char *str) {
-		std::cerr << "In string::append() for destination string " << this << std::endl;
-		if (str == NULL || strlen(str) <= 0)
+		if (DEBUG) std::cerr << "In string::append() for destination string " << this << std::endl;
+		if (str == NULL || strlen(str) < 0)
 			return;
 
 		size_t new_length = this->_length + strlen(str);
@@ -194,7 +196,7 @@ namespace exscape {
 
 	/* Compares two strings; if their lengths don't match, compare byte for byte */
 	bool string::equals(const char *str) const {
-		std::cerr << " in equals() for " << this << " and const char *" << &str << std::endl;
+		if (DEBUG) std::cerr << " in equals() for " << this << " and const char *" << &str << std::endl;
 		if (this->buf == NULL && str == NULL)
 			return true;
 		else if (this->buf == NULL || str == NULL)
@@ -207,21 +209,21 @@ namespace exscape {
 
 	/* Concatenate this string with a C-style string */
 	string & string::operator+=(const char *str) {
-		std::cerr << "In operator+=(const char *) for string " << this << std::endl;
+		if (DEBUG) std::cerr << "In operator+=(const char *) for string " << this << std::endl;
 		this->append(str);
 		return *this;
 	}
 
 	/* Concatenate this string with another string instance */
 	string & string::operator+=(const string &str) {
-		std::cerr << "In operator+=(const string &) for string " << this << std::endl;
+		if (DEBUG) std::cerr << "In operator+=(const string &) for string " << this << std::endl;
 		this->append(str.c_str());
 		return *this;
 	}
 
 	/* Return a new string consisting of this + a C-style string */
 	string string::operator+(const char *str) {
-		std::cerr << "In operator+(const char *) for string " << this << std::endl;
+		if (DEBUG) std::cerr << "In operator+(const char *) for string " << this << std::endl;
 		string result = *this;
 		result += str;
 		return result;
@@ -229,7 +231,7 @@ namespace exscape {
 
 	/* Return a new string consisting of this + another string instance */
 	string string::operator+(const string &str) {
-		std::cerr << "In operator+(const string &) for string " << this << std::endl;
+		if (DEBUG) std::cerr << "In operator+(const string &) for string " << this << std::endl;
 		string result = *this;
 		result += str.c_str();
 		return result;
@@ -237,7 +239,7 @@ namespace exscape {
 
 	/* Friend function, to handle cases such as "abc" + string */
 	string operator+(const char *lhs, const string &rhs) {
-		std::cerr << "In operator+(const char *, const string &)" << std::endl;
+		if (DEBUG) std::cerr << "In operator+(const char *, const string &)" << std::endl;
 		string result (lhs);
 		result += rhs;
 		return result;
@@ -267,13 +269,13 @@ namespace exscape {
 	}
 
 	bool string::operator==(const string &rhs) const {
-		std::cerr << "In operator== for strings " << this << " (" << this->c_str()  << ") and " << &rhs << " (" << rhs.c_str() << ")"<< std::endl;
+		if (DEBUG) std::cerr << "In operator== for strings " << this << " (" << this->c_str()  << ") and " << &rhs << " (" << rhs.c_str() << ")"<< std::endl;
 
 		return this->equals(rhs.c_str());
 	}
 
 	bool string::operator==(const char *str) const { 
-		std::cerr << "In operator== (const char *)" << std::endl;
+		if (DEBUG) std::cerr << "In operator== (const char *)" << std::endl;
 		return this->equals(str);
 	}
 
@@ -287,12 +289,12 @@ namespace exscape {
 
 	/* The inverse of operator== */
 	bool string::operator!=(const string &rhs) const {
-		std::cerr << "In operator!= for strings " << this << " and " << &rhs << std::endl;
+		if (DEBUG) std::cerr << "In operator!= for strings " << this << " and " << &rhs << std::endl;
 		return !(*this == rhs);
 	}
 
 	bool string::operator!=(const char *str) const { 
-		std::cerr << "In operator!= (const char *)" << std::endl;
+		if (DEBUG) std::cerr << "In operator!= (const char *)" << std::endl;
 		return !(this->equals(str));
 	}
 
@@ -338,12 +340,13 @@ namespace exscape {
 			str.append(tmp);
 		}
 
-//		std::cerr << "STRING DUMP after operator>> is finished: " << std::endl;
+//		if (DEBUG) std::cerr << "STRING DUMP after operator>> is finished: " << std::endl;
 //		str.dump();
 
 		return stream;
 	}
 
+	/* Returns a reversed copy of this string */
 	string string::reverse(void) const {
 		string rev;
 		rev.alloc(this->_length + 1);
@@ -357,85 +360,57 @@ namespace exscape {
 		return rev;
 	}
 
+	/* Returns substring of this string instance.
+	 * start: The index where to start, where 0 is the first character. If index is negative, start counting from the end, i.e. -1 is the last character.
+	 * length: The number of characters to extract, or 0 for the remainder of the string. If negative, stop copying at -length characters from the end.
+	 */
+	string string::substr(ssize_t start, ssize_t length) const throw() {
+		if (start < 0) {
+			if ((size_t)(-start) > this->_length) { // For a n-char string, -n <= start <= n must be true. The second part is checked below.
+				throw std::out_of_range("Negated negative start is greater than string length");
+			}
+			start = this->_length - (-start);
+		}
+
+		if (length == 0) {
+			length = this->_length - start;
+		}
+		else if (length < 0) {
+			length = this->_length - (-length) - start;
+		}
+
+		if (length < 0) {
+			throw std::out_of_range("start/length combo for string::substr() resulting in a negative length");
+		}
+		if (length == 0)
+			return exscape::string("");
+
+		// XXX! Is this really enough?
+		if ((size_t)(start + length) > this->_length)
+			throw std::out_of_range("start+length in string::substr() is past the boundaries of the string");
+
+		string out;
+		out.alloc(length + 1);
+		char *p = out.buf;
+		for (size_t i = start; i < (size_t)(start+length); i++) {
+			*p++ = this->buf[i];
+		}
+
+		return out;
+
+	}
+
 	void string::dump(void) const {
-		if (this->buf == NULL)
-			std::cerr << "String (null) length=" << this->_length << ", size=" << this->_size << std::endl;
-		else
-			std::cerr << "String \"" << this->buf << "\", length=" << this->_length << ", size=" << this->_size << std::endl;
+		if (this->buf == NULL) {
+			if (DEBUG) std::cerr << "String (null) length=" << this->_length << ", size=" << this->_size << std::endl;
+		}
+		else {
+			if (DEBUG) std::cerr << "String \"" << this->buf << "\", length=" << this->_length << ", size=" << this->_size << std::endl;
+		}
 	}
 }
 
 int main() {
-	using std::cin;
-	using std::cout;
-	using std::endl;
-	exscape::string s;
-
-/*
-	std::fstream file("test.txt");
-	if (file.is_open()) {
-		while (!file.eof()) {
-			file >> s;
-			std::cout << s << std::endl;
-		}
-	}
-*/
-
-	cout << "Give me anything ";
-	cin >> s;
-	cout << "You gave me \"" << s << "\"." << endl;
 
 	return 0;
 }
-
-/*
-//
-// * str: the string to work on
-// * start: the starting offset (0 for the first position, 1 for the second etc.; negative offsets count from the end of the string, -1 being the last)
-// * length: the length to extract. 0 extracts the remainder of the string; negative lengths stop at n characters from the end.
-// *
-char *substr(const char *str, int start, int length) {
-	if (str == NULL)
-		return NULL;
-	const uint32_t str_length = strlen(str);
-
-	// Calculate the starting position for negative start values
-	if (start < 0) {
-		if (-start > str_length) { // for a 5-char string, -5 <= start <= 5 must be true; the second part is checked below
-			return NULL;
-		}
-		start = str_length - (-start); // describes itself. we start at str_length minus the negated start value.
-									   //  start = str_length + start should do the same, but is less clear. 
-	}
-
-	if (length == 0) {
-		length = str_length - start; // simple enough, the length is from the staring point to the end
-	}
-	else if (length < 0) {
-		length = str_length - (-length) - start; // a bit more complicated; we need to subtract (the negated) length here, too
-	}
-
-	// If length is less than 0 even after the changes, call it quits.
-	if (length < 0) {
-		return NULL;
-	}
-
-	// Make sure we stay within the bounds of "str"
-	if (start+length > str_length || 
-		str <= ( (char *) ( (unsigned long)start + (unsigned long)length ) )) { // XXX: OBOE?
-		return NULL;
-	}
-
-	char *out = malloc(length + 1);
-	if (out == NULL)
-		return NULL;
-	memset(out, 0, length + 1);
-
-	char *p = out;
-	for (uint32_t i = start; i < start+length; i++) {
-		*p++ = str[i];
-	}
-
-	return out;
-	}
-*/
