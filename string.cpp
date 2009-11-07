@@ -23,7 +23,7 @@ namespace exscape {
 			void init();
 			void alloc(size_t) throw();
 			void dealloc(void);
-			void compress(void) throw();
+//			void compress(void) throw();
 			void assign(const char *);
 			void append(const char *);
 
@@ -128,6 +128,7 @@ namespace exscape {
 	}
 
 	/* "Compress" the string, i.e. realloc to use as little memory as required, length+1 bytes */
+/*
 	void string::compress(void) throw() {
 		size_t target_size = this->_length+1;
 		if (DEBUG) std::cerr << "In compress() for string " << this << ", current size=" << this->_size << ", target=" << this->_length+1 << std::endl;
@@ -150,6 +151,7 @@ namespace exscape {
 			throw std::runtime_error("realloc() returned NULL in compress()");
 		}
 	}
+*/
 
 	/* Deallocates the memory associated with a string */
 	void string::dealloc(void) {
@@ -233,7 +235,7 @@ namespace exscape {
 	}
 
 	void string::clear(void) {
-		this->dealloc()
+		this->dealloc();
 		this->init();
 	}
 
