@@ -11,6 +11,7 @@
 // * Iterators
 
 namespace exscape {
+	using std::cerr;
 	class string {
 		protected:
 		/* Protected member variables */
@@ -183,8 +184,7 @@ namespace exscape {
 
 	/* Set this string to str, by starting over and "appending" to it */
 	void string::assign(const char *str) {
-		this->dealloc();
-		this->init();
+		this->clear();
 		this->append(str);
 	}
 
@@ -235,6 +235,7 @@ namespace exscape {
 	}
 
 	void string::clear(void) {
+		if (DEBUG) std::cerr << "In clear for string " << this << std::endl;
 		this->dealloc();
 		this->init();
 	}
@@ -345,8 +346,7 @@ namespace exscape {
 		char *p;
 		char c;
 
-		str.dealloc();
-		str.init();
+		str.clear();
 
 		bool stop = false;
 		while (stop == false) {
