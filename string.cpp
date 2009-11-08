@@ -50,7 +50,7 @@ namespace exscape {
 			friend string operator+(const char *, const string &);
 			string & operator=(const char *);
 			string & operator=(const string &);
-			char operator[](size_t) const;
+			char &operator[](size_t) const;
 			bool operator==(const char *) const;
 			bool operator!=(const char *) const;
 			friend bool operator==(const char *, string &);
@@ -294,7 +294,7 @@ namespace exscape {
 	}
 
 	/* Return a single character, just like you'd expect from string indexing */
-	char string::operator[](size_t index) const {
+	char &string::operator[](size_t index) const {
 		if (index >= this->_length)
 			throw std::out_of_range("Index is out of bounds");
 
