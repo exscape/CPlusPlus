@@ -40,14 +40,15 @@ namespace exscape {
 		public:
 			class iterator : public std::iterator<std::bidirectional_iterator_tag, char> {
 				public:
+					/* Default constructor */
 					iterator(void) {
 						std::cerr << "In DEFAULT constructor for iterator... what do we do here?" << std::endl;
 						this->base = NULL;
 						this->p = NULL;
 						this->length = 0;
-						exit(1); // XXX!
 					}
 
+					/* Most-used constructor; used by string to pass a pointer to the string base */
 					iterator(char *in_ptr, size_t in_len = 0) { // XXX: 0 is used for end(); good idea?
 						std::cerr << "In iterator(char *, size_t)" << std::endl;
 						this->base = in_ptr;
@@ -56,6 +57,7 @@ namespace exscape {
 						if (DEBUG) std::cerr << "Hello, iterator " << this << ", pointing at " << &p << std::endl;
 					}
 
+					/* Copy constructor */
 					iterator(const iterator &rhs) {
 						std::cerr << "In iterator(iterator &)" << std::endl;
 						*this = rhs;
@@ -68,13 +70,16 @@ namespace exscape {
 							this->length = rhs.length;
 							this->base = rhs.base;
 						}
+
 						return *this;
 					}
 
+					/* Destructor */
 					~iterator() { 
 						if (DEBUG) std::cerr << "Goodbye, iterator " << this << ", pointing at " << &p << std::endl; 
 					}
 
+					/* Dereference operator, return a reference to the currently pointed-to character */
 					char & operator*(void) {
 						if (this->p >= this->base + this->length) 
 							throw std::out_of_range("Tried to dereference iterator that is out of string bounds!");
@@ -82,32 +87,38 @@ namespace exscape {
 						return *p;
 					}
 
+					/* Tests if these two iterators point to the same posision */
 					bool operator==(const iterator &rhs) const {
 						return (p == rhs.p);
 					}
 
+					/* Tests if these two iterators DON'T point to the same posision */
 					bool operator!=(const iterator &rhs) const {
 						return (p != rhs.p);
 					}
 
+					/* Move the iterator forward one step */
 					iterator &operator++() {
 						p++;
 						return *this;
 					}
 
+					/* Move the iterator forward one step */
+					iterator operator++(int) {
+						++(*this);
+						return iterator(this->p - 1, this->length);
+					}
+
+					/* Move the iterator back one step */
 					iterator &operator--() {
 						p--;
 						return *this;
 					}
 
+					/* Move the iterator back one step */
 					iterator operator--(int) {
 						p--;
 						return iterator(this->p + 1, this->length);
-					}
-
-					iterator operator++(int) {
-						++(*this);
-						return iterator(this->p - 1, this->length);
 					}
 					
 				private:
