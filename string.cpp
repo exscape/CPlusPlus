@@ -38,12 +38,36 @@ namespace exscape {
 			void append(const char *);
 
 		public:
-			// XXX: Promote this from a forward iterator
-			class iterator : public std::iterator<std::forward_iterator_tag, char> {
+			class iterator : public std::iterator<std::bidirectional_iterator_tag, char> {
 				public:
-					iterator(char *ptr) {
+					iterator(void) {
+						std::cerr << "In DEFAULT constructor for iterator... what do we do here?" << std::endl;
+						this->base = this->p = NULL;
+						this->length = 0;
+					}
+
+					iterator(char *ptr, size_t len = 0) { // XXX: 0 is used for end(); good idea?
+						std::cerr << "In iterator(char *, size_t)" << std::endl;
+						this->base = ptr;
 						this->p = ptr;
+						this->length = length;
 						if (DEBUG) std::cerr << "Hello, iterator " << this << ", pointing at " << &p << std::endl;
+					}
+
+					// XXX: 'This the right way?
+					iterator(const iterator &rhs) {
+						std::cerr << "In iterator(iterator &)" << std::endl;
+						*this = rhs;
+					}
+
+					iterator& operator=(const iterator &rhs) {
+						std::cerr << "In iterator::operator=" << std::endl;
+						if (this != &rhs) {
+							this->p = rhs.p;
+							this->length = rhs.length;
+							this->base = rhs.base;
+						}
+						return *this;
 					}
 
 					~iterator() { 
@@ -54,11 +78,11 @@ namespace exscape {
 						return *p;
 					}
 
-					bool operator==(const iterator &rhs) {
+					bool operator==(const iterator &rhs) const {
 						return (p == rhs.p); // XXX: Compare p or *p?
 					}
 
-					bool operator!=(const iterator &rhs) {
+					bool operator!=(const iterator &rhs) const {
 						return (p != rhs.p); // XXX: Compare p or *p?
 					}
 
@@ -67,23 +91,37 @@ namespace exscape {
 						p++;
 						return *this;
 					}
-/*
-					iterator &operator++(int) {
-						// XXX: Sanity checks?
-						// XXX: Warning about returning a temporary variable!
-						iterator tmp(*this);
-						++(*this);
-						return (tmp);
-					}
-*/
-					iterator& operator=(const iterator &rhs) {
-						if (this != &rhs)
-							p = rhs.p;
+
+					iterator &operator--() {
+						if (p-1 >= base)
+							p--;
+						else
+							throw std::out_of_range("Tried to move iterator out of string bounds!");
+
 						return *this;
 					}
 
+					// XXX: Test this!
+					iterator operator--(int) {
+						if (p-1 >= base)
+							p--;
+						else
+							throw std::out_of_range("Tried to move iterator out of string bounds!");
+
+						return iterator(this->p + 1, this->length);
+					}
+
+					// XXX: Test this!
+					iterator operator++(int) {
+						// XXX: Sanity checks?
+						++(*this);
+						return iterator(this->p - 1, this->length);
+					}
+					
 				private:
 					char *p; // Points to the current character
+					char *base; // The base of the string
+					size_t length; // The length, i.e. we can't go past base+length
 			}; // end string::iterator
 
 		/* Public methods */
@@ -123,11 +161,11 @@ namespace exscape {
 	}; // end string
 
 	string::iterator string::begin(void) const {
-		return iterator(this->buf);
+		return iterator(this->buf, this->_length);
 	}
 
 	string::iterator string::end(void) const {
-		return iterator(this->buf + this->_length); // buf[_length] == '\0', so one past the end
+		return iterator(this->buf + this->_length, 0); // buf[_length] == '\0', so one past the end
 	}
 
 	/* Initialiazes a string to an empty state */
@@ -512,10 +550,28 @@ namespace exscape {
 
 int main() {
 	exscape::string s = "ABCDEF";
-//	exscape::string::iterator i_e = s.end();
-//	for (exscape::string::iterator i = s.begin(); i != s.end(); ++i)
-	for (exscape::string::iterator i = s.begin(); i != s.end(); ++i)
+	exscape::string::iterator tmp = s.begin(); // Test copy
+	
+	exscape::string::iterator i(tmp); // Test copy construct
+	if (i == tmp) // test ==
+		std::cerr << "i == tmp" << std::endl;
+	else if (i != tmp) // test !=
+		std::cerr << "i != tmp!!!" << std::endl;
+	else {
+		std::cerr << "test is neither equal or not equal!" << std::cerr;
+		std::cerr << "exiting!" << std::endl;
+		exit(1);
+	}
+
+	for (i = s.begin(); i != s.end(); ++i) // Test pre-increment
 		std::cout << *i << std::endl;
+
+	i = s.begin();
+	i++; // Test post-increment
+	*i = 'X'; // test dereference/assignment
+	*i++ = 'Y'; // overwrites the above
+	*i++ = 'Z'; // we now expect "AYZDEF"
+	std::cout << *i << "(" << s << ")" << std::endl;
 
 	return 0;
 }
