@@ -8,11 +8,20 @@
 
 // TODO: 
 // * Fix operator>>? Only works for cin >>, and doesn't act like it's supposed to...
-// * Iterators
+// * Iterators:
+//
+// **********
+// Start with a Forward iterator, keep adding on functionality later!
+// **********
+//
+//  * http://www.oreillynet.com/pub/a/network/2005/11/21/what-is-iterator-in-c-plus-plus-part2.html?page=3
+//
+//  * Don't forget reverse iterators later.
 
 namespace exscape {
 	using std::cerr;
 	class string {
+		friend class iterator;
 		protected:
 		/* Protected member variables */
 			char *buf;
@@ -29,6 +38,54 @@ namespace exscape {
 			void append(const char *);
 
 		public:
+			// XXX: Promote this from a forward iterator
+			class iterator : public std::iterator<std::forward_iterator_tag, char> {
+				public:
+					iterator(char *ptr) {
+						this->p = ptr;
+						if (DEBUG) std::cerr << "Hello, iterator " << this << ", pointing at " << &p << std::endl;
+					}
+
+					~iterator() { 
+						if (DEBUG) std::cerr << "Goodbye, iterator " << this << ", pointing at " << &p << std::endl; 
+					}
+
+					char & operator*(void) {
+						return *p;
+					}
+
+					bool operator==(const iterator &rhs) {
+						return (p == rhs.p); // XXX: Compare p or *p?
+					}
+
+					bool operator!=(const iterator &rhs) {
+						return (p != rhs.p); // XXX: Compare p or *p?
+					}
+
+					iterator &operator++() {
+						// XXX: Sanity checks?
+						p++;
+						return *this;
+					}
+/*
+					iterator &operator++(int) {
+						// XXX: Sanity checks?
+						// XXX: Warning about returning a temporary variable!
+						iterator tmp(*this);
+						++(*this);
+						return (tmp);
+					}
+*/
+					iterator& operator=(const iterator &rhs) {
+						if (this != &rhs)
+							p = rhs.p;
+						return *this;
+					}
+
+				private:
+					char *p; // Points to the current character
+			}; // end string::iterator
+
 		/* Public methods */
 			string() { init(); }
 			string(const string &);
@@ -60,7 +117,18 @@ namespace exscape {
 			friend std::ostream &operator<<(std::ostream &, string);
 			friend std::istream &operator>>(std::istream &, string &);
 			void dump(void) const; // XXX: Debugging
-	};
+			string::iterator begin(void) const;
+			string::iterator end(void) const;
+
+	}; // end string
+
+	string::iterator string::begin(void) const {
+		return iterator(this->buf);
+	}
+
+	string::iterator string::end(void) const {
+		return iterator(this->buf + this->_length); // buf[_length] == '\0', so one past the end
+	}
 
 	/* Initialiazes a string to an empty state */
 	void string::init(void) {
@@ -443,6 +511,11 @@ namespace exscape {
 }
 
 int main() {
+	exscape::string s = "ABCDEF";
+//	exscape::string::iterator i_e = s.end();
+//	for (exscape::string::iterator i = s.begin(); i != s.end(); ++i)
+	for (exscape::string::iterator i = s.begin(); i != s.end(); ++i)
+		std::cout << *i << std::endl;
 
 	return 0;
 }
