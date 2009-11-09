@@ -42,19 +42,20 @@ namespace exscape {
 				public:
 					iterator(void) {
 						std::cerr << "In DEFAULT constructor for iterator... what do we do here?" << std::endl;
-						this->base = this->p = NULL;
+						this->base = NULL;
+						this->p = NULL;
 						this->length = 0;
+						exit(1); // XXX!
 					}
 
-					iterator(char *ptr, size_t len = 0) { // XXX: 0 is used for end(); good idea?
+					iterator(char *in_ptr, size_t in_len = 0) { // XXX: 0 is used for end(); good idea?
 						std::cerr << "In iterator(char *, size_t)" << std::endl;
-						this->base = ptr;
-						this->p = ptr;
-						this->length = length;
+						this->base = in_ptr;
+						this->p = in_ptr;
+						this->length = in_len;
 						if (DEBUG) std::cerr << "Hello, iterator " << this << ", pointing at " << &p << std::endl;
 					}
 
-					// XXX: 'This the right way?
 					iterator(const iterator &rhs) {
 						std::cerr << "In iterator(iterator &)" << std::endl;
 						*this = rhs;
@@ -75,45 +76,36 @@ namespace exscape {
 					}
 
 					char & operator*(void) {
+						if (this->p >= this->base + this->length) 
+							throw std::out_of_range("Tried to dereference iterator that is out of string bounds!");
+
 						return *p;
 					}
 
 					bool operator==(const iterator &rhs) const {
-						return (p == rhs.p); // XXX: Compare p or *p?
+						return (p == rhs.p);
 					}
 
 					bool operator!=(const iterator &rhs) const {
-						return (p != rhs.p); // XXX: Compare p or *p?
+						return (p != rhs.p);
 					}
 
 					iterator &operator++() {
-						// XXX: Sanity checks?
 						p++;
 						return *this;
 					}
 
 					iterator &operator--() {
-						if (p-1 >= base)
-							p--;
-						else
-							throw std::out_of_range("Tried to move iterator out of string bounds!");
-
+						p--;
 						return *this;
 					}
 
-					// XXX: Test this!
 					iterator operator--(int) {
-						if (p-1 >= base)
-							p--;
-						else
-							throw std::out_of_range("Tried to move iterator out of string bounds!");
-
+						p--;
 						return iterator(this->p + 1, this->length);
 					}
 
-					// XXX: Test this!
 					iterator operator++(int) {
-						// XXX: Sanity checks?
 						++(*this);
 						return iterator(this->p - 1, this->length);
 					}
@@ -168,7 +160,7 @@ namespace exscape {
 		return iterator(this->buf + this->_length, 0); // buf[_length] == '\0', so one past the end
 	}
 
-	/* Initialiazes a string to an empty state */
+	/* Initializes a string to an empty state */
 	void string::init(void) {
 		if (DEBUG) std::cerr << "In init() for string " << this << std::endl;
 		this->buf = NULL;
@@ -562,7 +554,6 @@ int main() {
 		std::cerr << "exiting!" << std::endl;
 		exit(1);
 	}
-
 	for (i = s.begin(); i != s.end(); ++i) // Test pre-increment
 		std::cout << *i << std::endl;
 
@@ -570,7 +561,12 @@ int main() {
 	i++; // Test post-increment
 	*i = 'X'; // test dereference/assignment
 	*i++ = 'Y'; // overwrites the above
-	*i++ = 'Z'; // we now expect "AYZDEF"
+	*i++ = 'Z';
+	if (s != "AYZDEF") {
+		std::cerr << "Something went wrong!" << std::endl;
+		exit(1);
+	}
+
 	std::cout << *i << "(" << s << ")" << std::endl;
 
 	return 0;
