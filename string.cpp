@@ -39,11 +39,8 @@ namespace exscape {
 				friend iterator operator+(const int, iterator);
 				friend iterator operator-(const int, iterator);
 					/* Default constructor */
-					iterator(void) {
+					iterator(void) : base(NULL), p(NULL), length(0) {
 						std::cerr << "In DEFAULT constructor for iterator... what do we do here?" << std::endl;
-						this->base = NULL;
-						this->p = NULL;
-						this->length = 0;
 						exit(1); // XXX
 					}
 
@@ -71,11 +68,8 @@ namespace exscape {
 					}
 
 					/* Most-used constructor; used by string to pass a pointer to the string base */
-					iterator(char *in_ptr, size_t in_len = 0) { // XXX: 0 is used for end(); good idea?
+					iterator(char *in_ptr, size_t in_len = 0) : base(in_ptr), p(in_ptr), length(in_len) {
 						std::cerr << "In iterator(char *, size_t)" << std::endl;
-						this->base = in_ptr;
-						this->p = in_ptr;
-						this->length = in_len;
 						if (DEBUG) std::cerr << "Hello, iterator (in iterator (char *, size_t)) " << this << ", pointing at " << &p << std::endl;
 					}
 
