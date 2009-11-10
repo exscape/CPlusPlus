@@ -10,11 +10,6 @@
 // TODO: 
 // * Fix operator>>? Only works for cin >>, and doesn't act like it's supposed to...
 // * Iterators:
-//
-// **********
-// Start with a Forward iterator, keep adding on functionality later!
-// **********
-//
 //  * http://www.oreillynet.com/pub/a/network/2005/11/21/what-is-iterator-in-c-plus-plus-part2.html?page=3
 //
 //  * Don't forget reverse iterators later.
@@ -41,6 +36,8 @@ namespace exscape {
 		public:
 			class iterator : public std::iterator<std::random_access_iterator_tag, char> {
 				public:
+				friend iterator operator+(const int, iterator);
+				friend iterator operator-(const int, iterator);
 					/* Default constructor */
 					iterator(void) {
 						std::cerr << "In DEFAULT constructor for iterator... what do we do here?" << std::endl;
@@ -157,18 +154,18 @@ namespace exscape {
 						return *this;
 					}
 
-					const iterator operator+(const int offset) { // XXX: const return value?
-						iterator out = *this;
+					iterator operator+(const int offset) {
+						iterator out (*this);
 						out += offset;
 						return out;
 					}
 
-					const iterator operator-(const int offset) { // XXX: const return value?
-						iterator out = *this;
+					iterator operator-(const int offset) { 
+						iterator out = (*this);
 						out -= offset;
 						return out;
 					}
-					
+
 					char &operator[](const int offset) {
 						if (this->p + offset >= this->base + this->length || // Pointer is beyond the string boundaries
 								this->p + offset < this->base) // Pointer points to something before the string begins
@@ -182,6 +179,16 @@ namespace exscape {
 					char *base; // The base of the string
 					size_t length; // The length, i.e. we can't go past base+length
 			}; // end string::iterator
+
+		friend iterator operator+(const int n, iterator out) {
+			out += n;
+			return out;
+		}
+
+		friend iterator operator-(const int n, iterator out) {
+			out -= n;
+			return out;
+		}
 
 		/* Public methods */
 			string() { init(); }
@@ -634,7 +641,8 @@ int main() {
 		exit(1);
 	}
 
-	std::cout << *(i + 1) << "(" << s << ")" << std::endl;
+	std::cout << "*(i + 1):" << *(i + 1) << "(" << s << ")" << std::endl;
+	std::cout << "*(1 + i):" << *(1 + i) << "(" << s << ")" << std::endl;
 
 	return 0;
 }
