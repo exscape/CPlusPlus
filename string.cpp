@@ -13,6 +13,7 @@
 //  * http://www.oreillynet.com/pub/a/network/2005/11/21/what-is-iterator-in-c-plus-plus-part2.html?page=3
 //
 //  * Don't forget reverse iterators later.
+//  XXX: Is the bounds checking in string:iterator correct?
 
 namespace exscape {
 	using std::cerr;
@@ -70,7 +71,7 @@ namespace exscape {
 					/* Most-used constructor; used by string to pass a pointer to the string base */
 					iterator(char *in_ptr, size_t in_len = 0) : base(in_ptr), p(in_ptr), length(in_len) {
 						std::cerr << "In iterator(char *, size_t)" << std::endl;
-						if (DEBUG) std::cerr << "Hello, iterator (in iterator (char *, size_t)) " << this << ", pointing at " << &p << std::endl;
+						if (DEBUG) std::cerr << "Hello, iterator (in iterator (char *, size_t)) " << this << ", len=" << this->length << ", pointing at " << &p << std::endl;
 					}
 
 					/* Tests if these two iterators point to the same position */
@@ -114,6 +115,14 @@ namespace exscape {
 							throw std::out_of_range("Tried to dereference iterator that is out of string bounds!");
 
 						return p;
+					}
+
+					char &operator[](const int offset) {
+						if (this->p + offset >= this->base + this->length || // Pointer is beyond the string boundaries
+								this->p + offset < this->base) // Pointer points to something before the string begins
+							throw std::out_of_range("Tried to dereference iterator that is out of string bounds!");
+
+						return *(p + offset);
 					}
 
 					/* Move the iterator forward one step */
@@ -166,17 +175,9 @@ namespace exscape {
 						return p - rhs.p;
 					}
 
-					char &operator[](const int offset) {
-						if (this->p + offset >= this->base + this->length || // Pointer is beyond the string boundaries
-								this->p + offset < this->base) // Pointer points to something before the string begins
-							throw std::out_of_range("Tried to dereference iterator that is out of string bounds!");
-
-						return *(p + offset);
-					}
-
 				private:
-					char *p; // Points to the current character
 					char *base; // The base of the string
+					char *p; // Points to the current character
 					size_t length; // The length, i.e. we can't go past base+length
 			}; // end string::iterator
 
@@ -202,6 +203,7 @@ namespace exscape {
 			size_t find (const char *) const;
 			size_t find(const string &) const;
 			void clear(void);
+			void resize(size_t target_size);
 			string reverse(void) const;
 			string substr(ssize_t, ssize_t) const throw();
 			string & operator+=(const char *);
@@ -259,6 +261,14 @@ namespace exscape {
 	string::~string() {
 		if (DEBUG) std::cerr << "In destructor for string " << this << std::endl;
 		this->dealloc();
+	}
+
+	/* Public, friendlier interface to alloc() */
+	void string::resize(size_t target_size) {
+		if (DEBUG) std::cerr << "In resize() for string " << this << ", current size=" << this->_size << ", target_size=" << target_size << std::endl;
+		if (this->_size >= target_size)
+			return;
+		this->alloc(target_size);
 	}
 
 	/* Allocates/reallocates memory for a string */
@@ -615,7 +625,6 @@ namespace exscape {
 }
 
 int main() {
-/*
 	exscape::string s = "FABECDA";
 	exscape::string::iterator i = s.begin();
 	for (i = s.begin(); i != s.end(); ++i)
@@ -627,13 +636,21 @@ int main() {
 	std::cout << "Count of A: " << std::count(s.begin(), s.end(), 'A') << std::endl;
 	std::cout << "Count of B: " << std::count(s.begin(), s.end(), 'B') << std::endl;
 	std::cout << "Count of X: " << std::count(s.begin(), s.end(), 'X') << std::endl;
+/*
+	exscape::string src = "ABCDEF";
+	exscape::string dest;
+//	dest = "             "; 
+	dest.resize(src.length());
+	std::copy(src.begin(), src.end(), dest.begin());
+	std::cout << dest << std::endl;
 */
-
+	/*
 	// Permutation testing
 	exscape::string perm = "012";
 	do {
 		std::cout << perm << std::endl;
 	}
-	while (std::next_permutation(perm.begin(), perm.end()-1));
+	while (std::next_permutation(perm.begin(), perm.end()));
+	*/
 	return 0;
 }
