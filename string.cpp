@@ -19,6 +19,7 @@ namespace exscape {
 	using std::cerr;
 	class string {
 		friend class iterator;
+		typedef ptrdiff_t difference_type;
 		protected:
 		/* Protected member variables */
 			char *buf;
@@ -171,7 +172,7 @@ namespace exscape {
 						return out;
 					}
 
-					long operator-(iterator &rhs) {
+					difference_type operator-(iterator &rhs) {
 						return p - rhs.p;
 					}
 
