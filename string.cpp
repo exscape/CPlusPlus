@@ -621,54 +621,25 @@ namespace exscape {
 }
 
 int main() {
-	/*
-	exscape::string s = "ABCDEA";
-	exscape::string::iterator tmp = s.begin(); // Test copy
-	
-	exscape::string::iterator i(tmp); // Test copy construct
-	if (i == tmp) // test ==
-		std::cerr << "i == tmp" << std::endl;
-	else if (i != tmp) // test !=
-		std::cerr << "i != tmp!!!" << std::endl;
-	else {
-		std::cerr << "test is neither equal or not equal!" << std::cerr;
-		std::cerr << "exiting!" << std::endl;
-		exit(1);
-	}
-	for (i = s.begin(); i != s.end(); ++i) // Test pre-increment
+/*
+	exscape::string s = "FABECDA";
+	exscape::string::iterator i = s.begin();
+	for (i = s.begin(); i != s.end(); ++i)
 		std::cout << *i << std::endl;
-
-	i = s.begin();
-	i++; // Test post-increment
-	*i = 'X'; // test dereference/assignment
-	*i++ = 'Y'; // overwrites the above
-	*i++ = 'Z';
-	if (s != "AYZDEA") {
-		std::cerr << "Something went wrong!" << std::endl;
-		exit(1);
-	}
-	exscape::string::iterator i2(i);
-	++i;
-	if (i > i2)
-		std::cerr << "i > i2" << std::endl;
-	else
-		std::cerr << "i <= i2" << std::endl;
-
-	std::cout << "*(i + 1):" << *(i + 1) << "(" << s << ")" << std::endl;
-	std::cout << "*(1 + i):" << *(1 + i) << "(" << s << ")" << std::endl;
 
 	std::sort(s.begin(), s.end());
 	std::cout << "Sorted: " << s << std::endl;
 
 	std::cout << "Count of A: " << std::count(s.begin(), s.end(), 'A') << std::endl;
 	std::cout << "Count of B: " << std::count(s.begin(), s.end(), 'B') << std::endl;
+	std::cout << "Count of X: " << std::count(s.begin(), s.end(), 'X') << std::endl;
 */
 
 	// Permutation testing
 	exscape::string perm = "012";
-	while (next_permutation(perm.begin(), perm.end())) {
+	do {
 		std::cout << perm << std::endl;
 	}
-
+	while (std::next_permutation(perm.begin(), perm.end()-1));
 	return 0;
 }
