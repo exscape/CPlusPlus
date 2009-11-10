@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <stdexcept>
 #include <fstream>
+#include <string> /* For debugging and comparing functionality */
 
 #define DEBUG 1
 
@@ -38,7 +39,7 @@ namespace exscape {
 			void append(const char *);
 
 		public:
-			class iterator : public std::iterator<std::bidirectional_iterator_tag, char> {
+			class iterator : public std::iterator<std::random_access_iterator_tag, char> {
 				public:
 					/* Default constructor */
 					iterator(void) {
@@ -48,13 +49,9 @@ namespace exscape {
 						this->length = 0;
 					}
 
-					/* Most-used constructor; used by string to pass a pointer to the string base */
-					iterator(char *in_ptr, size_t in_len = 0) { // XXX: 0 is used for end(); good idea?
-						std::cerr << "In iterator(char *, size_t)" << std::endl;
-						this->base = in_ptr;
-						this->p = in_ptr;
-						this->length = in_len;
-						if (DEBUG) std::cerr << "Hello, iterator " << this << ", pointing at " << &p << std::endl;
+					/* Destructor */
+					~iterator() { 
+						if (DEBUG) std::cerr << "Goodbye, iterator " << this << ", pointing at " << &p << std::endl; 
 					}
 
 					/* Copy constructor */
@@ -74,17 +71,13 @@ namespace exscape {
 						return *this;
 					}
 
-					/* Destructor */
-					~iterator() { 
-						if (DEBUG) std::cerr << "Goodbye, iterator " << this << ", pointing at " << &p << std::endl; 
-					}
-
-					/* Dereference operator, return a reference to the currently pointed-to character */
-					char & operator*(void) {
-						if (this->p >= this->base + this->length) 
-							throw std::out_of_range("Tried to dereference iterator that is out of string bounds!");
-
-						return *p;
+					/* Most-used constructor; used by string to pass a pointer to the string base */
+					iterator(char *in_ptr, size_t in_len = 0) { // XXX: 0 is used for end(); good idea?
+						std::cerr << "In iterator(char *, size_t)" << std::endl;
+						this->base = in_ptr;
+						this->p = in_ptr;
+						this->length = in_len;
+						if (DEBUG) std::cerr << "Hello, iterator " << this << ", pointing at " << &p << std::endl;
 					}
 
 					/* Tests if these two iterators point to the same posision */
@@ -95,6 +88,39 @@ namespace exscape {
 					/* Tests if these two iterators DON'T point to the same posision */
 					bool operator!=(const iterator &rhs) const {
 						return (p != rhs.p);
+					}
+
+					bool operator<(const iterator &rhs) const {
+						return (p < rhs.p); // XXX: Backwards or not?
+					}
+
+					bool operator>(const iterator &rhs) const {
+						return (p > rhs.p); // XXX: Backwards or not?
+					}
+
+					bool operator<=(const iterator &rhs) const {
+						return (p < rhs.p || p == rhs.p); // XXX: Backwards or not?
+					}
+
+					bool operator>=(const iterator &rhs) const {
+						return (p > rhs.p || p == rhs.p); // XXX: Backwards or not?
+					}
+
+					/* Dereference operator, return a reference to the currently pointed-to character */
+					char &operator*(void) {
+						if (this->p >= this->base + this->length || // Pointer is beyond the string boundaries
+								this->p < this->base) // Pointer points to something before the string begins
+							throw std::out_of_range("Tried to dereference iterator that is out of string bounds!");
+
+						return *p;
+					}
+
+					char *operator->(void) {
+						if (this->p >= this->base + this->length || // Pointer is beyond the string boundaries
+								this->p < this->base) // Pointer points to something before the string begins
+							throw std::out_of_range("Tried to dereference iterator that is out of string bounds!");
+
+						return p;
 					}
 
 					/* Move the iterator forward one step */
@@ -120,7 +146,37 @@ namespace exscape {
 						p--;
 						return iterator(this->p + 1, this->length);
 					}
+
+					iterator &operator+=(const int offset) {
+						p += offset;
+						return *this;
+					}
+
+					iterator &operator-=(const int offset) {
+						p -= offset;
+						return *this;
+					}
+
+					const iterator operator+(const int offset) { // XXX: const return value?
+						iterator out = *this;
+						out += offset;
+						return out;
+					}
+
+					const iterator operator-(const int offset) { // XXX: const return value?
+						iterator out = *this;
+						out -= offset;
+						return out;
+					}
 					
+					char &operator[](const int offset) {
+						if (this->p + offset >= this->base + this->length || // Pointer is beyond the string boundaries
+								this->p + offset < this->base) // Pointer points to something before the string begins
+							throw std::out_of_range("Tried to dereference iterator that is out of string bounds!");
+
+						return *(p + offset);
+					}
+
 				private:
 					char *p; // Points to the current character
 					char *base; // The base of the string
@@ -578,7 +634,7 @@ int main() {
 		exit(1);
 	}
 
-	std::cout << *i << "(" << s << ")" << std::endl;
+	std::cout << *(i + 1) << "(" << s << ")" << std::endl;
 
 	return 0;
 }
