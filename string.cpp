@@ -73,12 +73,12 @@ namespace exscape {
 						if (DEBUG) std::cerr << "Hello, iterator (in iterator (char *, size_t)) " << this << ", pointing at " << &p << std::endl;
 					}
 
-					/* Tests if these two iterators point to the same posision */
+					/* Tests if these two iterators point to the same position */
 					bool operator==(const iterator &rhs) const {
 						return (p == rhs.p);
 					}
 
-					/* Tests if these two iterators DON'T point to the same posision */
+					/* Tests if these two iterators DON'T point to the same position */
 					bool operator!=(const iterator &rhs) const {
 						return (p != rhs.p);
 					}
