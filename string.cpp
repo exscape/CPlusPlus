@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <stdexcept>
 #include <fstream>
-#include <string> /* For debugging and comparing functionality */
+#include <algorithm>
 
 #define DEBUG 1
 
@@ -44,6 +44,7 @@ namespace exscape {
 						this->base = NULL;
 						this->p = NULL;
 						this->length = 0;
+						exit(1); // XXX
 					}
 
 					/* Destructor */
@@ -58,12 +59,13 @@ namespace exscape {
 					}
 
 					iterator& operator=(const iterator &rhs) {
-						std::cerr << "In iterator::operator=" << std::endl;
+						if (DEBUG) std::cerr << "In iterator::operator=" << std::endl;
 						if (this != &rhs) {
 							this->p = rhs.p;
 							this->length = rhs.length;
 							this->base = rhs.base;
 						}
+						if (DEBUG) std::cerr << "Hello, iterator (in operator=) " << this << ", pointing at " << &p << std::endl;
 
 						return *this;
 					}
@@ -74,7 +76,7 @@ namespace exscape {
 						this->base = in_ptr;
 						this->p = in_ptr;
 						this->length = in_len;
-						if (DEBUG) std::cerr << "Hello, iterator " << this << ", pointing at " << &p << std::endl;
+						if (DEBUG) std::cerr << "Hello, iterator (in iterator (char *, size_t)) " << this << ", pointing at " << &p << std::endl;
 					}
 
 					/* Tests if these two iterators point to the same posision */
@@ -164,6 +166,10 @@ namespace exscape {
 						iterator out = (*this);
 						out -= offset;
 						return out;
+					}
+
+					long operator-(iterator &rhs) {
+						return p - rhs.p;
 					}
 
 					char &operator[](const int offset) {
@@ -615,7 +621,8 @@ namespace exscape {
 }
 
 int main() {
-	exscape::string s = "ABCDEF";
+	/*
+	exscape::string s = "ABCDEA";
 	exscape::string::iterator tmp = s.begin(); // Test copy
 	
 	exscape::string::iterator i(tmp); // Test copy construct
@@ -636,13 +643,32 @@ int main() {
 	*i = 'X'; // test dereference/assignment
 	*i++ = 'Y'; // overwrites the above
 	*i++ = 'Z';
-	if (s != "AYZDEF") {
+	if (s != "AYZDEA") {
 		std::cerr << "Something went wrong!" << std::endl;
 		exit(1);
 	}
+	exscape::string::iterator i2(i);
+	++i;
+	if (i > i2)
+		std::cerr << "i > i2" << std::endl;
+	else
+		std::cerr << "i <= i2" << std::endl;
 
 	std::cout << "*(i + 1):" << *(i + 1) << "(" << s << ")" << std::endl;
 	std::cout << "*(1 + i):" << *(1 + i) << "(" << s << ")" << std::endl;
+
+	std::sort(s.begin(), s.end());
+	std::cout << "Sorted: " << s << std::endl;
+
+	std::cout << "Count of A: " << std::count(s.begin(), s.end(), 'A') << std::endl;
+	std::cout << "Count of B: " << std::count(s.begin(), s.end(), 'B') << std::endl;
+*/
+
+	// Permutation testing
+	exscape::string perm = "012";
+	while (next_permutation(perm.begin(), perm.end())) {
+		std::cout << perm << std::endl;
+	}
 
 	return 0;
 }
