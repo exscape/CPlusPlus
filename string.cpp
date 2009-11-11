@@ -1,9 +1,8 @@
-#include <iostream>
-#include <cstring>
-#include <cstdlib>
-#include <stdexcept>
-#include <fstream>
-#include <algorithm>
+#include <iostream> /* stream support for operators << and >>, plus debugging */
+#include <cstring> /* strcat(), etc */
+#include <cstdlib> /* malloc(), realloc(), free() */
+#include <stdexcept> /* std::out_of_range */
+#include <algorithm> /* compatibility testing only */
 
 #define DEBUG 1
 
@@ -14,6 +13,7 @@
 //
 //  * Don't forget reverse iterators later.
 //  XXX: Is the bounds checking in string:iterator correct?
+//  * Move stuff to string.hpp, and move main() to some other file, and create a Makefile for it all
 
 namespace exscape {
 	using std::cerr;
@@ -36,7 +36,7 @@ namespace exscape {
 			void append(const char *);
 
 		public:
-			class iterator : public std::iterator<std::random_access_iterator_tag, char> {
+			class iterator : public std::iterator<std::random_access_iterator_tag, char, difference_type> {
 				public:
 				friend iterator operator+(const int, iterator);
 				friend iterator operator-(const int, iterator);
@@ -209,8 +209,8 @@ namespace exscape {
 			string substr(ssize_t, ssize_t) const throw();
 			string & operator+=(const char *);
 			string & operator+=(const string &);
-			string operator+(const char *);
-			string operator+(const string &);
+			string operator+(const char *) const;
+			string operator+(const string &) const;
 			friend string operator+(const char *, const string &);
 			string & operator=(const char *);
 			string & operator=(const string &);
@@ -266,6 +266,7 @@ namespace exscape {
 
 	/* Public, friendlier interface to alloc() */
 	void string::resize(size_t target_size) {
+		target_size += 1; // NUL
 		if (DEBUG) std::cerr << "In resize() for string " << this << ", current size=" << this->_size << ", target_size=" << target_size << std::endl;
 		if (this->_size >= target_size)
 			return;
@@ -438,7 +439,7 @@ namespace exscape {
 	}
 
 	/* Return a new string consisting of this + a C-style string */
-	string string::operator+(const char *str) {
+	string string::operator+(const char *str) const {
 		if (DEBUG) std::cerr << "In operator+(const char *) for string " << this << std::endl;
 		string result = *this;
 		result += str;
@@ -446,7 +447,7 @@ namespace exscape {
 	}
 
 	/* Return a new string consisting of this + another string instance */
-	string string::operator+(const string &str) {
+	string string::operator+(const string &str) const {
 		if (DEBUG) std::cerr << "In operator+(const string &) for string " << this << std::endl;
 		string result = *this;
 		result += str.c_str();
@@ -626,6 +627,7 @@ namespace exscape {
 }
 
 int main() {
+/*
 	exscape::string s = "FABECDA";
 	exscape::string::iterator i = s.begin();
 	for (i = s.begin(); i != s.end(); ++i)
@@ -634,17 +636,18 @@ int main() {
 	std::sort(s.begin(), s.end());
 	std::cout << "Sorted: " << s << std::endl;
 
-	std::cout << "Count of A: " << std::count(s.begin(), s.end(), 'A') << std::endl;
-	std::cout << "Count of B: " << std::count(s.begin(), s.end(), 'B') << std::endl;
-	std::cout << "Count of X: " << std::count(s.begin(), s.end(), 'X') << std::endl;
-/*
+	std::cout << "Count of A in \"" << s << "\": " << std::count(s.begin(), s.end(), 'A') << std::endl;
+	std::cout << "Count of B in \"" << s << "\": " << std::count(s.begin(), s.end(), 'B') << std::endl;
+	std::cout << "Count of X in \"" << s << "\": " << std::count(s.begin(), s.end(), 'X') << std::endl;
+*/
+
 	exscape::string src = "ABCDEF";
 	exscape::string dest;
 //	dest = "             "; 
 	dest.resize(src.length());
 	std::copy(src.begin(), src.end(), dest.begin());
 	std::cout << dest << std::endl;
-*/
+
 	/*
 	// Permutation testing
 	exscape::string perm = "012";
