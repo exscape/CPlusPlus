@@ -2,9 +2,7 @@
 #include <cstring> /* strcat(), etc */
 #include <cstdlib> /* malloc(), realloc(), free() */
 #include <stdexcept> /* std::out_of_range */
-#include <algorithm> /* compatibility testing only */
-
-#define DEBUG 1
+#include "string.hpp"
 
 // TODO: 
 // * Fix operator>>? Only works for cin >>, and doesn't act like it's supposed to...
@@ -13,228 +11,20 @@
 //
 //  * Don't forget reverse iterators later.
 //  XXX: Is the bounds checking in string:iterator correct?
-//  * Move stuff to string.hpp, and move main() to some other file, and create a Makefile for it all
+//  * Implement comparison operators, i.e. <, >, <=, >=
 
 namespace exscape {
 	using std::cerr;
-	class string {
-		friend class iterator;
-		typedef ptrdiff_t difference_type;
-		protected:
-		/* Protected member variables */
-			char *buf;
-			size_t _length; // string length
-			size_t _size; // bytes allocated
 
-		protected:
-		/* Protected methods */
-			void init();
-			void alloc(size_t) throw();
-			void dealloc(void);
-//			void compress(void) throw();
-			void assign(const char *);
-			void append(const char *);
+	/*
+	 *
+	 * Start of string implementation
+	 *
+	 */
 
-		public:
-			class iterator : public std::iterator<std::random_access_iterator_tag, char, difference_type> {
-				public:
-				friend iterator operator+(const int, iterator);
-				friend iterator operator-(const int, iterator);
-					/* Default constructor */
-					iterator(void) : base(NULL), p(NULL), length(0) {
-						std::cerr << "In DEFAULT constructor for iterator... what do we do here?" << std::endl;
-						exit(1); // XXX
-					}
-
-					/* Destructor */
-					~iterator() { 
-						if (DEBUG) std::cerr << "Goodbye, iterator " << this << ", pointing at " << &p << std::endl; 
-					}
-
-					/* Copy constructor */
-					iterator(const iterator &rhs) {
-						std::cerr << "In iterator(iterator &)" << std::endl;
-						*this = rhs;
-					}
-
-					iterator& operator=(const iterator &rhs) {
-						if (DEBUG) std::cerr << "In iterator::operator=" << std::endl;
-						if (this != &rhs) {
-							this->p = rhs.p;
-							this->length = rhs.length;
-							this->base = rhs.base;
-						}
-						if (DEBUG) std::cerr << "Hello, iterator (in operator=) " << this << ", pointing at " << &p << std::endl;
-
-						return *this;
-					}
-
-					/* Most-used constructor; used by string to pass a pointer to the string base */
-					iterator(char *in_ptr, size_t in_len = 0) : base(in_ptr), p(in_ptr), length(in_len) {
-						std::cerr << "In iterator(char *, size_t)" << std::endl;
-						if (DEBUG) std::cerr << "Hello, iterator (in iterator (char *, size_t)) " << this << ", len=" << this->length << ", pointing at " << &p << std::endl;
-					}
-
-					/* Tests if these two iterators point to the same position */
-					bool operator==(const iterator &rhs) const {
-						return (p == rhs.p);
-					}
-
-					/* Tests if these two iterators DON'T point to the same position */
-					bool operator!=(const iterator &rhs) const {
-						return (p != rhs.p);
-					}
-
-					bool operator<(const iterator &rhs) const {
-						return (p < rhs.p); // XXX: Backwards or not?
-					}
-
-					bool operator>(const iterator &rhs) const {
-						return (p > rhs.p); // XXX: Backwards or not?
-					}
-
-					bool operator<=(const iterator &rhs) const {
-						return (p < rhs.p || p == rhs.p); // XXX: Backwards or not?
-					}
-
-					bool operator>=(const iterator &rhs) const {
-						return (p > rhs.p || p == rhs.p); // XXX: Backwards or not?
-					}
-
-					/* Dereference operator, return a reference to the currently pointed-to character */
-					char &operator*(void) {
-						if (this->p >= this->base + this->length || // Pointer is beyond the string boundaries
-								this->p < this->base) // Pointer points to something before the string begins
-							throw std::out_of_range("Tried to dereference iterator that is out of string bounds!");
-
-						return *p;
-					}
-
-					char *operator->(void) {
-						if (this->p >= this->base + this->length || // Pointer is beyond the string boundaries
-								this->p < this->base) // Pointer points to something before the string begins
-							throw std::out_of_range("Tried to dereference iterator that is out of string bounds!");
-
-						return p;
-					}
-
-					char &operator[](const int offset) {
-						if (this->p + offset >= this->base + this->length || // Pointer is beyond the string boundaries
-								this->p + offset < this->base) // Pointer points to something before the string begins
-							throw std::out_of_range("Tried to dereference iterator that is out of string bounds!");
-
-						return *(p + offset);
-					}
-
-					/* Move the iterator forward one step */
-					iterator &operator++() {
-						p++;
-						return *this;
-					}
-
-					/* Move the iterator forward one step */
-					iterator operator++(int) {
-						++(*this);
-						return iterator(this->p - 1, this->length);
-					}
-
-					/* Move the iterator back one step */
-					iterator &operator--() {
-						p--;
-						return *this;
-					}
-
-					/* Move the iterator back one step */
-					iterator operator--(int) {
-						p--;
-						return iterator(this->p + 1, this->length);
-					}
-
-					iterator &operator+=(const int offset) {
-						p += offset;
-						return *this;
-					}
-
-					iterator &operator-=(const int offset) {
-						p -= offset;
-						return *this;
-					}
-
-					iterator operator+(const int offset) {
-						iterator out (*this);
-						out += offset;
-						return out;
-					}
-
-					iterator operator-(const int offset) { 
-						iterator out = (*this);
-						out -= offset;
-						return out;
-					}
-
-					difference_type operator-(iterator &rhs) {
-						return p - rhs.p;
-					}
-
-				private:
-					char *base; // The base of the string
-					char *p; // Points to the current character
-					size_t length; // The length, i.e. we can't go past base+length
-			}; // end string::iterator
-
-		friend iterator operator+(const int n, iterator out) {
-			out += n;
-			return out;
-		}
-
-		friend iterator operator-(const int n, iterator out) {
-			out -= n;
-			return out;
-		}
-
-		/* Public methods */
-			string() { init(); }
-			string(const string &);
-			string(const char *);
-			~string();
-			const char *c_str(void) const;
-			size_t length(void) const;
-			bool empty(void) const;
-			bool equals(const char *str) const;
-			size_t find (const char *) const;
-			size_t find(const string &) const;
-			void clear(void);
-			void resize(size_t target_size);
-			string reverse(void) const;
-			string substr(ssize_t, ssize_t) const throw();
-			string & operator+=(const char *);
-			string & operator+=(const string &);
-			string operator+(const char *) const;
-			string operator+(const string &) const;
-			friend string operator+(const char *, const string &);
-			string & operator=(const char *);
-			string & operator=(const string &);
-			char &operator[](size_t) const;
-			bool operator==(const char *) const;
-			bool operator!=(const char *) const;
-			friend bool operator==(const char *, string &);
-			friend bool operator!=(const char *, string &);
-			bool operator==(const string &) const;
-			bool operator!=(const string &) const;
-			friend std::ostream &operator<<(std::ostream &, string);
-			friend std::istream &operator>>(std::istream &, string &);
-			void dump(void) const; // XXX: Debugging
-			string::iterator begin(void) const;
-			string::iterator end(void) const;
-
-	}; // end string
-
-	string::iterator string::begin(void) const {
-		return iterator(this->buf, this->_length);
-	}
-
-	string::iterator string::end(void) const {
-		return iterator(this->buf + this->_length, 0); // buf[_length] == '\0', so one past the end
+	string::string() {
+		if (DEBUG) std::cout << "In default constructor for string " << this << std::endl;
+		init();
 	}
 
 	/* Initializes a string to an empty state */
@@ -313,30 +103,30 @@ namespace exscape {
 	}
 
 	/* "Compress" the string, i.e. realloc to use as little memory as required, length+1 bytes */
-/*
-	void string::compress(void) throw() {
-		size_t target_size = this->_length+1;
-		if (DEBUG) std::cerr << "In compress() for string " << this << ", current size=" << this->_size << ", target=" << this->_length+1 << std::endl;
+	/*
+	   void string::compress(void) throw() {
+	   size_t target_size = this->_length+1;
+	   if (DEBUG) std::cerr << "In compress() for string " << this << ", current size=" << this->_size << ", target=" << this->_length+1 << std::endl;
 
-		if (this->buf == NULL || this->_length == 0 || this->_size == this->_length + 1) {
-			if (DEBUG) std::cerr << " no need to compress (buf==NULL, _length=0 or string already compressed), returning" << std::endl;
-			return;
-		}
+	   if (this->buf == NULL || this->_length == 0 || this->_size == this->_length + 1) {
+	   if (DEBUG) std::cerr << " no need to compress (buf==NULL, _length=0 or string already compressed), returning" << std::endl;
+	   return;
+	   }
 
-		char *new_buf = (char *)realloc(this->buf, target_size);
-		if (new_buf != NULL) {
-			this->buf = new_buf;
-			this->_size = target_size;
-		}
-		else {
-			free(this->buf);
-			this->buf = NULL;
-			this->_size = 0;
-			this->_length = 0;
-			throw std::runtime_error("realloc() returned NULL in compress()");
-		}
-	}
-*/
+	   char *new_buf = (char *)realloc(this->buf, target_size);
+	   if (new_buf != NULL) {
+	   this->buf = new_buf;
+	   this->_size = target_size;
+	   }
+	   else {
+	   free(this->buf);
+	   this->buf = NULL;
+	   this->_size = 0;
+	   this->_length = 0;
+	   throw std::runtime_error("realloc() returned NULL in compress()");
+	   }
+	   }
+	   */
 
 	/* Deallocates the memory associated with a string */
 	void string::dealloc(void) {
@@ -461,7 +251,7 @@ namespace exscape {
 		result += rhs;
 		return result;
 	}
-	
+
 	/* Set this string to other string instance str */
 	string & string::operator=(const string &str) {
 		if (this == &str)
@@ -496,10 +286,12 @@ namespace exscape {
 		return this->equals(str);
 	}
 
+	/* Friend operator */
 	bool operator==(const char *lhs, string &rhs) {
 		return (rhs == lhs);
 	}
-	
+
+	/* Friend operator */
 	bool operator!=(const char *lhs, string &rhs) {
 		return !(rhs == lhs);
 	}
@@ -520,12 +312,12 @@ namespace exscape {
 		stream << str.c_str();
 		return stream;
 	}
-	
+
 	/* Allows the class to be used with input streams, i.e. cin >> str */
 	std::istream &operator>>(std::istream &stream, string &str) {
 		// XXX: This does NOT work with *fstream. cin >> appears to be fine, but that's about it...
 		// Very ugly code, too.
-		#define TEMP_SIZE 128
+#define TEMP_SIZE 128
 		char tmp[TEMP_SIZE] = {0};
 		char *p;
 		char c;
@@ -556,8 +348,8 @@ namespace exscape {
 			str.append(tmp);
 		}
 
-//		if (DEBUG) std::cerr << "STRING DUMP after operator>> is finished: " << std::endl;
-//		str.dump();
+		//		if (DEBUG) std::cerr << "STRING DUMP after operator>> is finished: " << std::endl;
+		//		str.dump();
 
 		return stream;
 	}
@@ -624,37 +416,178 @@ namespace exscape {
 			if (DEBUG) std::cerr << "String \"" << this->buf << "\", length=" << this->_length << ", size=" << this->_size << std::endl;
 		}
 	}
-}
 
-int main() {
-/*
-	exscape::string s = "FABECDA";
-	exscape::string::iterator i = s.begin();
-	for (i = s.begin(); i != s.end(); ++i)
-		std::cout << *i << std::endl;
+	string::iterator string::begin(void) const {
+		return iterator(this->buf, this->_length);
+	}
 
-	std::sort(s.begin(), s.end());
-	std::cout << "Sorted: " << s << std::endl;
-
-	std::cout << "Count of A in \"" << s << "\": " << std::count(s.begin(), s.end(), 'A') << std::endl;
-	std::cout << "Count of B in \"" << s << "\": " << std::count(s.begin(), s.end(), 'B') << std::endl;
-	std::cout << "Count of X in \"" << s << "\": " << std::count(s.begin(), s.end(), 'X') << std::endl;
-*/
-
-	exscape::string src = "ABCDEF";
-	exscape::string dest;
-//	dest = "             "; 
-	dest.resize(src.length());
-	std::copy(src.begin(), src.end(), dest.begin());
-	std::cout << dest << std::endl;
+	string::iterator string::end(void) const {
+		return iterator(this->buf + this->_length, 0); // buf[_length] == '\0', so one past the end
+	}
 
 	/*
-	// Permutation testing
-	exscape::string perm = "012";
-	do {
-		std::cout << perm << std::endl;
+	 *
+	 * End of string implementation
+	 *
+	 */
+
+	/*
+	 *
+	 * Start of string::iterator implementation
+	 *
+	 */
+
+	/* Default constructor */
+	string::iterator::iterator(void) : base(NULL), p(NULL), length(0) {
+		if (DEBUG) std::cerr << "In DEFAULT constructor for iterator... what do we do here?" << std::endl;
+		exit(1); // XXX
 	}
-	while (std::next_permutation(perm.begin(), perm.end()));
-	*/
-	return 0;
-}
+
+	/* Destructor */
+	string::iterator::~iterator() { 
+		if (DEBUG) std::cerr << "Goodbye, iterator " << this << ", pointing at " << &p << std::endl; 
+	}
+
+	/* Copy constructor */
+	string::iterator::iterator(const string::iterator &rhs) {
+		if (DEBUG) std::cerr << "In iterator(iterator &)" << std::endl;
+		*this = rhs;
+	}
+
+	string::iterator::iterator& string::iterator::operator=(const string::iterator &rhs) {
+		if (DEBUG) std::cerr << "In iterator::operator=" << std::endl;
+		if (this != &rhs) {
+			this->p = rhs.p;
+			this->length = rhs.length;
+			this->base = rhs.base;
+		}
+		if (DEBUG) std::cerr << "Hello, iterator (in operator=) " << this << ", pointing at " << &p << std::endl;
+
+		return *this;
+	}
+
+	/* Most-used constructor; used by string to pass a pointer to the string base */
+	string::iterator::iterator(char *in_ptr, size_t in_len = 0) : base(in_ptr), p(in_ptr), length(in_len) {
+		if (DEBUG) std::cerr << "In iterator(char *, size_t)" << std::endl;
+		if (DEBUG) std::cerr << "Hello, iterator (in iterator (char *, size_t)) " << this << ", len=" << this->length << ", pointing at " << &p << std::endl;
+	}
+
+
+	/* Tests if these two iterators point to the same position */
+	bool string::iterator::operator==(const string::iterator &rhs) const {
+		return (p == rhs.p);
+	}
+
+	/* Tests if these two iterators DON'T point to the same position */
+	bool string::iterator::operator!=(const string::iterator &rhs) const {
+		return (p != rhs.p);
+	}
+
+	bool string::iterator::operator<(const string::iterator &rhs) const {
+		return (p < rhs.p); // XXX: Backwards or not?
+	}
+
+	bool string::iterator::operator>(const string::iterator &rhs) const {
+		return (p > rhs.p); // XXX: Backwards or not?
+	}
+
+	bool string::iterator::operator<=(const string::iterator &rhs) const {
+		return (p < rhs.p || p == rhs.p); // XXX: Backwards or not?
+	}
+
+	bool string::iterator::operator>=(const string::iterator &rhs) const {
+		return (p > rhs.p || p == rhs.p); // XXX: Backwards or not?
+	}
+
+	/* Dereference operator, return a reference to the currently pointed-to character */
+	char &string::iterator::operator*(void) {
+		if (this->p >= this->base + this->length || // Pointer is beyond the string boundaries
+				this->p < this->base) // Pointer points to something before the string begins
+			throw std::out_of_range("Tried to dereference iterator that is out of string bounds!");
+
+		return *p;
+	}
+
+	char *string::iterator::operator->(void) {
+		if (this->p >= this->base + this->length || // Pointer is beyond the string boundaries
+				this->p < this->base) // Pointer points to something before the string begins
+			throw std::out_of_range("Tried to dereference iterator that is out of string bounds!");
+
+		return p;
+	}
+
+	char &string::iterator::operator[](const int offset) {
+		if (this->p + offset >= this->base + this->length || // Pointer is beyond the string boundaries
+				this->p + offset < this->base) // Pointer points to something before the string begins
+			throw std::out_of_range("Tried to dereference iterator that is out of string bounds!");
+
+		return *(p + offset);
+	}
+
+	/* Move the iterator forward one step */
+	string::iterator::iterator &string::iterator::operator++() {
+		p++;
+		return *this;
+	}
+
+	/* Move the iterator forward one step */
+	string::iterator::iterator string::iterator::operator++(int) {
+		++(*this);
+		return iterator(this->p - 1, this->length);
+	}
+
+	/* Move the iterator back one step */
+	string::iterator &string::iterator::operator--() {
+		p--;
+		return *this;
+	}
+
+	/* Move the iterator back one step */
+	string::iterator string::iterator::operator--(int) {
+		p--;
+		return iterator(this->p + 1, this->length);
+	}
+
+	string::iterator &string::iterator::operator+=(const int offset) {
+		p += offset;
+		return *this;
+	}
+
+	string::iterator &string::iterator::operator-=(const int offset) {
+		p -= offset;
+		return *this;
+	}
+
+	string::iterator string::iterator::operator+(const int offset) {
+		iterator out (*this);
+		out += offset;
+		return out;
+	}
+
+	string::iterator string::iterator::operator-(const int offset) { 
+		iterator out = (*this);
+		out -= offset;
+		return out;
+	}
+
+	string::difference_type string::iterator::operator-(string::iterator &rhs) {
+		return p - rhs.p;
+	}
+
+	string::iterator operator+(const int n, string::iterator out) {
+		out += n;
+		return out;
+	}
+
+	string::iterator operator-(const int n, string::iterator out) {
+		out -= n;
+		return out;
+	}
+
+	/*
+	 *
+	 * End of string::iterator implementation
+	 *
+	 */
+
+} // end namespace

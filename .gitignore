@@ -7,4 +7,4 @@ a.out
 stack
 *.bf
 eFunge
-string
+main
