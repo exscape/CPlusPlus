@@ -551,23 +551,23 @@ namespace exscape {
 		return iterator(this->p + 1, this->length);
 	}
 
-	string::iterator &string::iterator::operator+=(const int offset) {
+	string::iterator &string::iterator::operator+=(const string::difference_type offset) {
 		p += offset;
 		return *this;
 	}
 
-	string::iterator &string::iterator::operator-=(const int offset) {
+	string::iterator &string::iterator::operator-=(const string::difference_type offset) {
 		p -= offset;
 		return *this;
 	}
 
-	string::iterator string::iterator::operator+(const int offset) {
+	string::iterator string::iterator::operator+(const string::difference_type offset) {
 		iterator out (*this);
 		out += offset;
 		return out;
 	}
 
-	string::iterator string::iterator::operator-(const int offset) { 
+	string::iterator string::iterator::operator-(const string::difference_type offset) { 
 		iterator out = (*this);
 		out -= offset;
 		return out;

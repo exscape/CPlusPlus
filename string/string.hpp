@@ -52,10 +52,10 @@ namespace exscape {
 					iterator operator--(int);
 
 					/* Arithmetic operators */
-					iterator &operator+=(const int offset);
-					iterator &operator-=(const int offset);
-					iterator operator+(const int offset);
-					iterator operator-(const int offset);
+					iterator &operator+=(const difference_type offset);
+					iterator &operator-=(const difference_type offset);
+					iterator operator+(const difference_type offset);
+					iterator operator-(const difference_type offset);
 					difference_type operator-(iterator &rhs);
 
 				private:
