@@ -4,7 +4,6 @@ a.out
 !*.cpp
 !*.h
 !*.hpp
-stack
 *.bf
 eFunge
 main

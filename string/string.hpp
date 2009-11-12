@@ -1,3 +1,6 @@
+#ifndef _STRING_HPP
+#define _STRING_HPP
+
 #include <iostream> /* stream support for operators << and >>, plus debugging */
 #include <iterator>
 
@@ -112,4 +115,6 @@ namespace exscape {
 			size_t _length; // string length
 			size_t _size; // bytes allocated
 	}; // end string
+
+#endif
 }

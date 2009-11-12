@@ -6,4 +6,4 @@ program: main.o string.o
 #clean:
 #	rm -f main.o string.o main
 debug:
-	make FLAGS="-DDEBUG=1"
+	make FLAGS="-DDEBUG=1 -O0 -ggdb3"
