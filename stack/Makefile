@@ -1,10 +1,8 @@
-TARGETS = main.o stack.o
+TARGETS = main.o
 APP = main
 program: ${TARGETS}
 	rm -f ${TARGETS} ${APP}
-	g++ -c -o main.o main.cpp
-	g++ -c -o stack.o stack.cpp ${FLAGS}
-	g++ -o ${APP} main.o stack.o
+	g++ -o main main.cpp ${FLAGS}
 #clean:
 #	rm -f main.o stack.o main
 debug:

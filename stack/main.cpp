@@ -4,22 +4,9 @@
 
 int main() {
 	exscape::stack<int> s;
-	/*
-	exscape::stack<std::string> *s = new exscape::stack<std::string>(std::string("Alpha"));
-	s->push(std::string("Beta"));
-	s->push(std::string("Gamma"));
+	s.push(10);
 
-	exscape::stack<std::string> s2(*s);
+	s.dump();
 
-	if (*s == s2)
-		std::cerr << "EQUAL" << std::endl;
-	else
-		std::cerr << "NOT EQUAL" << std::endl;
-
-	s->dump();
-	s2.dump();
-
-	delete s;
-*/
 	return 0;
 }

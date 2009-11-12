@@ -11,6 +11,7 @@
 //
 //  * Don't forget reverse iterators later.
 //  XXX: Is the bounds checking in string:iterator correct?
+//  XXX: Does the class work well when declared const?
 //  * Implement comparison operators, i.e. <, >, <=, >=
 //
 //  * Change iterator() to take a string& argument, and store that reference ("parent") instead of the current buf + length? What would break?
