@@ -10,7 +10,7 @@
 //  * http://www.oreillynet.com/pub/a/network/2005/11/21/what-is-iterator-in-c-plus-plus-part2.html?page=3
 //
 //  * Don't forget reverse iterators later.
-//  XXX: Is the bounds checking in string:iterator correct?
+//  XXX: Is the bounds checking in string::iterator correct?
 //  XXX: Does the class work well when declared const?
 //  * Implement comparison operators, i.e. <, >, <=, >=
 //

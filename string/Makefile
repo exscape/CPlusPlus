@@ -2,9 +2,9 @@ TARGETS = main.o string.o
 APP = main
 program: ${TARGETS}
 	rm -f ${TARGETS} ${APP}
-	g++ -c -o main.o main.cpp -Wall
-	g++ -c -o string.o string.cpp -Wall ${FLAGS}
-	g++ -o ${APP} main.o string.o -Wall
+	g++ -c -o main.o main.cpp -Wall -Werror ${FLAGS}
+	g++ -c -o string.o string.cpp -Wall -Werror ${FLAGS}
+	g++ -o ${APP} main.o string.o -Wall -Werror ${FLAGS}
 #clean:
 #	rm -f main.o string.o main
 debug:
