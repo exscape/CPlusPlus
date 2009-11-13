@@ -175,6 +175,7 @@ namespace exscape {
 		this->alloc(new_length + 1);
 		strcat(this->buf, str);
 		this->_length = new_length;
+		if (DEBUG) std::cerr << " appended \"" << str << "\" to string " << this << std::endl;
 	}
 
 	/* Compares two strings; if their lengths don't match, compare byte for byte */
@@ -412,12 +413,7 @@ namespace exscape {
 	}
 
 	void string::dump(void) const {
-		if (this->buf == NULL) {
-			if (DEBUG) std::cerr << "String (null) length=" << this->_length << ", size=" << this->_size << std::endl;
-		}
-		else {
-			if (DEBUG) std::cerr << "String \"" << this->buf << "\", length=" << this->_length << ", size=" << this->_size << std::endl;
-		}
+		std::cerr << "String \"" << (this->buf != NULL ? this->buf : "(null)") << "\", length=" << this->_length << ", size=" << this->_size << std::endl;
 	}
 
 	string::iterator string::begin(void) const {
@@ -425,7 +421,10 @@ namespace exscape {
 	}
 
 	string::iterator string::end(void) const {
-		return iterator(this->buf + this->_length, 0); // buf[_length] == '\0', so one past the end
+		iterator e = iterator(this->buf + this->_length, 0); // buf[_length] == '\0', so one past the end
+		if (DEBUG) std::cerr << "In string::end(), returning iterator " << &e << "; this->buf=" << &buf << ", this->_length = " << this->_length << std::endl;
+
+		return e;
 	}
 
 	/*
@@ -504,6 +503,7 @@ namespace exscape {
 
 	/* Dereference operator, return a reference to the currently pointed-to character */
 	char &string::iterator::operator*(void) {
+		if (DEBUG) std::cerr << "in iterator::operator* for " << this << "; p=" << &p << ", base=" << &base << ", length=" << this->length << ")" << std::endl;
 		if (this->p >= this->base + this->length || // Pointer is beyond the string boundaries
 				this->p < this->base) // Pointer points to something before the string begins
 			throw std::out_of_range("Tried to dereference iterator that is out of string bounds!");
