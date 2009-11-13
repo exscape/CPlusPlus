@@ -417,11 +417,11 @@ namespace exscape {
 	}
 
 	string::iterator string::begin(void) const {
-		return iterator(this->buf, this->_length);
+		return iterator(this->buf);
 	}
 
 	string::iterator string::end(void) const {
-		iterator e = iterator(this->buf + this->_length, 0); // buf[_length] == '\0', so one past the end
+		iterator e = iterator(this->buf + this->_length); // buf[_length] == '\0', so one past the end
 		if (DEBUG) std::cerr << "In string::end(), returning iterator " << &e << "; this->buf=" << &buf << ", this->_length = " << this->_length << std::endl;
 
 		return e;
@@ -469,7 +469,9 @@ namespace exscape {
 	}
 
 	/* Most-used constructor; used by string to pass a pointer to the string base */
-	string::iterator::iterator(char *in_ptr, size_t in_len = 0) : base(in_ptr), p(in_ptr), length(in_len) {
+	string::iterator::iterator(char *in_ptr) : base(in_ptr), p(in_ptr), length(0) {
+		if (this->base != NULL)
+			this->length = strlen(this->base);
 		if (DEBUG) std::cerr << "In iterator(char *, size_t)" << std::endl;
 		if (DEBUG) std::cerr << "Hello, iterator (in iterator (char *, size_t)) " << this << ", len=" << this->length << ", pointing at " << &p << std::endl;
 	}
@@ -536,7 +538,7 @@ namespace exscape {
 	/* Move the iterator forward one step */
 	string::iterator::iterator string::iterator::operator++(int) {
 		++(*this);
-		return iterator(this->p - 1, this->length);
+		return iterator(this->p - 1);
 	}
 
 	/* Move the iterator back one step */
@@ -548,7 +550,7 @@ namespace exscape {
 	/* Move the iterator back one step */
 	string::iterator string::iterator::operator--(int) {
 		p--;
-		return iterator(this->p + 1, this->length);
+		return iterator(this->p + 1);
 	}
 
 	string::iterator &string::iterator::operator+=(const string::difference_type offset) {

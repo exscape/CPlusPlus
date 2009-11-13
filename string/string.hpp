@@ -18,10 +18,10 @@ namespace exscape {
 					friend iterator operator+(const int, iterator);
 					friend iterator operator-(const int, iterator);
 					/* Constructors and operator= */
-					iterator(void); // : base(NULL), p(NULL), length(0);
+					iterator(void);
 					iterator(const iterator &rhs);
 					iterator& operator=(const iterator &rhs);
-					iterator(char *in_ptr, size_t in_len); // : base(in_ptr), p(in_ptr), length(in_len);
+					iterator(char *in_ptr);
 
 					/* Destructor */
 					~iterator();
