@@ -1,5 +1,7 @@
 #include <iostream>
-#include "string.cpp"
+#include <cstring>
+#include <stdexcept>
+#include "string.hpp"
 
 /* The following was ported from C, with some minor rewrites rather than a C++ish way, so it's not very pretty... */
 

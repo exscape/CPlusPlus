@@ -2,7 +2,7 @@ TARGETS = main.o
 APP = main
 program: ${TARGETS}
 	rm -f ${TARGETS} ${APP}
-	g++ -o main main.cpp ${FLAGS}
+	g++ -o main main.cpp -Wall ${FLAGS}
 #clean:
 #	rm -f main.o stack.o main
 debug:
