@@ -9,6 +9,8 @@ program: ${TARGETS}
 #	rm -f main.o string.o main
 debug:
 	make FLAGS="-DDEBUG=1 -O0 -ggdb3"
+gdb:
+	make FLAGS="-DDEBUG=0 -O0 -ggdb3"
 test_substr:
 	make program
 	g++ -c -o test_substr.o test_substr.cpp -Wall
