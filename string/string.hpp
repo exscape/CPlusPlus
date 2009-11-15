@@ -27,7 +27,7 @@ namespace exscape {
 					/* Destructor */
 					~iterator();
 
-					bool within_bounds(const difference_type offset) /* throw() */ const;
+					bool past_bounds(const difference_type offset) /* throw() */ const;
 
 					/* Tests if these two iterators point to the same position */
 					bool operator==(const iterator &rhs) const;

@@ -503,12 +503,11 @@ namespace exscape {
 		return (p > rhs.p || p == rhs.p); // XXX: Backwards or not?
 	}
 	
-	bool string::iterator::within_bounds(const difference_type offset = 0) /* throw() */ const {
-		if (this->p + offset >= this->base + this->length || // Pointer is beyond the string boundaries
-				this->p + offset < this->base) // Pointer points to something before the string begins
-					return false;
+	bool string::iterator::past_bounds(const difference_type offset = 0) /* throw() */ const {
+		if (this->p + offset > this->base + this->length)
+					return true;
 		else
-			return true;
+			return false;
 
 /*		if (this->p >= this->base + this->length || // Pointer is beyond the string boundaries
 				this->p < this->base) // Pointer points to something before the string begins
@@ -518,22 +517,24 @@ namespace exscape {
 	/* Dereference operator, return a reference to the currently pointed-to character */
 	char &string::iterator::operator*(void) {
 		if (DEBUG) std::cerr << "in iterator::operator* for " << this << "; p=" << &p << ", base=" << &base << ", length=" << this->length << ")" << std::endl;
-		if (!this->within_bounds())
-			throw std::out_of_range("Tried to dereference iterator that is out of string bounds!");
+		if (this->past_bounds()) {
+			if (DEBUG) std::cerr << "past_bounds() returned TRUE for iterator " << this << std::endl;
+			return *(base + length); // NUL
+		}
 
 		return *p;
 	}
 
 	char *string::iterator::operator->(void) {
-		if (!this->within_bounds())
-			throw std::out_of_range("Tried to dereference iterator that is out of string bounds!");
+		if (this->past_bounds())
+			throw std::out_of_range("Tried to dereference (->) iterator that is out of string bounds!");
 
 		return p;
 	}
 
 	char &string::iterator::operator[](const int offset) {
-		if (!this->within_bounds(offset))
-			throw std::out_of_range("Tried to dereference iterator that is out of string bounds!");
+		if (this->past_bounds(offset))
+			return *(base + length); // NUL
 
 		return *(p + offset);
 	}
