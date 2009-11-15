@@ -4,7 +4,6 @@
 #include "string.hpp"
 
 int main() {
-/*
 	exscape::string s = "FABECDA";
 	exscape::string::iterator i = s.begin();
 	for (i = s.begin(); i != s.end(); ++i)
@@ -30,7 +29,6 @@ int main() {
 	do {
 		std::cout << "Permutation: " << perm << std::endl;
 	} while (next_permutation(perm.begin(), perm.end()));
-*/
 
 	// Copy test
 	exscape::string src = "ABCDEF";
