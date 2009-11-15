@@ -1,12 +1,12 @@
-TARGETS = main.o string.o
-APP = main
+TARGETS = tests.o string.o
+APP = tests
 program: ${TARGETS}
 	rm -f ${TARGETS} ${APP}
-	g++ -c -o main.o main.cpp -Wall -Werror ${FLAGS}
+	g++ -c -o tests.o tests.cpp -Wall -Werror ${FLAGS}
 	g++ -c -o string.o string.cpp -Wall -Werror ${FLAGS}
-	g++ -o ${APP} main.o string.o -Wall -Werror ${FLAGS}
+	g++ -o ${APP} tests.o string.o -Wall -Werror ${FLAGS}
 #clean:
-#	rm -f main.o string.o main
+#	rm -f tests.o string.o tests
 debug:
 	make FLAGS="-DDEBUG=1 -O0 -ggdb3"
 gdb:

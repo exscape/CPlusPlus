@@ -526,7 +526,7 @@ namespace exscape {
 		if (DEBUG) std::cerr << "  in ++operator for iterator " << this << std::endl;
 	
 		if (this->p > this->base + this->length)
-			std::cerr << " WARNING: ++operator moved iterator (further?) past the end! (p=" << &p << ", base=" << &base << ", length=" << length << ")" << std::endl;
+			/* if (DEBUG) */ std::cerr << " WARNING: ++operator moved iterator (further?) past the end! (p=" << &p << ", base=" << &base << ", length=" << length << ")" << std::endl;
 		p++;
 		return *this;
 	}
