@@ -24,7 +24,7 @@ namespace exscape {
 	 */
 
 	string::string() {
-		if (DEBUG) std::cout << "In default constructor for string " << this << std::endl;
+		if (DEBUG) std::cerr << "In default constructor for string " << this << std::endl;
 		init();
 	}
 
@@ -145,6 +145,10 @@ namespace exscape {
 	/* Returns the string length, equal to strlen(this->buf) */
 	size_t string::length(void) const {
 		return this->_length;
+	}
+	
+	size_t string::capacity(void) const {
+		return this->_size - 1; // capacity() returns the amount of characters the strings can hold
 	}
 
 	/* Returns whether the string is empty or not */
@@ -518,7 +522,7 @@ namespace exscape {
 	char &string::iterator::operator*(void) {
 		if (DEBUG) std::cerr << "in iterator::operator* for " << this << "; p=" << &p << ", base=" << &base << ", length=" << this->length << ")" << std::endl;
 		if (this->past_bounds()) {
-			if (DEBUG) std::cerr << "past_bounds() returned TRUE for iterator " << this << std::endl;
+			if (DEBUG) std::cerr << "past_bounds() returned TRUE for iterator " << this << ", returning NUL" << std::endl;
 			return *(base + length); // NUL
 		}
 
@@ -541,28 +545,31 @@ namespace exscape {
 
 	/* Move the iterator forward one step */
 	string::iterator::iterator &string::iterator::operator++() {
-		if (DEBUG) std::cout << "  in ++operator for iterator " << this << std::endl;
+		if (DEBUG) std::cerr << "  in ++operator for iterator " << this << std::endl;
+	
+		if (this->p > this->base + this->length)
+			std::cerr << " WARNING: ++operator moved iterator (further?) past the end! (p=" << &p << ", base=" << &base << ", length=" << length << ")" << std::endl;
 		p++;
 		return *this;
 	}
 
 	/* Move the iterator forward one step */
 	string::iterator::iterator string::iterator::operator++(int) {
-		if (DEBUG) std::cout << "  in operator++ for iterator " << this << std::endl;
+		if (DEBUG) std::cerr << "  in operator++ for iterator " << this << std::endl;
 		++(*this);
 		return iterator(this->p - 1);
 	}
 
 	/* Move the iterator back one step */
 	string::iterator &string::iterator::operator--() {
-		if (DEBUG) std::cout << "  in --operator for iterator " << this << std::endl;
+		if (DEBUG) std::cerr << "  in --operator for iterator " << this << std::endl;
 		p--;
 		return *this;
 	}
 
 	/* Move the iterator back one step */
 	string::iterator string::iterator::operator--(int) {
-		if (DEBUG) std::cout << "  in operator-- for iterator " << this << std::endl;
+		if (DEBUG) std::cerr << "  in operator-- for iterator " << this << std::endl;
 		p--;
 		return iterator(this->p + 1);
 	}

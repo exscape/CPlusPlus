@@ -84,6 +84,7 @@ namespace exscape {
 			~string();
 			const char *c_str(void) const;
 			size_t length(void) const;
+			size_t capacity(void) const;
 			bool empty(void) const;
 			bool equals(const char *str) const;
 			size_t find (const char *) const;
