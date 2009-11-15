@@ -6,13 +6,14 @@
 
 // TODO: 
 // * Fix operator>>? Only works for cin >>, and doesn't act like it's supposed to...
-// * Iterators:
-//  * http://www.oreillynet.com/pub/a/network/2005/11/21/what-is-iterator-in-c-plus-plus-part2.html?page=3
+// * Reverse iterators?
+//   * Create a common_iterator (or such) class from which iterator and reverse_iterator (and possibly const_*) derives?
 //
-//  * Don't forget reverse iterators later.
-//  XXX: Is the bounds checking in string::iterator correct?
 //  XXX: Does the class work well when declared const?
 //  * Implement comparison operators, i.e. <, >, <=, >=
+//    ... using a protected compare() that uses strcmp() internally
+//    ... XXX: worth the trouble? str < str, str < char*, char* < str etc. 3 cases * 4 operators = 12 overloads...?
+//  * iterator can modify a const string
 
 namespace exscape {
 	using std::cerr;

@@ -38,7 +38,7 @@ int main() {
 	} while (next_permutation(perm.begin(), perm.end()));
 
 	// std::copy test
-	STR_TYPE::string src = "ABCDEF";
+	const STR_TYPE::string src = "ABCDEF";
 	STR_TYPE::string dest;
 	dest.resize(src.length());
 	std::cout << "src length: " << src.length() << ", dest capacity: " << dest.capacity() << std::endl;
@@ -46,14 +46,14 @@ int main() {
 	std::cout << "Source: " << src << ", copy: " << dest << std::endl;
 
 	// std::transform test
-	STR_TYPE::string trans_src = "Testing";
+	const STR_TYPE::string trans_src = "Testing";
 	STR_TYPE::string trans_dest;
 	trans_dest.resize(trans_src.length());
 	std::transform(trans_src.begin(), trans_src.end(), trans_dest.begin(), swap_case);
 	std::cout << "Transform: in=" << trans_src << ", out=" << trans_dest << std::endl;
 
 	// std::remove_copy test
-	STR_TYPE::string remove_str = "ABCDEF";
+	const STR_TYPE::string remove_str = "ABCDEF";
 	STR_TYPE::string remove_dest;
 	remove_dest.resize(remove_str.length());
 	std::remove_copy(remove_str.begin(), remove_str.end(), remove_dest.begin(), 'C');
@@ -65,6 +65,12 @@ int main() {
 	std::cout << "std::reverse: in=" << reverse_str;
 	std::reverse(reverse_str.begin(), reverse_str.end());
 	std::cout << ", out=" << reverse_str << std::endl;
+
+	// constness test - FAILS, the iterator shouldn't be allowed to change the string (or even be created)
+	const STR_TYPE::string c = "ABCDEF";
+	STR_TYPE::string::iterator c_iter = c.begin();
+	*c_iter = 'X';
+	std::cout << c << std::endl;
 
 	return 0;
 }
