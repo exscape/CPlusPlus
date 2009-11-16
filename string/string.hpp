@@ -16,6 +16,10 @@ namespace exscape {
 			friend class iterator;
 			friend class reverse_iterator;
 		protected:
+			/* 
+			 * A class that is the base class for both iterator and reverse_iterator, implementing common methods
+			 * Commented out methods are implemented in the subclasses.
+			 */
 			class iterator_base : public std::iterator<std::random_access_iterator_tag, char, difference_type> {
 				public:
 					friend class string;
@@ -69,6 +73,9 @@ namespace exscape {
 			}; // end string::iterator_base
 
 		public:
+			/* 
+			 * A regular random access iterator
+			 */
 			class iterator : public iterator_base {
 				public:
 					friend class string;
@@ -100,6 +107,9 @@ namespace exscape {
 					difference_type operator-(iterator &rhs);
 			}; // end string::iterator
 
+			/* 
+			 * A regular reverse random access iterator
+			 */
 			class reverse_iterator : public iterator_base {
 				public:
 					friend class string;

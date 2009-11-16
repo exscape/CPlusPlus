@@ -138,6 +138,7 @@ namespace exscape {
 		}
 		else
 			if (DEBUG) std::cerr <<  "  Nothing to free, string was NULL" << std::endl;
+		this->buf = NULL;
 		this->_length = 0;
 		this->_size = 0;
 	}
