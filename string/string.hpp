@@ -17,7 +17,7 @@ namespace exscape {
 			friend class reverse_iterator;
 		protected:
 			/* 
-			 * A class that is the base class for both iterator and reverse_iterator, implementing common methods
+			 * A class that is the base class for both iterator and reverse_iterator, implementing common methods.
 			 * Commented out methods are implemented in the subclasses.
 			 */
 			class iterator_base : public std::iterator<std::random_access_iterator_tag, char, difference_type> {
