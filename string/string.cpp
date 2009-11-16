@@ -436,6 +436,19 @@ namespace exscape {
 		return e;
 	}
 
+	string::reverse_iterator string::rbegin(void) const {
+		reverse_iterator s = reverse_iterator(this->buf + this->_length);
+		if (DEBUG) std::cerr << " In string::rbegin(), returning reverse_iterator " << &s << "; this->buf=" << &buf << ", this->_length = " << this->_length << std::endl;
+		return s;
+	}
+
+	string::reverse_iterator string::rend(void) const {
+		reverse_iterator e = reverse_iterator(this->buf - 1);
+		if (DEBUG) std::cerr << " In string::rend(), returning reverse_iterator " << &e << "; this->buf=" << &buf << ", this->_length = " << this->_length << ", so pointing to " << (&(this->buf)) - 1 << std::endl;
+
+		return e;
+	}
+
 	/*
 	 *
 	 * End of string implementation
@@ -645,5 +658,115 @@ namespace exscape {
 	 *
 	 */
 
+	/*
+	 *
+	 * Start of string::reverse_iterator implementation
+	 *
+	 */
+
+	/* Default constructor */
+	string::reverse_iterator::reverse_iterator(void) : iterator_base() {
+		if (DEBUG) std::cerr << "In DEFAULT constructor for reverse_iterator... what do we do here?" << std::endl;
+		//exit(1); // XXX
+	}
+
+	/* Destructor */
+	string::reverse_iterator::~reverse_iterator() { 
+		if (DEBUG) std::cerr << "Goodbye, reverse_iterator " << this << ", pointing at " << &p << std::endl; 
+	}
+
+	/* Copy constructor */
+	string::reverse_iterator::reverse_iterator(const string::reverse_iterator &rhs) {
+		if (DEBUG) std::cerr << "In reverse_iterator(reverse_iterator &)" << std::endl;
+		*this = rhs;
+	}
+
+	string::reverse_iterator::reverse_iterator& string::reverse_iterator::operator=(const string::reverse_iterator &rhs) {
+		if (DEBUG) std::cerr << "In reverse_iterator::operator=" << std::endl;
+		if (this != &rhs) {
+			this->p = rhs.p;
+			this->length = rhs.length;
+			this->base = rhs.base;
+		}
+		if (DEBUG) std::cerr << "In operator= for reverse_iterator " << this << " (rhs = " << &rhs << "), pointing at " << &p << std::endl;
+
+		return *this;
+	}
+
+	/* Most-used constructor; used by string to pass a pointer to the string base */
+	string::reverse_iterator::reverse_iterator(char *in_ptr) : iterator_base(in_ptr) {
+		if (this->base != NULL)
+			this->length = strlen(this->base);
+		if (DEBUG) std::cerr << "Hello, reverse_iterator (in reverse_iterator (char *)) " << this << ", len=" << this->length << ", pointing at " << &p << std::endl;
+	}
+
+	string::reverse_iterator::reverse_iterator &string::reverse_iterator::operator++() {
+		if (DEBUG) std::cerr << "  in ++operator for reverse_iterator " << this << std::endl;
+		p--;
+		return *this;
+	}
+
+	string::reverse_iterator::reverse_iterator string::reverse_iterator::operator++(int) {
+		if (DEBUG) std::cerr << "  in operator++ for reverse_iterator " << this << std::endl;
+		--(*this);
+		return reverse_iterator(this->p + 1);
+	}
+
+	string::reverse_iterator &string::reverse_iterator::operator--() {
+		if (DEBUG) std::cerr << "  in --operator for reverse_iterator " << this << std::endl;
+
+		if (this->p > this->base + this->length)
+			/* if (DEBUG) */ std::cerr << " WARNING: --operator moved reverse_iterator (further?) past the end! (p=" << &p << ", base=" << &base << ", length=" << length << ")" << std::endl;
+		p++;
+		return *this;
+	}
+
+	string::reverse_iterator string::reverse_iterator::operator--(int) {
+		if (DEBUG) std::cerr << "  in operator-- for reverse_iterator " << this << std::endl;
+		p++;
+		return reverse_iterator(this->p - 1);
+	}
+
+	string::reverse_iterator &string::reverse_iterator::operator+=(const string::difference_type offset) {
+		p -= offset;
+		return *this;
+	}
+
+	string::reverse_iterator &string::reverse_iterator::operator-=(const string::difference_type offset) {
+		p += offset;
+		return *this;
+	}
+
+	string::reverse_iterator string::reverse_iterator::operator+(const string::difference_type offset) {
+		reverse_iterator out (*this);
+		out -= offset;
+		return out;
+	}
+
+	string::reverse_iterator string::reverse_iterator::operator-(const string::difference_type offset) { 
+		reverse_iterator out = (*this);
+		out += offset;
+		return out;
+	}
+
+	string::difference_type string::reverse_iterator::operator-(string::reverse_iterator &rhs) {
+		return p - rhs.p;
+	}
+
+	string::reverse_iterator operator+(const int n, string::reverse_iterator out) {
+		out -= n;
+		return out;
+	}
+
+	string::reverse_iterator operator-(const int n, string::reverse_iterator out) {
+		out += n;
+		return out;
+	}
+
+	/*
+	 *
+	 * End of string::reverse_iterator implementation
+	 *
+	 */
 
 } // end namespace

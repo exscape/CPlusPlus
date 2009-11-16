@@ -14,8 +14,8 @@ namespace exscape {
 		public:
 			friend class iterator_base;
 			friend class iterator;
-//			friend class reverse_iterator;
-//		protected:
+			friend class reverse_iterator;
+		protected:
 			class iterator_base : public std::iterator<std::random_access_iterator_tag, char, difference_type> {
 				public:
 					friend class string;
@@ -105,6 +105,39 @@ namespace exscape {
 					//size_t length; // The length, i.e. we can't go past base+length
 			}; // end string::iterator
 
+			class reverse_iterator : public iterator_base {
+				public:
+					friend class string;
+					friend reverse_iterator operator+(const int, reverse_iterator);
+					friend reverse_iterator operator-(const int, reverse_iterator);
+					/* Constructors and operator= */
+					reverse_iterator(void);
+					reverse_iterator(const reverse_iterator &rhs);
+					reverse_iterator& operator=(const reverse_iterator &rhs);
+					reverse_iterator(char *in_ptr);
+
+					/* Destructor */
+					~reverse_iterator();
+
+					reverse_iterator &operator++();
+					reverse_iterator operator++(int);
+
+					reverse_iterator &operator--();
+					reverse_iterator operator--(int);
+
+					/* Arithmetic operators */
+					reverse_iterator &operator+=(const difference_type offset);
+					reverse_iterator &operator-=(const difference_type offset);
+					reverse_iterator operator+(const difference_type offset);
+					reverse_iterator operator-(const difference_type offset);
+					difference_type operator-(reverse_iterator &rhs);
+
+				//protected:
+					//char *base; // The base of the string
+					//char *p; // Points to the current character
+					//size_t length; // The length, i.e. we can't go past base+length
+			}; // end string::reverse_iterator
+
 		protected:
 		/* Protected methods */
 			void init();
@@ -150,6 +183,8 @@ namespace exscape {
 			void dump(void) const; // XXX: Debugging
 			string::iterator begin(void) const;
 			string::iterator end(void) const;
+			string::reverse_iterator rbegin(void) const;
+			string::reverse_iterator rend(void) const;
 
 		protected:
 		/* Protected member variables */
