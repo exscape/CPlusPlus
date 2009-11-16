@@ -448,6 +448,42 @@ namespace exscape {
 	 *
 	 */
 
+	/* Default constructor */
+	string::iterator_base::iterator_base(void) : base(NULL), p(NULL), length(0) {
+		if (DEBUG) std::cerr << "In DEFAULT constructor for iterator_base... what do we do here?" << std::endl;
+//		exit(1); // XXX
+	}
+
+	/* Destructor */
+	string::iterator_base::~iterator_base() { 
+		if (DEBUG) std::cerr << "Goodbye, iterator_base " << this << ", pointing at " << &p << std::endl; 
+	}
+
+	/* Copy constructor */
+	string::iterator_base::iterator_base(const string::iterator_base &rhs) {
+		if (DEBUG) std::cerr << "In iterator_base(iterator_base &)" << std::endl;
+		*this = rhs;
+	}
+
+/*	string::iterator_base::iterator_base& string::iterator_base::operator=(const string::iterator_base &rhs) {
+		if (DEBUG) std::cerr << "In iterator_base::operator=" << std::endl;
+		if (this != &rhs) {
+			this->p = rhs.p;
+			this->length = rhs.length;
+			this->base = rhs.base;
+		}
+		if (DEBUG) std::cerr << "In operator= for iterator_base " << this << " (rhs = " << &rhs << "), pointing at " << &p << std::endl;
+
+		return *this;
+	}
+*/
+	/* Most-used constructor; used by string to pass a pointer to the string base */
+	string::iterator_base::iterator_base(char *in_ptr) : base(in_ptr), p(in_ptr), length(0) {
+		if (this->base != NULL)
+			this->length = strlen(this->base);
+		if (DEBUG) std::cerr << "Hello, iterator_base (in iterator_base (char *)) " << this << ", len=" << this->length << ", pointing at " << &p << std::endl;
+	}
+
 	/* Tests if these two iterators point to the same position */
 	bool string::iterator_base::operator==(const string::iterator_base &rhs) const {
 		return (p == rhs.p);
@@ -503,7 +539,7 @@ namespace exscape {
 	/* Default constructor */
 	string::iterator::iterator(void) : iterator_base() {
 		if (DEBUG) std::cerr << "In DEFAULT constructor for iterator... what do we do here?" << std::endl;
-		exit(1); // XXX
+		//exit(1); // XXX
 	}
 
 	/* Destructor */
@@ -530,7 +566,7 @@ namespace exscape {
 	}
 
 	/* Most-used constructor; used by string to pass a pointer to the string base */
-	string::iterator::iterator(char *in_ptr) : iterator_base(in_ptr, in_ptr, 0){
+	string::iterator::iterator(char *in_ptr) : iterator_base(in_ptr) {
 		if (this->base != NULL)
 			this->length = strlen(this->base);
 		if (DEBUG) std::cerr << "Hello, iterator (in iterator (char *)) " << this << ", len=" << this->length << ", pointing at " << &p << std::endl;

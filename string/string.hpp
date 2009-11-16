@@ -15,20 +15,20 @@ namespace exscape {
 			friend class iterator_base;
 			friend class iterator;
 //			friend class reverse_iterator;
-		protected:
+//		protected:
 			class iterator_base : public std::iterator<std::random_access_iterator_tag, char, difference_type> {
 				public:
 					friend class string;
 					//friend iterator operator+(const int, iterator);
 					//friend iterator operator-(const int, iterator);
 					/* Constructors and operator= */
-					//iterator(void);
-					//iterator(const iterator &rhs);
-					//iterator& operator=(const iterator &rhs);
-					//iterator(char *in_ptr);
+					iterator_base(void);
+					iterator_base(const iterator_base &rhs);
+					//iterator_base& operator=(const iterator_base &rhs);
+					iterator_base(char *in_ptr);
 
 					/* Destructor */
-					//~iterator();
+					~iterator_base();
 
 					/* Tests if these two iterators point to the same position */
 					bool operator==(const iterator_base &rhs) const;
