@@ -6,13 +6,16 @@
 
 // TODO: 
 // * Fix operator>>? Only works for cin >>, and doesn't act like it's supposed to...
+//
 // * Reverse iterators?
 //   * Create a common_iterator (or such) class from which iterator and reverse_iterator (and possibly const_*) derives?
+//     * ... using virtual methods
 //
-//  XXX: Does the class work well when declared const?
 //  * Implement comparison operators, i.e. <, >, <=, >=
 //    ... using a protected compare() that uses strcmp() internally
 //    ... XXX: worth the trouble? str < str, str < char*, char* < str etc. 3 cases * 4 operators = 12 overloads...?
+//
+//  XXX: Does the class work well when declared const?
 //  * iterator can modify a const string
 
 namespace exscape {
