@@ -3,8 +3,10 @@
 #include <string>
 #include "string.hpp"
 
+#ifndef STR_TYPE
 #define STR_TYPE exscape
 //#define STR_TYPE std
+#endif
 
 char swap_case (char in) {
 	return in ^ 0x20;
@@ -79,6 +81,17 @@ int main() {
 	std::cout << rstr << " in reverse follows, if all goes according to plan: ";
 	for (STR_TYPE::string::reverse_iterator ri = rstr.rbegin(); ri != rstr.rend(); ++ri)
 		std::cout << *ri;
+	std::cout << std::endl;
+
+	// REVERSE reverse iterator tests! Ugh!
+	STR_TYPE::string rrstr = "ABCDEF";
+	std::cout << rstr << " should follow again: ";
+	STR_TYPE::string::reverse_iterator ri;
+	ri = rstr.rend();
+	while (ri != rstr.rbegin()) {
+		--ri;
+		std::cout << *ri;
+	}
 	std::cout << std::endl;
 
 	return 0;

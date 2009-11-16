@@ -572,7 +572,7 @@ namespace exscape {
 		if (DEBUG) std::cerr << "  in ++operator for iterator " << this << std::endl;
 	
 		if (this->p > this->base + this->length)
-			/* if (DEBUG) */ std::cerr << " WARNING: ++operator moved iterator (further?) past the end! (p=" << &p << ", base=" << &base << ", length=" << length << ")" << std::endl;
+			if (DEBUG) std::cerr << " WARNING: ++operator moved iterator (further?) past the end! (p=" << &p << ", base=" << &base << ", length=" << length << ")" << std::endl;
 		p++;
 		return *this;
 	}
@@ -580,6 +580,9 @@ namespace exscape {
 	/* Move the iterator forward one step */
 	string::iterator::iterator string::iterator::operator++(int) {
 		if (DEBUG) std::cerr << "  in operator++ for iterator " << this << std::endl;
+
+		if (this->p > this->base + this->length)
+			if (DEBUG) std::cerr << " WARNING: operator++ moved iterator (further?) past the end! (p=" << &p << ", base=" << &base << ", length=" << length << ")" << std::endl;
 		++(*this);
 		return iterator(this->p - 1);
 	}
@@ -698,13 +701,16 @@ namespace exscape {
 		if (DEBUG) std::cerr << "  in --operator for reverse_iterator " << this << std::endl;
 
 		if (this->p > this->base + this->length)
-			/* if (DEBUG) */ std::cerr << " WARNING: --operator moved reverse_iterator (further?) past the end! (p=" << &p << ", base=" << &base << ", length=" << length << ")" << std::endl;
+			if (DEBUG) std::cerr << " WARNING: --operator moved reverse_iterator (further?) past the end! (p=" << &p << ", base=" << &base << ", length=" << length << ")" << std::endl;
 		p++;
 		return *this;
 	}
 
 	string::reverse_iterator string::reverse_iterator::operator--(int) {
 		if (DEBUG) std::cerr << "  in operator-- for reverse_iterator " << this << std::endl;
+
+		if (this->p > this->base + this->length)
+			if (DEBUG) std::cerr << " WARNING: operator-- moved reverse_iterator (further?) past the end! (p=" << &p << ", base=" << &base << ", length=" << length << ")" << std::endl;
 		p++;
 		return reverse_iterator(this->p - 1);
 	}
