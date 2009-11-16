@@ -7,10 +7,6 @@
 // TODO: 
 // * Fix operator>>? Only works for cin >>, and doesn't act like it's supposed to...
 //
-// * Reverse iterators?
-//   * Create a common_iterator (or such) class from which iterator and reverse_iterator (and possibly const_*) derives?
-//     * ... using virtual methods
-//
 //  * Implement comparison operators, i.e. <, >, <=, >=
 //    ... using a protected compare() that uses strcmp() internally
 //    ... XXX: worth the trouble? str < str, str < char*, char* < str etc. 3 cases * 4 operators = 12 overloads...?
@@ -464,7 +460,6 @@ namespace exscape {
 	/* Default constructor */
 	string::iterator_base::iterator_base(void) : base(NULL), p(NULL), length(0) {
 		if (DEBUG) std::cerr << "In DEFAULT constructor for iterator_base... what do we do here?" << std::endl;
-//		exit(1); // XXX
 	}
 
 	/* Destructor */
@@ -478,18 +473,6 @@ namespace exscape {
 		*this = rhs;
 	}
 
-/*	string::iterator_base::iterator_base& string::iterator_base::operator=(const string::iterator_base &rhs) {
-		if (DEBUG) std::cerr << "In iterator_base::operator=" << std::endl;
-		if (this != &rhs) {
-			this->p = rhs.p;
-			this->length = rhs.length;
-			this->base = rhs.base;
-		}
-		if (DEBUG) std::cerr << "In operator= for iterator_base " << this << " (rhs = " << &rhs << "), pointing at " << &p << std::endl;
-
-		return *this;
-	}
-*/
 	/* Most-used constructor; used by string to pass a pointer to the string base */
 	string::iterator_base::iterator_base(char *in_ptr) : base(in_ptr), p(in_ptr), length(0) {
 		if (this->base != NULL)
@@ -552,7 +535,6 @@ namespace exscape {
 	/* Default constructor */
 	string::iterator::iterator(void) : iterator_base() {
 		if (DEBUG) std::cerr << "In DEFAULT constructor for iterator... what do we do here?" << std::endl;
-		//exit(1); // XXX
 	}
 
 	/* Destructor */
@@ -616,6 +598,7 @@ namespace exscape {
 		return iterator(this->p + 1);
 	}
 
+	/* Arithmetic operators */
 	string::iterator &string::iterator::operator+=(const string::difference_type offset) {
 		p += offset;
 		return *this;
@@ -667,7 +650,6 @@ namespace exscape {
 	/* Default constructor */
 	string::reverse_iterator::reverse_iterator(void) : iterator_base() {
 		if (DEBUG) std::cerr << "In DEFAULT constructor for reverse_iterator... what do we do here?" << std::endl;
-		//exit(1); // XXX
 	}
 
 	/* Destructor */
@@ -727,6 +709,7 @@ namespace exscape {
 		return reverse_iterator(this->p - 1);
 	}
 
+	/* Arithmetic operators */
 	string::reverse_iterator &string::reverse_iterator::operator+=(const string::difference_type offset) {
 		p -= offset;
 		return *this;

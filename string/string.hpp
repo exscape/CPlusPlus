@@ -69,12 +69,12 @@ namespace exscape {
 			}; // end string::iterator_base
 
 		public:
-
 			class iterator : public iterator_base {
 				public:
 					friend class string;
 					friend iterator operator+(const int, iterator);
 					friend iterator operator-(const int, iterator);
+
 					/* Constructors and operator= */
 					iterator(void);
 					iterator(const iterator &rhs);
@@ -98,11 +98,6 @@ namespace exscape {
 					iterator operator+(const difference_type offset);
 					iterator operator-(const difference_type offset);
 					difference_type operator-(iterator &rhs);
-
-				//protected:
-					//char *base; // The base of the string
-					//char *p; // Points to the current character
-					//size_t length; // The length, i.e. we can't go past base+length
 			}; // end string::iterator
 
 			class reverse_iterator : public iterator_base {
@@ -110,6 +105,7 @@ namespace exscape {
 					friend class string;
 					friend reverse_iterator operator+(const int, reverse_iterator);
 					friend reverse_iterator operator-(const int, reverse_iterator);
+
 					/* Constructors and operator= */
 					reverse_iterator(void);
 					reverse_iterator(const reverse_iterator &rhs);
@@ -131,11 +127,6 @@ namespace exscape {
 					reverse_iterator operator+(const difference_type offset);
 					reverse_iterator operator-(const difference_type offset);
 					difference_type operator-(reverse_iterator &rhs);
-
-				//protected:
-					//char *base; // The base of the string
-					//char *p; // Points to the current character
-					//size_t length; // The length, i.e. we can't go past base+length
 			}; // end string::reverse_iterator
 
 		protected:
