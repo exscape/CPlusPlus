@@ -444,12 +444,64 @@ namespace exscape {
 
 	/*
 	 *
+	 * Start of string::iterator_base implementation
+	 *
+	 */
+
+	/* Tests if these two iterators point to the same position */
+	bool string::iterator_base::operator==(const string::iterator_base &rhs) const {
+		return (p == rhs.p);
+	}
+
+	/* Tests if these two iterator_bases DON'T point to the same position */
+	bool string::iterator_base::operator!=(const string::iterator_base &rhs) const {
+		return (p != rhs.p);
+	}
+
+	bool string::iterator_base::operator<(const string::iterator_base &rhs) const {
+		return (p < rhs.p); // XXX: Backwards or not?
+	}
+
+	bool string::iterator_base::operator>(const string::iterator_base &rhs) const {
+		return (p > rhs.p); // XXX: Backwards or not?
+	}
+
+	bool string::iterator_base::operator<=(const string::iterator_base &rhs) const {
+		return (p < rhs.p || p == rhs.p); // XXX: Backwards or not?
+	}
+
+	bool string::iterator_base::operator>=(const string::iterator_base &rhs) const {
+		return (p > rhs.p || p == rhs.p); // XXX: Backwards or not?
+	}
+	
+	/* Dereference operator, return a reference to the currently pointed-to character */
+	char &string::iterator_base::operator*(void) {
+		if (DEBUG) std::cerr << "in iterator_base::operator* for " << this << "; p=" << &p << ", base=" << &base << ", length=" << this->length << ")" << std::endl;
+		return *p;
+	}
+
+	char *string::iterator_base::operator->(void) {
+		return p;
+	}
+
+	char &string::iterator_base::operator[](const int offset) {
+		return *(p + offset);
+	}
+
+	/*
+	 *
+	 * End of string::iterator_base implementation
+	 *
+	 */
+
+	/*
+	 *
 	 * Start of string::iterator implementation
 	 *
 	 */
 
 	/* Default constructor */
-	string::iterator::iterator(void) : base(NULL), p(NULL), length(0) {
+	string::iterator::iterator(void) : iterator_base() {
 		if (DEBUG) std::cerr << "In DEFAULT constructor for iterator... what do we do here?" << std::endl;
 		exit(1); // XXX
 	}
@@ -478,51 +530,10 @@ namespace exscape {
 	}
 
 	/* Most-used constructor; used by string to pass a pointer to the string base */
-	string::iterator::iterator(char *in_ptr) : base(in_ptr), p(in_ptr), length(0) {
+	string::iterator::iterator(char *in_ptr) : iterator_base(in_ptr, in_ptr, 0){
 		if (this->base != NULL)
 			this->length = strlen(this->base);
 		if (DEBUG) std::cerr << "Hello, iterator (in iterator (char *)) " << this << ", len=" << this->length << ", pointing at " << &p << std::endl;
-	}
-
-
-	/* Tests if these two iterators point to the same position */
-	bool string::iterator::operator==(const string::iterator &rhs) const {
-		return (p == rhs.p);
-	}
-
-	/* Tests if these two iterators DON'T point to the same position */
-	bool string::iterator::operator!=(const string::iterator &rhs) const {
-		return (p != rhs.p);
-	}
-
-	bool string::iterator::operator<(const string::iterator &rhs) const {
-		return (p < rhs.p); // XXX: Backwards or not?
-	}
-
-	bool string::iterator::operator>(const string::iterator &rhs) const {
-		return (p > rhs.p); // XXX: Backwards or not?
-	}
-
-	bool string::iterator::operator<=(const string::iterator &rhs) const {
-		return (p < rhs.p || p == rhs.p); // XXX: Backwards or not?
-	}
-
-	bool string::iterator::operator>=(const string::iterator &rhs) const {
-		return (p > rhs.p || p == rhs.p); // XXX: Backwards or not?
-	}
-	
-	/* Dereference operator, return a reference to the currently pointed-to character */
-	char &string::iterator::operator*(void) {
-		if (DEBUG) std::cerr << "in iterator::operator* for " << this << "; p=" << &p << ", base=" << &base << ", length=" << this->length << ")" << std::endl;
-		return *p;
-	}
-
-	char *string::iterator::operator->(void) {
-		return p;
-	}
-
-	char &string::iterator::operator[](const int offset) {
-		return *(p + offset);
 	}
 
 	/* Move the iterator forward one step */
@@ -597,5 +608,6 @@ namespace exscape {
 	 * End of string::iterator implementation
 	 *
 	 */
+
 
 } // end namespace
