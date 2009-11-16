@@ -25,7 +25,7 @@ namespace exscape {
 					iterator_base(void);
 					iterator_base(const iterator_base &rhs);
 					//iterator_base& operator=(const iterator_base &rhs);
-					iterator_base(char *in_ptr);
+					iterator_base(char *in_ptr, bool);
 
 					/* Destructor */
 					~iterator_base();

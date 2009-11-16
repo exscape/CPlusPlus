@@ -474,8 +474,8 @@ namespace exscape {
 	}
 
 	/* Most-used constructor; used by string to pass a pointer to the string base */
-	string::iterator_base::iterator_base(char *in_ptr) : base(in_ptr), p(in_ptr), length(0) {
-		if (this->base != NULL)
+	string::iterator_base::iterator_base(char *in_ptr, bool force_len_zero) : base(in_ptr), p(in_ptr), length(0) {
+		if (this->base != NULL && !force_len_zero)
 			this->length = strlen(this->base);
 		if (DEBUG) std::cerr << "Hello, iterator_base (in iterator_base (char *)) " << this << ", len=" << this->length << ", pointing at " << &p << std::endl;
 	}
@@ -561,9 +561,7 @@ namespace exscape {
 	}
 
 	/* Most-used constructor; used by string to pass a pointer to the string base */
-	string::iterator::iterator(char *in_ptr) : iterator_base(in_ptr) {
-		if (this->base != NULL)
-			this->length = strlen(this->base);
+	string::iterator::iterator(char *in_ptr) : iterator_base(in_ptr, false) {
 		if (DEBUG) std::cerr << "Hello, iterator (in iterator (char *)) " << this << ", len=" << this->length << ", pointing at " << &p << std::endl;
 	}
 
@@ -679,9 +677,7 @@ namespace exscape {
 	}
 
 	/* Most-used constructor; used by string to pass a pointer to the string base */
-	string::reverse_iterator::reverse_iterator(char *in_ptr) : iterator_base(in_ptr) {
-		if (this->base != NULL)
-			this->length = strlen(this->base);
+	string::reverse_iterator::reverse_iterator(char *in_ptr) : iterator_base(in_ptr, true) {
 		if (DEBUG) std::cerr << "Hello, reverse_iterator (in reverse_iterator (char *)) " << this << ", len=" << this->length << ", pointing at " << &p << std::endl;
 	}
 
