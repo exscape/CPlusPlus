@@ -11,6 +11,8 @@ int main() {
 	list.prepend(30);
 	list.append(8);
 	list.append(2);
+	list.prepend(0);
+	list.append(100);
 	list.dump();
 
 	return 0;
