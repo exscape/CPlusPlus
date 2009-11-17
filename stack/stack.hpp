@@ -38,19 +38,19 @@ namespace exscape {
 		/* Protected methods */
 			void init(void);
 			void free();
-			static void copy(stack<Type> &dst, stack<Type> const &src);
+			static void copy(stack<Type> &dst, const stack<Type> &src);
 
 		public:
 		/* Constructors */
 			stack();
-			stack(Type const &elem);
-			stack(stack<Type> const &other);
+			stack(const Type &elem);
+			stack(const stack<Type> &other);
 		/* Destructor */
 			~stack();
 		/* Various public methods */
 			size_t size(void) const;
 			bool empty(void) const;
-			void push(Type const &elem);
+			void push(const Type &elem);
 			Type pop(void);
 			Type &top(void);
 			void dump(void) const; // For debugging purposes
@@ -61,7 +61,7 @@ namespace exscape {
 	};
 
 	/* A STATIC class method that copies one stack to another */
-	template <typename Type> void stack<Type>::copy(stack<Type> &dst, stack<Type> const &src) {
+	template <typename Type> void stack<Type>::copy(stack<Type> &dst, const stack<Type> &src) {
 		if (DEBUG) std::cerr << "In stack::copy() for destination stack=" << &dst << " and source stack=" << &src << std::endl;
 		
 		if (&dst == &src) /* Don't copy self to self */
@@ -113,14 +113,14 @@ namespace exscape {
 	}
 
 	/* Create a stack containing "elem" */
-	template <typename Type> stack<Type>::stack(Type const &elem) {
+	template <typename Type> stack<Type>::stack(const Type &elem) {
 		if (DEBUG) std::cerr << "Hello, stack " << this << ", with an argument!" << std::endl;
 		this->init();
 		this->push(elem);
 	}
 
 	/* Copy constructor; create an exact copy of "other" */
-	template <typename Type> stack<Type>::stack(stack<Type> const &other) {
+	template <typename Type> stack<Type>::stack(const stack<Type> &other) {
 		if (DEBUG) std::cerr << "In copy constructor for stack " << this << std::endl;
 		this->init();
 		stack::copy(*this, other);
@@ -142,7 +142,7 @@ namespace exscape {
 	}
 
 	/* Adds an element to the top of the stack */
-	template <typename Type> void stack<Type>::push(Type const &elem) {
+	template <typename Type> void stack<Type>::push(const Type &elem) {
 		node *n = new node;
 		n->data = elem;
 		n->next = this->head;
