@@ -181,7 +181,7 @@ namespace exscape {
 			bool operator!=(const string &) const;
 			friend std::ostream &operator<<(std::ostream &, string);
 			friend std::istream &operator>>(std::istream &, string &);
-			void dump(void) const; // XXX: Debugging
+			void dump(void) const;
 			string::iterator begin(void) const;
 			string::iterator end(void) const;
 			string::reverse_iterator rbegin(void) const;

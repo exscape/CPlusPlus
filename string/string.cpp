@@ -400,7 +400,6 @@ namespace exscape {
 		if (length == 0)
 			return exscape::string("");
 
-		// XXX! Is this really enough?
 		if ((size_t)(start + length) > this->_length)
 			throw std::out_of_range("start+length in string::substr() is past the boundaries of the string");
 
@@ -492,19 +491,19 @@ namespace exscape {
 	}
 
 	bool string::iterator_base::operator<(const string::iterator_base &rhs) const {
-		return (p < rhs.p); // XXX: Backwards or not?
+		return (p < rhs.p);
 	}
 
 	bool string::iterator_base::operator>(const string::iterator_base &rhs) const {
-		return (p > rhs.p); // XXX: Backwards or not?
+		return (p > rhs.p);
 	}
 
 	bool string::iterator_base::operator<=(const string::iterator_base &rhs) const {
-		return (p < rhs.p || p == rhs.p); // XXX: Backwards or not?
+		return (p <= rhs.p);
 	}
 
 	bool string::iterator_base::operator>=(const string::iterator_base &rhs) const {
-		return (p > rhs.p || p == rhs.p); // XXX: Backwards or not?
+		return (p >= rhs.p);
 	}
 	
 	/* Dereference operator, return a reference to the currently pointed-to character */
