@@ -33,24 +33,24 @@ namespace exscape {
 			~LinkedList();
 			//void init();
 			void clear();
-			size_t length() const;
+			size_t size() const;
 			bool empty() const;
 			void push_front(const Type &);
 			void push_back(const Type &);
 			void pop_front();
 			Type &front();
 			const Type &front() const;
-			// Type &back();
-			// const Type &back() const;
+			Type &back();
+			const Type &back() const;
 			void dump() const; // XXX: Debugging only, until iterator support is added
 
 		private:
 			struct node *head;
 			struct node *tail;
-			size_t _length;
+			size_t _size;
 	};
 
-	template <typename Type> LinkedList<Type>::LinkedList() : head(NULL), tail(NULL), _length(0) {
+	template <typename Type> LinkedList<Type>::LinkedList() : head(NULL), tail(NULL), _size(0) {
 		if (DEBUG) std::cerr << "Hello, LinkedList " << this << std::endl;
 	}
 
@@ -69,6 +69,7 @@ namespace exscape {
 	/* Add a node before the beginning of the list */
 	template <typename Type> void LinkedList<Type>::push_front(const Type &obj) {
 		if (DEBUG) std::cerr << "In LinkedList::push_front(" << obj << ") for list " << this << std::endl;
+
 		// Create the new node
 		node *new_node = new node;
 		new_node->next = this->head;
@@ -76,7 +77,7 @@ namespace exscape {
 
 		// Add the node to the list
 		this->head = new_node;
-		this->_length++;
+		this->_size++;
 		
 		// If this is the first node, make sure we have a valid tail pointer, too
 		if (this->tail == NULL) {
@@ -107,17 +108,17 @@ namespace exscape {
 		// Add the new node to the list
 		this->tail->next = new_node;
 		this->tail = new_node;
-		this->_length++;
+		this->_size++;
 
 		if (DEBUG) this->dump();
 	}
 
-	template <typename Type> inline size_t LinkedList<Type>::length() const {
-		return this->_length;
+	template <typename Type> inline size_t LinkedList<Type>::size() const {
+		return this->_size;
 	}
 
 	template <typename Type> inline bool LinkedList<Type>::empty() const {
-		return (this->_length == 0);
+		return (this->_size == 0);
 	}
 
 	template <typename Type> void LinkedList<Type>::clear() {
@@ -138,7 +139,7 @@ namespace exscape {
 
 		this->head = NULL;
 		this->tail = NULL;
-		this->_length = 0;
+		this->_size = 0;
 	}
 
 	/* Removes the frontmost (head) element */
@@ -150,31 +151,46 @@ namespace exscape {
 		node *new_head = this->head->next;
 		delete this->head;
 		this->head = new_head;
-		this->_length--;
+		this->_size--;
 
 		if (DEBUG) this->dump();
 	}
 
-	// Type &front();
-	template <typename Type> Type &LinkedList<Type>::front() {
-		if (DEBUG) std::cerr << "In Type &LinkedList::front for list " << this << std::endl;
+	template <typename Type> inline Type &LinkedList<Type>::front() {
+		if (DEBUG >= 2) std::cerr << "In Type &LinkedList::front for list " << this << std::endl;
 		if (this->head == NULL)
 			throw std::runtime_error("Tried to call LinkedList::front() on an empty list");
 
 		return this->head->data;
 	}
 
-	template <typename Type> const Type &LinkedList<Type>::front() const {
-		if (DEBUG) std::cerr << "In const Type &LinkedList::front for list " << this << std::endl;
+	template <typename Type> inline const Type &LinkedList<Type>::front() const {
+		if (DEBUG >= 2) std::cerr << "In const Type &LinkedList::front for list " << this << std::endl;
 		if (this->head == NULL)
 			throw std::runtime_error("Tried to call LinkedList::front() on an empty list");
 
 		return this->head->data;
+	}
+
+	template <typename Type> inline Type &LinkedList<Type>::back() {
+		if (DEBUG >= 2) std::cerr << "In Type &LinkedList::back for list " << this << std::endl;
+		if (this->tail == NULL)
+			throw std::runtime_error("Tried to call LinkedList::back() on an empty list");
+
+		return this->tail->data;
+	}
+
+	template <typename Type> inline const Type &LinkedList<Type>::back() const {
+		if (DEBUG >= 2) std::cerr << "In const Type &LinkedList::back for list " << this << std::endl;
+		if (this->tail == NULL)
+			throw std::runtime_error("Tried to call LinkedList::back() on an empty list");
+
+		return this->tail->data;
 	}
 
 	template <typename Type> void LinkedList<Type>::dump() const {
 //		if (DEBUG) std::cerr << "In LinkedList::dump() for list " << this << std::endl;
-		std::cout << "List " << this << " (length " << this->length() << "): ";
+		std::cout << "List " << this << " (size " << this->size() << "): ";
 		for (node *current = this->head; current != NULL; current = current->next) {
 			std::cout << current->data << " ";
 		}

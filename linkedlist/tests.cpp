@@ -16,14 +16,22 @@ int main() {
 	list.push_back(100);
 	list.pop_front();
 	list.front() += 2000;
+	list.back() += 500;
 	list.dump();
 
+/*
 	std::cout << std::endl << "Custom, temporary \"iterator\":" << std::endl;
 	while (!list.empty()) {
 		std::cout << list.front() << " ";
 		list.pop_front();
 	}
 	std::cout << std::endl;
+*/
+
+	list.clear();
+	list.dump();
+	list.push_back(10);
+	list.dump();
 
 	return 0;
 }
