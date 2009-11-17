@@ -5,14 +5,16 @@ int main() {
 	using namespace exscape;
 	LinkedList<int> list;
 
-	list.prepend(10);
-	list.prepend(20);
-	list.append(5);
-	list.prepend(30);
-	list.append(8);
-	list.append(2);
-	list.prepend(0);
-	list.append(100);
+	list.push_front(10);
+	list.push_front(20);
+	list.push_back(5);
+	list.push_front(30);
+	list.push_back(8);
+	list.pop_front();
+	list.push_back(2);
+	list.push_front(0);
+	list.push_back(100);
+	list.pop_front();
 	list.dump();
 
 	return 0;

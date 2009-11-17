@@ -27,8 +27,13 @@ namespace exscape {
 			//void init();
 			void clear();
 			size_t length() const;
-			void prepend(const Type &);
-			void append(const Type &);
+			void push_front(const Type &);
+			void push_back(const Type &);
+			void pop_front();
+			// Type &front();
+			// const Type &front() const;
+			// Type &back();
+			// const Type &back() const;
 			void dump() const; // XXX: Debugging only, until iterator support is added
 
 		private:
@@ -54,8 +59,8 @@ namespace exscape {
 */
 
 	/* Add a node before the beginning of the list */
-	template <typename Type> void LinkedList<Type>::prepend(const Type &obj) {
-		if (DEBUG) std::cerr << "In LinkedList::prepend(" << obj << ") for list " << this << std::endl;
+	template <typename Type> void LinkedList<Type>::push_front(const Type &obj) {
+		if (DEBUG) std::cerr << "In LinkedList::push_front(" << obj << ") for list " << this << std::endl;
 		// Create the new node
 		node *new_node = new node;
 		new_node->next = this->head;
@@ -74,13 +79,13 @@ namespace exscape {
 		if (DEBUG) this->dump();
 	}
 
-	/* Append a node to the list */
-	template <typename Type> void LinkedList<Type>::append(const Type &obj) {
-		if (DEBUG) std::cerr << "In LinkedList::append(" << obj << ") for list " << this << std::endl;
+	/* push_back a node to the list */
+	template <typename Type> void LinkedList<Type>::push_back(const Type &obj) {
+		if (DEBUG) std::cerr << "In LinkedList::push_back(" << obj << ") for list " << this << std::endl;
 		
-		// If the list is empty, appending == prepending, so...
+		// If the list is empty, push_back == push_front, so...
 		if (this->head == NULL) {
-			this->prepend(obj);
+			this->push_front(obj);
 			return;
 		}
 
@@ -121,6 +126,21 @@ namespace exscape {
 
 		this->head = NULL;
 		this->tail = NULL;
+		this->_length = 0;
+	}
+
+	/* Removes the frontmost (head) element */
+	template <typename Type> void LinkedList<Type>::pop_front() {
+		if (DEBUG) std::cerr << "In LinkedList::pop_front() for list " << this << std::endl;
+		if (this->head == NULL)
+			return; // XXX: throw exception?
+		
+		node *new_head = this->head->next;
+		delete this->head;
+		this->head = new_head;
+		this->_length--;
+
+		if (DEBUG) this->dump();
 	}
 
 	template <typename Type> void LinkedList<Type>::dump() const {
