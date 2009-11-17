@@ -2,11 +2,18 @@
 #define _LINKEDLIST_HPP
 
 #include <iostream> /* debugging */
+#include <stdexcept>
 #include <assert.h>
 
 #ifndef DEBUG
 #define DEBUG 2
 #endif
+
+// TODO:
+// * Doubly-linked list, with pop_back() functionality
+//   * XXX: Add this before it gets too complicated!
+// * Iterators, when everything else is done.
+//   * Including const_iterator, and perhaps even reverse_iterator and const_reverse_iterator
 
 namespace exscape {
 	template <typename Type>
@@ -27,11 +34,12 @@ namespace exscape {
 			//void init();
 			void clear();
 			size_t length() const;
+			bool empty() const;
 			void push_front(const Type &);
 			void push_back(const Type &);
 			void pop_front();
-			// Type &front();
-			// const Type &front() const;
+			Type &front();
+			const Type &front() const;
 			// Type &back();
 			// const Type &back() const;
 			void dump() const; // XXX: Debugging only, until iterator support is added
@@ -108,6 +116,10 @@ namespace exscape {
 		return this->_length;
 	}
 
+	template <typename Type> inline bool LinkedList<Type>::empty() const {
+		return (this->_length == 0);
+	}
+
 	template <typename Type> void LinkedList<Type>::clear() {
 		if (DEBUG) std::cerr << "In LinkedList::clear() for list " << this << std::endl;
 
@@ -141,6 +153,23 @@ namespace exscape {
 		this->_length--;
 
 		if (DEBUG) this->dump();
+	}
+
+	// Type &front();
+	template <typename Type> Type &LinkedList<Type>::front() {
+		if (DEBUG) std::cerr << "In Type &LinkedList::front for list " << this << std::endl;
+		if (this->head == NULL)
+			throw std::runtime_error("Tried to call LinkedList::front() on an empty list");
+
+		return this->head->data;
+	}
+
+	template <typename Type> const Type &LinkedList<Type>::front() const {
+		if (DEBUG) std::cerr << "In const Type &LinkedList::front for list " << this << std::endl;
+		if (this->head == NULL)
+			throw std::runtime_error("Tried to call LinkedList::front() on an empty list");
+
+		return this->head->data;
 	}
 
 	template <typename Type> void LinkedList<Type>::dump() const {
