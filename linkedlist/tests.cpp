@@ -17,7 +17,7 @@ int main() {
 	list.pop_front();
 	list.front() += 2000;
 	list.back() += 500;
-	list.dump();
+	list.dump(true);
 
 /*
 	std::cout << std::endl << "Custom, temporary \"iterator\":" << std::endl;

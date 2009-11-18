@@ -42,7 +42,7 @@ namespace exscape {
 			const Type &front() const;
 			Type &back();
 			const Type &back() const;
-			void dump() const; // XXX: Debugging only, until iterator support is added
+			void dump(bool verbose) const; // XXX: Debugging only, until iterator support is added
 
 		private:
 			struct node *head;
@@ -188,13 +188,21 @@ namespace exscape {
 		return this->tail->data;
 	}
 
-	template <typename Type> void LinkedList<Type>::dump() const {
+	template <typename Type> void LinkedList<Type>::dump(bool verbose = false) const {
 //		if (DEBUG) std::cerr << "In LinkedList::dump() for list " << this << std::endl;
-		std::cout << "List " << this << " (size " << this->size() << "): ";
-		for (node *current = this->head; current != NULL; current = current->next) {
-			std::cout << current->data << " ";
+		if (verbose == false) {
+			std::cout << "List " << this << " (size " << this->size() << "): " << std::endl;
+			for (node *current = this->head; current != NULL; current = current->next) {
+				std::cout << current->data << " ";
+			}
 		}
-		std::cout << std::endl;
+		else {
+			std::cout << std::endl << "Verbose dump of list " << this << " (size " << this->size() << "): ";
+			for (node *current = this->head; current != NULL; current = current->next) {
+				std::cout << " node " << current << ", next " << current->next << ": " << current->data << std::endl;
+			}
+		}
+			std::cout << std::endl;
 	}
 
 } // end namespace
