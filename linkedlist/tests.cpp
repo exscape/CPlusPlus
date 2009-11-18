@@ -14,8 +14,12 @@ int main() {
 	list.push_back(2);
 	list.push_front(0);
 	list.push_back(100);
+	list.push_front(200);
 	list.pop_front();
+	list.pop_back();
 	list.front() += 2000;
+	list.pop_back();
+	list.push_front(60);
 	list.back() += 500;
 	list.dump(true);
 

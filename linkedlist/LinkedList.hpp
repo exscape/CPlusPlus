@@ -10,8 +10,6 @@
 #endif
 
 // TODO:
-// * Doubly-linked list, with pop_back() functionality
-//   * XXX: Add this before it gets too complicated!
 // * Iterators, when everything else is done.
 //   * Including const_iterator, and perhaps even reverse_iterator and const_reverse_iterator
 
@@ -24,6 +22,7 @@ namespace exscape {
 	class LinkedList {
 		private:
 			struct node {
+				struct node *prev;
 				struct node *next;
 				Type data;
 			};
@@ -38,6 +37,7 @@ namespace exscape {
 			void push_front(const Type &);
 			void push_back(const Type &);
 			void pop_front();
+			void pop_back();
 			Type &front();
 			const Type &front() const;
 			Type &back();
@@ -72,12 +72,18 @@ namespace exscape {
 
 		// Create the new node
 		node *new_node = new node;
+		new_node->prev = NULL;
 		new_node->next = this->head;
 		new_node->data = obj;
 
 		// Add the node to the list
+		node *old_head = this->head;
 		this->head = new_node;
 		this->_size++;
+
+		// Make sure the old head points back at the new one
+		if (old_head != NULL)
+			old_head->prev = this->head;
 		
 		// If this is the first node, make sure we have a valid tail pointer, too
 		if (this->tail == NULL) {
@@ -88,7 +94,7 @@ namespace exscape {
 		if (DEBUG) this->dump();
 	}
 
-	/* push_back a node to the list */
+	/* Add a node to the end of the list */
 	template <typename Type> void LinkedList<Type>::push_back(const Type &obj) {
 		if (DEBUG) std::cerr << "In LinkedList::push_back(" << obj << ") for list " << this << std::endl;
 		
@@ -103,6 +109,7 @@ namespace exscape {
 		// Create the new node
 		node *new_node = new node;
 		new_node->next = NULL;
+		new_node->prev = this->tail;
 		new_node->data = obj;
 
 		// Add the new node to the list
@@ -114,6 +121,13 @@ namespace exscape {
 	}
 
 	template <typename Type> inline size_t LinkedList<Type>::size() const {
+		if (DEBUG) { // XXX: Remove this whole block sooner or later
+			size_t len = 0;
+			for (node *current = this->head; current != NULL; current = current->next)
+				len++;
+			assert(len == this->_size);
+		}
+
 		return this->_size;
 	}
 
@@ -123,11 +137,6 @@ namespace exscape {
 
 	template <typename Type> void LinkedList<Type>::clear() {
 		if (DEBUG) std::cerr << "In LinkedList::clear() for list " << this << std::endl;
-
-		if (head == NULL) {
-			this->tail = NULL; // just to be sure that both are NULL
-			return;
-		}
 
 		node *current = this->head;
 		while (current != NULL) {
@@ -148,10 +157,43 @@ namespace exscape {
 		if (this->head == NULL)
 			return; // XXX: throw exception?
 		
+		// "Create" the new head
 		node *new_head = this->head->next;
+		// Delete the old one
 		delete this->head;
+		// Set the new one
 		this->head = new_head;
 		this->_size--;
+
+		// Set the prev pointer correctly for the new head
+		if (this->head != NULL)
+			this->head->prev = NULL;
+
+		// If the list is now empty, reset all member variables to 0
+		if (this->head == NULL)
+			this->clear();
+
+		if (DEBUG) this->dump();
+	}
+
+	/* Removes the last (tail) element */
+	template <typename Type> void LinkedList<Type>::pop_back() {
+		if (DEBUG) std::cerr << "In LinkedList::pop_back() for list " << this << std::endl;
+		if (this->tail == NULL)
+			return; // XXX: throw exception?
+
+		// "Create" the new tail
+		node *new_tail = this->tail->prev;
+		// Delete the old one
+		delete this->tail;
+		// Set the new one
+		this->tail = new_tail;
+		this->_size--;
+		
+		if (this->tail != NULL)
+			this->tail->next = NULL;
+		else if (this->tail == NULL)
+			this->clear(); // If the list is now empty, reset all member variables to 0
 
 		if (DEBUG) this->dump();
 	}
@@ -191,15 +233,16 @@ namespace exscape {
 	template <typename Type> void LinkedList<Type>::dump(bool verbose = false) const {
 //		if (DEBUG) std::cerr << "In LinkedList::dump() for list " << this << std::endl;
 		if (verbose == false) {
-			std::cout << "List " << this << " (size " << this->size() << "): " << std::endl;
+			std::cout << "List " << this << " (size " << this->size() << "): ";
 			for (node *current = this->head; current != NULL; current = current->next) {
 				std::cout << current->data << " ";
 			}
 		}
 		else {
-			std::cout << std::endl << "Verbose dump of list " << this << " (size " << this->size() << "): ";
+			std::cout << std::endl << "Verbose dump of list " << this << " (size " << this->size() << "):" << std::endl;
 			for (node *current = this->head; current != NULL; current = current->next) {
-				std::cout << " node " << current << ", next " << current->next << ": " << current->data << std::endl;
+			//	std::cout << " node " << current << ", prev " << current->prev << ", next " << current->next << ": " << current->data << std::endl;
+				std::cout << current->prev << " <- " << current << " -> " << current->next << ": " << current->data << std::endl;
 			}
 		}
 			std::cout << std::endl;
