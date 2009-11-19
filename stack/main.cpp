@@ -1,9 +1,12 @@
 #include <iostream>
 #include <string>
-#include "stack.hpp"
+#include <deque>
+#include "standalone_stack.hpp"
+#include "../linkedlist/LinkedList.hpp"
 
 int main() {
-	exscape::stack<int> s;
+//	exscape::stack<int, exscape::LinkedList<int> > s;
+	exscape::stack<int, std::deque<int> > s;
 	s.push(10);
 	s.push(20);
 	s.push(30);
