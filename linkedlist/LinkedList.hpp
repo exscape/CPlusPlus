@@ -15,11 +15,12 @@
 
 namespace exscape {
 	template <typename Type>
-	/*
-	 * Implements a doubly-linked list.
+	/**
+	 * A class that implements a doubly-linked list.
 	 */
 	class LinkedList {
 		private:
+			/** A basic doubly-linked list structure */
 			struct node {
 				struct node *prev;
 				struct node *next;
@@ -27,10 +28,10 @@ namespace exscape {
 			};
 
 		public:
-			typedef Type value_type;
-			typedef Type & reference;
-			typedef const Type & const_reference;
-			typedef size_t size_type;
+			typedef Type value_type; //!< A typedef to help compatibility with existing classes
+			typedef Type & reference; //!< A typedef to help compatibility with existing classes
+			typedef const Type & const_reference; //!< A typedef to help compatibility with existing classes
+			typedef size_t size_type; //!< A typedef to help compatibility with existing classes
 
 		/* Constructors and destructors */
 			LinkedList();
@@ -55,21 +56,30 @@ namespace exscape {
 			LinkedList<Type> &operator=(const LinkedList<Type> &);
 
 		private:
-			struct node *head;
-			struct node *tail;
-			size_t _size;
+			struct node *head; //!< A pointer to the first element of the linked list
+			struct node *tail; //!< A pointer to the last element of the linked list
+			size_t _size; //!< The size/length of the linked list, in number of elements
 	};
 
+	/**
+	 * \brief The default constructor, does nothing but initialize all members to zero, thus creating an empty list 
+	 */
 	template <typename Type> LinkedList<Type>::LinkedList() : head(NULL), tail(NULL), _size(0) {
 		if (DEBUG) std::cerr << "Hello, LinkedList " << this << std::endl;
 	}
 
+	/** 
+	 * \brief The destructor. Frees all memory associated with the list.
+	 */
 	template <typename Type> LinkedList<Type>::~LinkedList() {
 		this->clear();
 		if (DEBUG) std::cerr << "Goodbye, LinkedList " << this << std::endl;
 	}
 
-	/* Add a node before the beginning of the list */
+	/** 
+	 * \brief Add a node before the beginning of the list.
+	 * \param obj The object to add to the list
+	 */
 	template <typename Type> void LinkedList<Type>::push_front(const Type &obj) {
 		if (DEBUG) std::cerr << "In LinkedList::push_front(" << obj << ") for list " << this << std::endl;
 
@@ -97,7 +107,10 @@ namespace exscape {
 		if (DEBUG) this->dump();
 	}
 
-	/* Add a node to the end of the list */
+	/** 
+	 * \brief Add a node after the end of the list.
+	 * \param obj The object to add to the list
+	 */
 	template <typename Type> void LinkedList<Type>::push_back(const Type &obj) {
 		if (DEBUG) std::cerr << "In LinkedList::push_back(" << obj << ") for list " << this << std::endl;
 		
@@ -123,6 +136,10 @@ namespace exscape {
 		if (DEBUG) this->dump();
 	}
 
+	/**
+	 * \brief Returns the size/length of the link, in number of elements.
+	 * \return The number of elements in the list.
+	 */
 	template <typename Type> inline size_t LinkedList<Type>::size() const {
 		if (DEBUG) { // XXX: Remove this whole block sooner or later
 			size_t len = 0;
@@ -134,10 +151,17 @@ namespace exscape {
 		return this->_size;
 	}
 
+	/**
+	 * \brief Returns whether this list is empty or not.
+	 * \return true if the list is empty (size is 0), otherwise false.
+	 */
 	template <typename Type> inline bool LinkedList<Type>::empty() const {
 		return (this->_size == 0);
 	}
 
+	/**
+	 * \brief Private function that frees all memory associated with the list and resets it to its "ground state".
+	 */
 	template <typename Type> void LinkedList<Type>::clear() {
 		if (DEBUG) std::cerr << "In LinkedList::clear() for list " << this << std::endl;
 
@@ -157,7 +181,9 @@ namespace exscape {
 		this->_size = 0;
 	}
 
-	/* Removes the frontmost (head) element */
+	/** 
+	 * \brief Removes the frontmost (head) element.
+	 */
 	template <typename Type> void LinkedList<Type>::pop_front() {
 		if (DEBUG) std::cerr << "In LinkedList::pop_front() for list " << this << std::endl;
 		if (this->head == NULL)
@@ -182,7 +208,9 @@ namespace exscape {
 		if (DEBUG) this->dump();
 	}
 
-	/* Removes the last (tail) element */
+	/** 
+	 * \brief Removes the last (tail) element 
+	 */
 	template <typename Type> void LinkedList<Type>::pop_back() {
 		if (DEBUG) std::cerr << "In LinkedList::pop_back() for list " << this << std::endl;
 		if (this->tail == NULL)
@@ -204,6 +232,10 @@ namespace exscape {
 		if (DEBUG) this->dump();
 	}
 
+	/** 
+	 * \brief Gets a read-write reference to the first element of the list.
+	 * \return A read-write reference to the first element of the list.
+	 */
 	template <typename Type> inline Type &LinkedList<Type>::front() {
 		if (DEBUG >= 2) std::cerr << "In Type &LinkedList::front for list " << this << std::endl;
 		if (this->head == NULL)
@@ -212,6 +244,10 @@ namespace exscape {
 		return this->head->data;
 	}
 
+	/** 
+	 * \brief Gets a const reference to the first element of the list.
+	 * \return A const reference to the first element of the list.
+	 */
 	template <typename Type> inline const Type &LinkedList<Type>::front() const {
 		if (DEBUG >= 2) std::cerr << "In const Type &LinkedList::front for list " << this << std::endl;
 		if (this->head == NULL)
@@ -220,6 +256,10 @@ namespace exscape {
 		return this->head->data;
 	}
 
+	/**
+	 * \brief Gets a read-write reference to the last element of the list.
+	 * \return A read-write reference to the last element of the list.
+	 */
 	template <typename Type> inline Type &LinkedList<Type>::back() {
 		if (DEBUG >= 2) std::cerr << "In Type &LinkedList::back for list " << this << std::endl;
 		if (this->tail == NULL)
@@ -228,6 +268,10 @@ namespace exscape {
 		return this->tail->data;
 	}
 
+	/** 
+	 * \brief Gets a const reference to the last element of the list.
+	 * \return A const reference to the last element of the list.
+	 */
 	template <typename Type> inline const Type &LinkedList<Type>::back() const {
 		if (DEBUG >= 2) std::cerr << "In const Type &LinkedList::back for list " << this << std::endl;
 		if (this->tail == NULL)
@@ -236,6 +280,11 @@ namespace exscape {
 		return this->tail->data;
 	}
 
+	/** 
+	 * \brief Compares two lists.
+	 * \param other The list to compare this one with.
+	 * \return true if the lists are equal, false otherwise.
+	 */
 	template <typename Type> bool LinkedList<Type>::operator==(const LinkedList<Type> &other) const {
 		if (this == &other)
 			return true;
@@ -255,10 +304,20 @@ namespace exscape {
 		return true;
 	}
 
+	/** 
+	 * \brief Compares two lists.
+	 * \param other The list to compare this one with.
+	 * \return true if the lists differ, false otherwise.
+	 */
 	template <typename Type> bool LinkedList<Type>::operator!=(const LinkedList<Type> &other) const {
 		return !(*this == other);
 	}
 
+	/** 
+	 * \brief Replaces this lists contents with the contents of list \a other.
+	 * \param other The list to copy from.
+	 * \return A reference to the new list.
+	 */
 	template <typename Type> LinkedList<Type> &LinkedList<Type>::operator=(const LinkedList<Type> &other) {
 		if (DEBUG) std::cerr << "In operator= for LinkedList " << this << std::endl;
 		if (this == &other)
@@ -273,6 +332,9 @@ namespace exscape {
 		return *this;
 	}
 
+	/** 
+	 * \brief A debugging function that dumps the entire content of the list.
+	 */
 	template <typename Type> void LinkedList<Type>::dump(bool verbose = false) const {
 //		if (DEBUG) std::cerr << "In LinkedList::dump() for list " << this << std::endl;
 		if (verbose == false) {
