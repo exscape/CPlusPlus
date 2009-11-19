@@ -49,6 +49,7 @@ namespace exscape {
 			void dump(bool verbose) const; // XXX: Debugging only, until iterator support is added
 			bool operator==(const LinkedList<Type> &) const;
 			bool operator!=(const LinkedList<Type> &) const;
+			LinkedList<Type> &operator=(const LinkedList<Type> &);
 
 		private:
 			struct node *head;
@@ -260,6 +261,20 @@ namespace exscape {
 
 	template <typename Type> bool LinkedList<Type>::operator!=(const LinkedList<Type> &other) const {
 		return !(*this == other);
+	}
+
+	template <typename Type> LinkedList<Type> &LinkedList<Type>::operator=(const LinkedList<Type> &other) {
+		if (DEBUG) std::cerr << "In operator= for LinkedList " << this << std::endl;
+		if (this == &other)
+			return *this;
+
+		this->clear();
+
+		for (node *other_n = other.head; other_n != NULL; other_n = other_n->next) {
+			this->push_back(other_n->data);
+		}
+
+		return *this;
 	}
 
 	template <typename Type> void LinkedList<Type>::dump(bool verbose = false) const {

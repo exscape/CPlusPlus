@@ -43,9 +43,8 @@ int main() {
 	l1.push_back(20);
 	l1.push_back(30);
 
-	l2.push_back(10);
-	l2.push_back(20);
-	l2.push_back(30);
+	l2 = l1;
+
 	if (l1 == l2)
 		std::cerr << "OK: l1 == l2" << std::endl;
 	else
