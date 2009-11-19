@@ -23,20 +23,10 @@ int main() {
 	list.back() += 500;
 	list.dump(true);
 
-/*
-	std::cout << std::endl << "Custom, temporary \"iterator\":" << std::endl;
-	while (!list.empty()) {
-		std::cout << list.front() << " ";
-		list.pop_front();
-	}
-	std::cout << std::endl;
-*/
-
 	list.clear();
 	list.dump();
 	list.push_back(10);
 	list.dump();
-
 
 	LinkedList<int> l1, l2;
 	l1.push_back(10);
