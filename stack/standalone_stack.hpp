@@ -2,6 +2,8 @@
 #define _STANDALONE_STACK_HPP
 
 #include <iostream>
+#include <stdexcept>
+#include <exception>
 #include <typeinfo>
 
 #ifndef DEBUG
@@ -14,13 +16,21 @@ namespace exscape {
 	template <typename Type, class Container>
 	class stack {
 		private:
+		class StackUnderflowException : public std::runtime_error {
+			public:
+				StackUnderflowException() : std::runtime_error("StackUnderflowException") {}
+		};
+
+		private:
 			Container storage;
+
+		protected:
+			void clear();
 
 		public:
 		/* Constructors */
 			stack();
-			stack(const Type &elem);
-			//stack(const stack<Type> &other);
+			stack(const Container &);
 		/* Destructor */
 			~stack();
 		/* Various public methods */
@@ -30,11 +40,10 @@ namespace exscape {
 			void pop(void);
 			Type &top(void);
 			const Type &top(void) const;
-			void clear();
 			void dump(void); // For debugging purposes
 		/* Overloaded operators */
-//			bool operator==(const stack<Type> &other) const;
-//			bool operator!=(const stack<Type> &other) const;
+			bool operator==(const stack<Type, Container> &other) const;
+			bool operator!=(const stack<Type, Container> &other) const;
 //			stack<Type> & operator=(const stack<Type> &other);
 	};
 
@@ -43,20 +52,11 @@ namespace exscape {
 		if (DEBUG) std::cerr << "Hello, stack " << this << "! Container type = " << typeid(Container).name() << std::endl;
 	}
 
-	/* Create a stack containing "elem" */
-	template <typename Type, typename Container> stack<Type, Container>::stack(const Type &elem) {
-		if (DEBUG) std::cerr << "Hello, stack " << this << ", with an argument!" << std::endl;
-		this->push(elem);
-	}
-
-	/* Copy constructor; create an exact copy of "other" */
-/*
-	template <typename Type, typename Container> stack<Type, Container>::stack(const stack<Type, Container> &other) {
+	/* Create a stack with the contents of an existing container */
+	template <typename Type, typename Container> stack<Type, Container>::stack(const Container &other) {
 		if (DEBUG) std::cerr << "In copy constructor for stack " << this << std::endl;
-		this->init();
-		stack::copy(*this, other);
+		this->storage = other;
 	}
-*/
 
 	/* Destructor */
 	template <typename Type, typename Container> stack<Type, Container>::~stack() {
@@ -120,30 +120,20 @@ namespace exscape {
 	}
 
 	/* operator==, check if two stacks are equal (in size, elements and order) */
-/*
 	template <typename Type, typename Container> bool stack<Type, Container>::operator==(const stack<Type, Container> &other) const {
 		if (DEBUG) std::cerr << "Comparing stack " << this << " with stack " << &other << std::endl;
 		if (this == &other)
 			return true;
 		if (this->size() != other.size())
 			return false;
-
-		node *a = this->head;
-		node *b = other.head;
-		for (; b != NULL; a = a->next, b = b->next) {
-			if (a->data != b->data)
-				return false;
-		}
-
-		return true;
+		
+		return (this->storage == other.storage);
 	}
-*/
+
 	/* operator!=, check if two stacks are NOT equal - see operator== above */
-/*
 	template <typename Type, typename Container> bool stack<Type, Container>::operator!=(const stack<Type, Container> &other) const {
 		return !(*this == other);
 	}
-*/
 
 	/* operator=, replace the contents of this stack with "other" */
 /*
