@@ -1,9 +1,8 @@
 #include <iostream>
-#include <string>
-#include <deque>
-#include <vector>
-#include <list>
-#include "standalone_stack.hpp"
+//#include <deque>
+//#include <vector>
+//#include <list>
+#include "stack.hpp"
 #include "../linkedlist/LinkedList.hpp"
 
 //#define STORAGE_TYPE std::vector
@@ -45,6 +44,20 @@ int main() {
 		std::cerr << "OK: Copied s3 == s2" << std::endl;
 	else
 		std::cerr << "ERROR: Copied s3 != s2!" << std::endl;
+
+	std::cerr << "Trying underflow and copy empty stack" << std::endl;
+	exscape::stack<int, STORAGE_TYPE<int> > src;
+	src.push(10);
+	src.pop();
+	src.pop();
+	exscape::stack<int, STORAGE_TYPE<int> > dest;
+	dest = src;
+	dest.dump();
+
+	if (src == dest)
+		std::cerr << "OK: Copied src == dest" << std::endl;
+	else
+		std::cerr << "ERROR: Copied src != dest!" << std::endl;
 
 	return 0;
 }
