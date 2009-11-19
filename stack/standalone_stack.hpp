@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <stdexcept>
-#include <exception>
 #include <typeinfo>
 
 #ifndef DEBUG
@@ -15,12 +14,6 @@
 namespace exscape {
 	template <typename Type, class Container>
 	class stack {
-		private:
-		class StackUnderflowException : public std::runtime_error {
-			public:
-				StackUnderflowException() : std::runtime_error("StackUnderflowException") {}
-		};
-
 		private:
 			Container storage;
 
@@ -90,7 +83,7 @@ namespace exscape {
 	/* Returns a reference to the top element, without removing it */
 	template <typename Type, typename Container> Type &stack<Type, Container>::top(void) {
 		if (this->size() == 0)
-			throw StackUnderflowException();
+			throw std::out_of_range("Stack underflow in stack::top()");
 
 		return storage.back();
 	}
@@ -98,7 +91,7 @@ namespace exscape {
 	/* Returns a reference to the top element, without removing it */
 	template <typename Type, typename Container> const Type &stack<Type, Container>::top(void) const {
 		if (this->size() == 0)
-			throw StackUnderflowException();
+			throw std::out_of_range("Stack underflow in stack::top");
 
 		return storage.back();
 	}
