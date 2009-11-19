@@ -16,8 +16,7 @@
 namespace exscape {
 	template <typename Type>
 	/*
-	 * Implements a singly-linked list. Quite useless; I might change it to a doubly-linked at some point,
-	 * so that at least BidirectionalIterators can be supported.
+	 * Implements a doubly-linked list.
 	 */
 	class LinkedList {
 		private:
@@ -32,9 +31,11 @@ namespace exscape {
 			typedef Type & reference;
 			typedef const Type & const_reference;
 			typedef size_t size_type;
+
+		/* Constructors and destructors */
 			LinkedList();
 			~LinkedList();
-			//void init();
+		/* Public methods */
 			void clear();
 			size_t size() const;
 			bool empty() const;
@@ -47,6 +48,8 @@ namespace exscape {
 			Type &back();
 			const Type &back() const;
 			void dump(bool verbose) const; // XXX: Debugging only, until iterator support is added
+
+		/* Overloaded operators */
 			bool operator==(const LinkedList<Type> &) const;
 			bool operator!=(const LinkedList<Type> &) const;
 			LinkedList<Type> &operator=(const LinkedList<Type> &);
@@ -65,13 +68,6 @@ namespace exscape {
 		this->clear();
 		if (DEBUG) std::cerr << "Goodbye, LinkedList " << this << std::endl;
 	}
-
-/*
-	template <typename Type> void LinkedList<Type>::init() {
-		// XXX: Is this function required?
-		if (DEBUG) std::cerr << "In LinkedList::init() for list " << this << std::endl;
-	}
-*/
 
 	/* Add a node before the beginning of the list */
 	template <typename Type> void LinkedList<Type>::push_front(const Type &obj) {
@@ -165,7 +161,7 @@ namespace exscape {
 	template <typename Type> void LinkedList<Type>::pop_front() {
 		if (DEBUG) std::cerr << "In LinkedList::pop_front() for list " << this << std::endl;
 		if (this->head == NULL)
-			return; // XXX: throw exception?
+			return;
 		
 		// "Create" the new head
 		node *new_head = this->head->next;
@@ -190,7 +186,7 @@ namespace exscape {
 	template <typename Type> void LinkedList<Type>::pop_back() {
 		if (DEBUG) std::cerr << "In LinkedList::pop_back() for list " << this << std::endl;
 		if (this->tail == NULL)
-			return; // XXX: throw exception?
+			return;
 
 		// "Create" the new tail
 		node *new_tail = this->tail->prev;
