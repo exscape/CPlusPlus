@@ -1,3 +1,7 @@
+/**
+ * \file LinkedList.hpp
+ * \brief Implements a doubly-linked list storage container.
+ */
 #ifndef _LINKEDLIST_HPP
 #define _LINKEDLIST_HPP
 
@@ -6,13 +10,14 @@
 #include <assert.h>
 
 #ifndef DEBUG
-#define DEBUG 2
+#define DEBUG 2 //!< Sets the debug level. 0 = no debug output, 1 = very verbose, 2 = ridiculously verbose.
 #endif
 
 // TODO:
 // * Iterators, when everything else is done.
 //   * Including const_iterator, and perhaps even reverse_iterator and const_reverse_iterator
 
+/** My namespace. */
 namespace exscape {
 	template <typename Type>
 	/**
