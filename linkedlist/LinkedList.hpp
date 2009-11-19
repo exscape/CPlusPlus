@@ -160,7 +160,7 @@ namespace exscape {
 	}
 
 	/**
-	 * \brief Private function that frees all memory associated with the list and resets it to its "ground state".
+	 * \brief Frees all memory associated with the list and resets it to its "ground state".
 	 */
 	template <typename Type> void LinkedList<Type>::clear() {
 		if (DEBUG) std::cerr << "In LinkedList::clear() for list " << this << std::endl;
