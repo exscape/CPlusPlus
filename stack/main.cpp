@@ -6,9 +6,11 @@
 #include "standalone_stack.hpp"
 #include "../linkedlist/LinkedList.hpp"
 
+//#define STORAGE_TYPE std::vector
+#define STORAGE_TYPE exscape::LinkedList
+
 int main() {
-//	exscape::stack<int, exscape::LinkedList<int> > s;
-	exscape::stack<int, std::list<int> > s;
+	exscape::stack<int, STORAGE_TYPE<int> > s;
 	s.push(10);
 	s.push(20);
 	s.push(30);
@@ -16,26 +18,26 @@ int main() {
 	s.pop();
 	s.dump();
 
-	std::list<int> mylist;
-	mylist.push_back(500);
-	mylist.push_back(1000);
-	mylist.push_back(2000);
-
-	exscape::stack<int, std::list<int> > s2 (mylist);
+	exscape::stack<int, STORAGE_TYPE<int> > s2;
+	s2.push(10);
+	s2.push(20);
+	s2.push(30);
 	s2.dump();
+	s2.pop();
+	s2.dump();
+
+	if (s == s2)
+		std::cerr << "OK: s == s2!" << std::endl;
+	else
+		std::cerr << "ERROR: s != s2" << std::endl;
+
+	s2.pop();
+	s2.push(50);
 
 	if (s == s2)
 		std::cerr << "ERROR: s == s2!" << std::endl;
 	else
 		std::cerr << "OK: s != s2" << std::endl;
-
-	exscape::stack<int, std::list<int> > s3 (mylist);
-	s3.dump();
-
-	if (s2 != s3)
-		std::cerr << "ERROR: s2 != s3!" << std::endl;
-	else
-		std::cerr << "OK: s2 == s3" << std::endl;
 
 	return 0;
 }
