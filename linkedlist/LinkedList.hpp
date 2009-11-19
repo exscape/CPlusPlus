@@ -47,6 +47,8 @@ namespace exscape {
 			Type &back();
 			const Type &back() const;
 			void dump(bool verbose) const; // XXX: Debugging only, until iterator support is added
+			bool operator==(const LinkedList<Type> &);
+			bool operator!=(const LinkedList<Type> &);
 
 		private:
 			struct node *head;
@@ -235,6 +237,29 @@ namespace exscape {
 			throw std::runtime_error("Tried to call LinkedList::back() on an empty list");
 
 		return this->tail->data;
+	}
+
+	template <typename Type> bool LinkedList<Type>::operator==(const LinkedList<Type> &other) {
+		if (this == &other)
+			return true;
+		if (this->size() != other.size())
+			return false;
+
+		node *n1 = this->head;
+		node *n2 = other.head;
+		while (n1 != NULL) {
+			if (n1->data != n2->data)
+				return false;
+
+			n1 = n1->next;
+			n2 = n2->next;
+		}
+
+		return true;
+	}
+
+	template <typename Type> bool LinkedList<Type>::operator!=(const LinkedList<Type> &other) {
+		return !(*this == other);
 	}
 
 	template <typename Type> void LinkedList<Type>::dump(bool verbose = false) const {

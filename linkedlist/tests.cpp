@@ -37,5 +37,25 @@ int main() {
 	list.push_back(10);
 	list.dump();
 
+
+	LinkedList<int> l1, l2;
+	l1.push_back(10);
+	l1.push_back(20);
+	l1.push_back(30);
+
+	l2.push_back(10);
+	l2.push_back(20);
+	l2.push_back(30);
+	if (l1 == l2)
+		std::cerr << "OK: l1 == l2" << std::endl;
+	else
+		std::cerr << "ERROR: l1 != l2" << std::endl;
+	l2.pop_back();
+
+	if (l1 != l2)
+		std::cerr << "OK: l1 != l2" << std::endl;
+	else
+		std::cerr << "ERROR: l1 == l2" << std::endl;
+
 	return 0;
 }
