@@ -27,9 +27,9 @@ int main() {
 	s2.dump();
 
 	if (s == s2)
-		std::cerr << "OK: s == s2!" << std::endl;
+		std::cerr << "OK: s == s2" << std::endl;
 	else
-		std::cerr << "ERROR: s != s2" << std::endl;
+		std::cerr << "ERROR: s != s2!" << std::endl;
 
 	s2.pop();
 	s2.push(50);
@@ -38,6 +38,13 @@ int main() {
 		std::cerr << "ERROR: s == s2!" << std::endl;
 	else
 		std::cerr << "OK: s != s2" << std::endl;
+
+	exscape::stack<int, STORAGE_TYPE<int> > s3;
+	s3 = s2;
+	if (s3 == s2)
+		std::cerr << "OK: Copied s3 == s2" << std::endl;
+	else
+		std::cerr << "ERROR: Copied s3 != s2!" << std::endl;
 
 	return 0;
 }

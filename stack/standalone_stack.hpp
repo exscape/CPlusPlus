@@ -37,7 +37,7 @@ namespace exscape {
 		/* Overloaded operators */
 			bool operator==(const stack<Type, Container> &other) const;
 			bool operator!=(const stack<Type, Container> &other) const;
-//			stack<Type> & operator=(const stack<Type> &other);
+			stack<Type, Container> & operator=(const stack<Type, Container> &other);
 	};
 
 	/* Default constructor; create an empty stack */
@@ -129,19 +129,18 @@ namespace exscape {
 	}
 
 	/* operator=, replace the contents of this stack with "other" */
-/*
+
 	template <typename Type, typename Container> stack<Type, Container> & stack<Type, Container>::operator=(const stack<Type, Container> &other) {
 		if (DEBUG) std::cerr << "In operator= for stacks " << this << " and " << &other << std::endl;
 		if (this == &other)
 			return *this;
 
-		this->free();
+		this->clear();
 		if (other.size() == 0)
 			return *this; // Other stack is empty, so we're done
 
-		stack::copy(*this, other);
+		this->storage = other.storage;
 		return *this;
 	}
-*/
 } // end namespace
 #endif
