@@ -1,9 +1,9 @@
-TARGETS = main.o
-APP = main
+TARGETS = tests.o
+APP = tests
 program: ${TARGETS}
 	rm -f ${TARGETS} ${APP}
-	g++ -o main main.cpp -Wall ${FLAGS}
+	g++ -o tests tests.cpp -Wall ${FLAGS}
 #clean:
-#	rm -f main.o stack.o main
+#	rm -f stack.o tests
 debug:
 	make FLAGS="-DDEBUG=1 -O0 -ggdb3"
