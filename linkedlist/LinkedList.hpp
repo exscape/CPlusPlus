@@ -28,6 +28,10 @@ namespace exscape {
 			};
 
 		public:
+			typedef Type value_type;
+			typedef Type & reference;
+			typedef const Type & const_reference;
+			typedef size_t size_type;
 			LinkedList();
 			~LinkedList();
 			//void init();
@@ -137,6 +141,9 @@ namespace exscape {
 
 	template <typename Type> void LinkedList<Type>::clear() {
 		if (DEBUG) std::cerr << "In LinkedList::clear() for list " << this << std::endl;
+
+		if (this->tail == NULL)
+			this->head = NULL; // This can happen in pop_back(), and causes a double free
 
 		node *current = this->head;
 		while (current != NULL) {
