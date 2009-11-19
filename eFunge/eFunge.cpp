@@ -5,7 +5,7 @@
 #include <ctime>
 #include <stdint.h>
 #include <assert.h>
-#include "../stack.cpp"
+#include "../stack/stack.hpp"
 
 /*
  * PLEASE NOTE:
