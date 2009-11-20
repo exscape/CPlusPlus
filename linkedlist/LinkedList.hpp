@@ -437,7 +437,7 @@ namespace exscape {
 	template <typename Type> inline typename LinkedList<Type>::iterator LinkedList<Type>::iterator::operator--(int) {
 		iterator out (*this);
 		--out;
-		return *this;
+		return out;
 	}
 
 } // end namespace
