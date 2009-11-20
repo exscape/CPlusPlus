@@ -408,8 +408,7 @@ namespace exscape {
 	}
 
 	template <typename Type> inline Type &LinkedList<Type>::iterator::operator*() {
-		//return *(this-p->data);
-		return this-p->data;
+		return this->p->data;
 	}
 
 	template <typename Type> inline Type *LinkedList<Type>::iterator::operator->() {

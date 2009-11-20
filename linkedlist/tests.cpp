@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 #include "LinkedList.hpp"
 
 int main() {
@@ -46,8 +47,12 @@ int main() {
 	else
 		std::cerr << "ERROR: l1 == l2" << std::endl;
 
+	list.push_back(20);
+	list.push_back(30);
+	list.push_back(40);
+
 	LinkedList<int>::iterator it;
-	for (it = l1.begin(); it != l1.end(); ++it) {
+	for (it = list.begin(); it != list.end(); ++it) {
 		std::cout << "Element: " << *it << std::endl;
 	}
 
