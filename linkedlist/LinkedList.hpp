@@ -7,6 +7,7 @@
 
 #include <iostream> /* debugging */
 #include <stdexcept>
+#include <iterator>
 #include <assert.h>
 
 #ifndef DEBUG
@@ -37,7 +38,31 @@ namespace exscape {
 			typedef Type & reference; //!< A typedef to help compatibility with existing classes
 			typedef const Type & const_reference; //!< A typedef to help compatibility with existing classes
 			typedef size_t size_type; //!< A typedef to help compatibility with existing classes
+			typedef ptrdiff_t difference_type; //!< A typedef to help compatibility with existing classes
 
+			class iterator : public std::iterator<std::bidirectional_iterator_tag, Type, difference_type> {
+				public:
+					iterator();
+					iterator(struct node *);
+					iterator(const iterator &);
+					~iterator();
+		
+					bool operator==(const iterator &) const;
+					bool operator!=(const iterator &) const;
+
+					Type &operator*();
+					Type *operator->();
+
+					iterator &operator++();
+					iterator operator++(int);
+					iterator &operator--();
+					iterator operator--(int);
+
+				private:
+					node *p;
+			};
+
+		public:
 		/* Constructors and destructors */
 			LinkedList();
 			~LinkedList();
@@ -54,6 +79,9 @@ namespace exscape {
 			Type &back();
 			const Type &back() const;
 			void dump(bool verbose) const; // XXX: Debugging only, until iterator support is added
+
+			iterator begin() const;
+			iterator end() const;
 
 		/* Overloaded operators */
 			bool operator==(const LinkedList<Type> &) const;
@@ -356,6 +384,60 @@ namespace exscape {
 			}
 		}
 			std::cout << std::endl;
+	}
+
+	template <typename Type> inline typename LinkedList<Type>::iterator LinkedList<Type>::begin() const {
+		return iterator(this->head);
+	}
+
+	template <typename Type> inline typename LinkedList<Type>::iterator LinkedList<Type>::end() const {
+		return iterator(NULL);
+	}
+
+	template <typename Type> LinkedList<Type>::iterator::iterator() : p(NULL) {}
+	template <typename Type> LinkedList<Type>::iterator::iterator(struct node *in_node) : p(in_node) {}
+	template <typename Type> LinkedList<Type>::iterator::iterator(const iterator &other) : p(other.p) {}
+	template <typename Type> LinkedList<Type>::iterator::~iterator() {}
+
+	template <typename Type> inline bool LinkedList<Type>::iterator::operator==(const iterator &other) const {
+		return (this->p == other.p);
+	}
+
+	template <typename Type> inline bool LinkedList<Type>::iterator::operator!=(const iterator &other) const {
+		return !(*this == other);
+	}
+
+	template <typename Type> inline Type &LinkedList<Type>::iterator::operator*() {
+		//return *(this-p->data);
+		return this-p->data;
+	}
+
+	template <typename Type> inline Type *LinkedList<Type>::iterator::operator->() {
+		return &(**this); // XXX: Hmm?
+	}
+
+	template <typename Type> inline typename LinkedList<Type>::iterator &LinkedList<Type>::iterator::operator++() {
+		if (this->p != NULL)
+			this->p = this->p->next;
+		return *this;
+	}
+
+	template <typename Type> inline typename LinkedList<Type>::iterator LinkedList<Type>::iterator::operator++(int) {
+		iterator out (*this);
+		++out;
+		return out;
+	}
+
+	template <typename Type> inline typename LinkedList<Type>::iterator &LinkedList<Type>::iterator::operator--() {
+		if (this->p != NULL)
+			this->p = this->p->prev;
+		return *this;
+	}
+
+	template <typename Type> inline typename LinkedList<Type>::iterator LinkedList<Type>::iterator::operator--(int) {
+		iterator out (*this);
+		--out;
+		return *this;
 	}
 
 } // end namespace

@@ -46,5 +46,10 @@ int main() {
 	else
 		std::cerr << "ERROR: l1 == l2" << std::endl;
 
+	LinkedList<int>::iterator it;
+	for (it = l1.begin(); it != l1.end(); ++it) {
+		std::cout << "Element: " << *it << std::endl;
+	}
+
 	return 0;
 }
