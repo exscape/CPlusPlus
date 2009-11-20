@@ -369,7 +369,6 @@ namespace exscape {
 	 * \brief A debugging function that dumps the entire content of the list.
 	 */
 	template <typename Type> void LinkedList<Type>::dump(bool verbose = false) const {
-//		if (DEBUG) std::cerr << "In LinkedList::dump() for list " << this << std::endl;
 		if (verbose == false) {
 			std::cout << "List " << this << " (size " << this->size() << "): ";
 			for (node *current = this->head; current != NULL; current = current->next) {
@@ -379,7 +378,6 @@ namespace exscape {
 		else {
 			std::cout << std::endl << "Verbose dump of list " << this << " (size " << this->size() << "):" << std::endl;
 			for (node *current = this->head; current != NULL; current = current->next) {
-			//	std::cout << " node " << current << ", prev " << current->prev << ", next " << current->next << ": " << current->data << std::endl;
 				std::cout << current->prev << " <- " << current << " -> " << current->next << ": " << current->data << std::endl;
 			}
 		}
@@ -408,16 +406,21 @@ namespace exscape {
 	}
 
 	template <typename Type> inline Type &LinkedList<Type>::iterator::operator*() {
+		if (DEBUG >= 2) std::cerr << "In iterator::operator* for iterator " << this << std::endl;
+		assert(this->p != NULL);
 		return this->p->data;
 	}
 
 	template <typename Type> inline Type *LinkedList<Type>::iterator::operator->() {
+		if (DEBUG >= 2) std::cerr << "In iterator::operator-> for iterator " << this << std::endl;
 		return &(**this); // XXX: Hmm?
 	}
 
 	template <typename Type> inline typename LinkedList<Type>::iterator &LinkedList<Type>::iterator::operator++() {
+		std::cerr << "In operator++; p = " << this->p << " (before)" << std::endl;
 		if (this->p != NULL)
 			this->p = this->p->next;
+		std::cerr << "In operator++; p = " << this->p << " (before)" << std::endl;
 		return *this;
 	}
 
@@ -428,8 +431,10 @@ namespace exscape {
 	}
 
 	template <typename Type> inline typename LinkedList<Type>::iterator &LinkedList<Type>::iterator::operator--() {
+		std::cerr << "In operator--; p = " << this->p << " (before)" << std::endl;
 		if (this->p != NULL)
 			this->p = this->p->prev;
+		std::cerr << "In operator--; p = " << this->p << " (after)" << std::endl;
 		return *this;
 	}
 
