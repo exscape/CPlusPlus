@@ -14,9 +14,13 @@
 #define DEBUG 2 //!< Sets the debug level. 0 = no debug output, 1 = very verbose, 2 = ridiculously verbose.
 #endif
 
+/*
+ * The sometimes excessive comments is for Doxygen; one purpose is to shut it up (when not documenting a simple method), another is to get nice documentation for free. The namespace comment feels totally unnecessary, for instance. */
+
 // TODO:
-// * Iterators, when everything else is done.
-//   * Including const_iterator, and perhaps even reverse_iterator and const_reverse_iterator
+// * const_iterator
+//   * ... perhaps even reverse_iterator and const_reverse_iterator
+//   * Make sure iterators can't modify const lists!
 
 /** My namespace. */
 namespace exscape {
@@ -39,11 +43,9 @@ namespace exscape {
 			typedef const Type & const_reference; //!< A typedef to help compatibility with existing classes
 			typedef size_t size_type; //!< A typedef to help compatibility with existing classes
 			typedef ptrdiff_t difference_type; //!< A typedef to help compatibility with existing classes
-			friend class iterator;
 
 			class iterator : public std::iterator<std::bidirectional_iterator_tag, Type, difference_type> {
 				public:
-					friend class LinkedList;
 					iterator();
 					iterator(const LinkedList<Type> *, struct node *);
 					iterator(const iterator &);
@@ -60,7 +62,7 @@ namespace exscape {
 					iterator &operator--();
 					iterator operator--(int);
 
-				private:
+				protected:
 					const LinkedList<Type> *list;
 					node *p;
 			};
