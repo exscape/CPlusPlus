@@ -5,10 +5,10 @@
 
 int main() {
 	using namespace exscape;
-//	LinkedList<int> list;
-//	LinkedList<int>::iterator it;
-	std::list<int> list;
-	std::list<int>::iterator it;
+	LinkedList<int> list;
+	LinkedList<int>::iterator it;
+//std::list<int> list;
+//std::list<int>::iterator it;
 
 	list.push_back(20);
 	list.push_back(30);
@@ -16,10 +16,10 @@ int main() {
 
 	do {
 		std::cout << "Permutation: ";
-		for (it = list.begin(); it != list.end(); ++it) {
-			std::cout << *it << " ";
-		}
-		std::cout << std::endl;
+	//	for (it = list.begin(); it != list.end(); ++it) {
+	//		std::cout << *it << " ";
+	//	}
+		std::cout << "... permutation printed" << std::endl;
 	} while (std::next_permutation(list.begin(), list.end()));
 
 /*

@@ -392,9 +392,15 @@ namespace exscape {
 		return iterator(NULL);
 	}
 
-	template <typename Type> LinkedList<Type>::iterator::iterator() : p(NULL) {}
-	template <typename Type> LinkedList<Type>::iterator::iterator(struct node *in_node) : p(in_node) {}
-	template <typename Type> LinkedList<Type>::iterator::iterator(const iterator &other) : p(other.p) {}
+	template <typename Type> LinkedList<Type>::iterator::iterator() : p(NULL) { 
+		if (DEBUG >= 2) std::cerr << "In default constructor for iterator()" << std::endl; 
+	}
+	template <typename Type> LinkedList<Type>::iterator::iterator(struct node *in_node) : p(in_node) {
+	   	if (DEBUG >= 2) std::cerr << "In iterator(node) constructor" << std::endl; 
+	}
+	template <typename Type> LinkedList<Type>::iterator::iterator(const iterator &other) : p(other.p) {
+		if (DEBUG >= 2) std::cerr << "In iterator copy constructor" << std::endl; 
+	}
 	template <typename Type> LinkedList<Type>::iterator::~iterator() {}
 
 	template <typename Type> inline bool LinkedList<Type>::iterator::operator==(const iterator &other) const {
