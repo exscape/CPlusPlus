@@ -51,5 +51,23 @@ int main() {
 	std::cout << "Count of 20 in copied list: " << std::count(cpy.begin(), cpy.end(), 20) << std::endl;
 	std::cout << std::endl;
 
+	/*
+	 * Start const_iterator tests
+	 */
+
+	LIST_TYPE<int>::const_iterator ci;
+	for (ci = cpy.begin(); ci != cpy.end(); ++ci) {
+		std::cout << "const iterator over non-const cpy: " << *ci << std::endl;
+		// *ci += 2; // Fails, as it should
+	}
+	std::cout << std::endl;
+
+	const LIST_TYPE<int> const_list = list;
+	for (LIST_TYPE<int>::iterator i = const_list.begin(); i != const_list.end(); ++i) {
+		std::cout << "iterator in const list: " << *i << std::endl;
+//		*i += 2;
+	}
+	std::cout << std::endl;
+
 	return 0;
 }
