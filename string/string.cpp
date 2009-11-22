@@ -689,8 +689,9 @@ namespace exscape {
 
 	string::reverse_iterator::reverse_iterator string::reverse_iterator::operator++(int) {
 		if (DEBUG) std::cerr << "  in operator++ for reverse_iterator " << this << std::endl;
-		++(*this);
-		return reverse_iterator(this->p + 1);
+		reverse_iterator ret (*this);
+		++ret;
+		return ret;
 	}
 
 	string::reverse_iterator &string::reverse_iterator::operator--() {
@@ -704,8 +705,9 @@ namespace exscape {
 
 	string::reverse_iterator string::reverse_iterator::operator--(int) {
 		if (DEBUG) std::cerr << "  in operator-- for reverse_iterator " << this << std::endl;
+		reverse_iterator ret (*this);
 		--(*this);
-		return reverse_iterator(this->p - 1);
+		return ret;
 	}
 
 	/* Arithmetic operators */
