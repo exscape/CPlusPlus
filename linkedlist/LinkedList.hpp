@@ -133,14 +133,14 @@ namespace exscape {
 			const Type &back() const;
 			void dump(bool verbose) const; // XXX: Debugging only, until iterator support is added
 
-			iterator begin();
-			iterator end();
-			const_iterator begin() const;
-			const_iterator end() const;
-			reverse_iterator rbegin();
-			reverse_iterator rend();
-			const_reverse_iterator rbegin() const;
-			const_reverse_iterator rend() const;
+			iterator begin() { return iterator(this, this->head); }
+			iterator end() { return iterator(this, NULL); }
+			const_iterator begin() const { return const_iterator(this, this->head); }
+			const_iterator end() const { return const_iterator(this, NULL); }
+			reverse_iterator rbegin() { return reverse_iterator(this, this->tail); }
+			reverse_iterator rend() { return reverse_iterator(this, NULL); }
+			const_reverse_iterator rbegin() const { return const_reverse_iterator(this, this->tail); }
+			const_reverse_iterator rend() const { return const_reverse_iterator(this, NULL); }
 
 		/* Overloaded operators */
 			bool operator==(const LinkedList<Type> &) const;
@@ -444,38 +444,6 @@ namespace exscape {
 			}
 		}
 			std::cerr << std::endl;
-	}
-
-	template <typename Type> inline typename LinkedList<Type>::iterator LinkedList<Type>::begin() { 
-		return iterator(this, this->head);
-	}
-
-	template <typename Type> inline typename LinkedList<Type>::iterator LinkedList<Type>::end() {
-		return iterator(this, NULL);
-	}
-
-	template <typename Type> inline typename LinkedList<Type>::reverse_iterator LinkedList<Type>::rbegin() {
-		return reverse_iterator(this, this->tail);
-	}
-
-	template <typename Type> inline typename LinkedList<Type>::reverse_iterator LinkedList<Type>::rend() {
-		return reverse_iterator(this, NULL);
-	}
-
-	template <typename Type> inline typename LinkedList<Type>::const_reverse_iterator LinkedList<Type>::rbegin() const {
-		return const_reverse_iterator(this, this->tail);
-	}
-
-	template <typename Type> inline typename LinkedList<Type>::const_reverse_iterator LinkedList<Type>::rend() const {
-		return const_reverse_iterator(this, NULL);
-	}
-
-	template <typename Type> inline typename LinkedList<Type>::const_iterator LinkedList<Type>::begin() const {
-		return const_iterator(this, this->head);
-	}
-
-	template <typename Type> inline typename LinkedList<Type>::const_iterator LinkedList<Type>::end() const {
-		return const_iterator(this, NULL);
 	}
 
 	/*
