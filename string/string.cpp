@@ -12,7 +12,7 @@
 //    ... XXX: worth the trouble? str < str, str < char*, char* < str etc. 3 cases * 4 operators = 12 overloads...?
 //
 //  XXX: Does the class work well when declared const?
-//  * iterator can modify a const string
+//  * XXX: iterator can modify a const string!
 
 namespace exscape {
 	using std::cerr;
