@@ -18,8 +18,8 @@
  * The sometimes excessive comments is for Doxygen; one purpose is to shut it up (when not documenting a simple method), another is to get nice documentation for free. The namespace comment feels totally unnecessary, for instance. */
 
 // TODO:
-// * Reverse iterators
 // * Document the iterator classes and functions
+// * Code cleanup; inline more methods
 
 /** My namespace. */
 namespace exscape {
@@ -57,10 +57,12 @@ namespace exscape {
 					const Type &operator*() const;
 					const Type *operator->() const;
 
-					const_iterator &operator++();
-					const_iterator operator++(int);
-					const_iterator &operator--();
-					const_iterator operator--(int);
+					const_iterator &operator++() { if (this->p != NULL) this->p = this->p->next; return *this; }
+					const_iterator &operator--() { if (this->p != NULL) this->p = this->p->prev; 
+												   else if (this->list->tail != NULL) this->p = this->list->tail; return *this; 
+					}
+					const_iterator operator++(int) { const_iterator out (*this); return ++out; }
+					const_iterator operator--(int) { const_iterator out (*this); return --out; }
 
 				protected:
 					const LinkedList<Type> *list;
@@ -79,10 +81,12 @@ namespace exscape {
 					Type &operator*();
 					Type *operator->();
 
-					iterator &operator++();
-					iterator operator++(int);
-					iterator &operator--();
-					iterator operator--(int);
+					iterator &operator++() { if (this->p != NULL) this->p = this->p->next; return *this; }
+					iterator &operator--() { if (this->p != NULL) this->p = this->p->prev; 
+												   else if (this->list->tail != NULL) this->p = this->list->tail; return *this; 
+					}
+					iterator operator++(int) { iterator out (*this); return ++out; }
+					iterator operator--(int) { iterator out (*this); return --out; }
 
 				protected:
 					const LinkedList<Type> *list;
@@ -95,10 +99,10 @@ namespace exscape {
 					reverse_iterator(const reverse_iterator &);
 					reverse_iterator(const iterator &);
 
-					reverse_iterator &operator++();
-					reverse_iterator operator++(int);
-					reverse_iterator &operator--();
-					reverse_iterator operator--(int);
+					reverse_iterator &operator++() { if (this->p != NULL) this->p = this->p->prev; return *this; }
+					reverse_iterator &operator--() { if (this->p != NULL) this->p = this->p->next; return *this; }
+					reverse_iterator operator++(int) { reverse_iterator out (*this); return ++out; }
+					reverse_iterator operator--(int) { reverse_iterator out (*this); return --out; }
 			};
 
 			class const_reverse_iterator : public const_iterator {
@@ -108,10 +112,10 @@ namespace exscape {
 					const_reverse_iterator(const const_iterator &);
 					const_reverse_iterator(const reverse_iterator &);
 
-					const_reverse_iterator &operator++();
-					const_reverse_iterator operator++(int);
-					const_reverse_iterator &operator--();
-					const_reverse_iterator operator--(int);
+					const_reverse_iterator &operator++() { if (this->p != NULL) this->p = this->p->prev; return *this; }
+					const_reverse_iterator &operator--() { if (this->p != NULL) this->p = this->p->next; return *this; }
+					const_reverse_iterator operator++(int) { const_reverse_iterator out (*this); return ++out; }
+					const_reverse_iterator operator--(int) { const_reverse_iterator out (*this); return --out; }
 			};
 
 		public:
@@ -499,36 +503,6 @@ namespace exscape {
 		return &(**this); // XXX: Hmm?
 	}
 
-	template <typename Type> inline typename LinkedList<Type>::iterator &LinkedList<Type>::iterator::operator++() {
-		if (DEBUG) std::cerr << "In iterator::operator++; p = " << this->p << " (before)" << std::endl;
-		if (this->p != NULL)
-			this->p = this->p->next;
-		if (DEBUG) std::cerr << "In iterator::operator++; p = " << this->p << " (before)" << std::endl;
-		return *this;
-	}
-
-	template <typename Type> inline typename LinkedList<Type>::iterator LinkedList<Type>::iterator::operator++(int) {
-		iterator out (*this);
-		++out;
-		return out;
-	}
-
-	template <typename Type> inline typename LinkedList<Type>::iterator &LinkedList<Type>::iterator::operator--() {
-		if (DEBUG) std::cerr << "In iterator::operator--; p = " << this->p << " (before)" << std::endl;
-		if (this->p != NULL)
-			this->p = this->p->prev;
-		else if (this->list->tail != NULL)
-			this->p = this->list->tail;
-		if (DEBUG) std::cerr << "In iterator::operator--; p = " << this->p << " (after)" << std::endl;
-		return *this;
-	}
-
-	template <typename Type> inline typename LinkedList<Type>::iterator LinkedList<Type>::iterator::operator--(int) {
-		iterator out (*this);
-		--out;
-		return out;
-	}
-
 	/*
 	 *
 	 * END iterator,
@@ -566,36 +540,6 @@ namespace exscape {
 		return &(**this); // XXX: Hmm?
 	}
 
-	template <typename Type> inline typename LinkedList<Type>::const_iterator &LinkedList<Type>::const_iterator::operator++() {
-		if (DEBUG) std::cerr << "In const_iterator::operator++; p = " << this->p << " (before)" << std::endl;
-		if (this->p != NULL)
-			this->p = this->p->next;
-		if (DEBUG) std::cerr << "In const_iterator::operator++; p = " << this->p << " (before)" << std::endl;
-		return *this;
-	}
-
-	template <typename Type> inline typename LinkedList<Type>::const_iterator LinkedList<Type>::const_iterator::operator++(int) {
-		const_iterator out (*this);
-		++out;
-		return out;
-	}
-
-	template <typename Type> inline typename LinkedList<Type>::const_iterator &LinkedList<Type>::const_iterator::operator--() {
-		if (DEBUG) std::cerr << "In const_iterator::operator--; p = " << this->p << " (before)" << std::endl;
-		if (this->p != NULL)
-			this->p = this->p->prev;
-		else if (this->list->tail != NULL)
-			this->p = this->list->tail;
-		if (DEBUG) std::cerr << "In const_iterator::operator--; p = " << this->p << " (after)" << std::endl;
-		return *this;
-	}
-
-	template <typename Type> inline typename LinkedList<Type>::const_iterator LinkedList<Type>::const_iterator::operator--(int) {
-		const_iterator out (*this);
-		--out;
-		return out;
-	}
-
 	/*
 	 *
 	 * END const_iterator,
@@ -613,36 +557,6 @@ namespace exscape {
 
 	template <typename Type> LinkedList<Type>::reverse_iterator::reverse_iterator(const iterator &other) : iterator(other) {
 	   	if (DEBUG >= 2) std::cerr << "In reverse_iterator copy constructor, from regular iterator" << std::endl; 
-	}
-
-	template <typename Type> inline typename LinkedList<Type>::reverse_iterator &LinkedList<Type>::reverse_iterator::operator++() {
-		if (DEBUG) std::cerr << "In reverse_iterator::operator++; p = " << this->p << " (before)" << std::endl;
-		if (this->p != NULL)
-			this->p = this->p->prev;
-		//else if (this->list->tail != NULL) // XXX
-		//this->p = this->list->tail; // XXX
-		if (DEBUG) std::cerr << "In reverse_iterator::operator++; p = " << this->p << " (before)" << std::endl;
-		return *this;
-	}
-
-	template <typename Type> inline typename LinkedList<Type>::reverse_iterator LinkedList<Type>::reverse_iterator::operator++(int) {
-		reverse_iterator out (*this);
-		++out;
-		return out;
-	}
-
-	template <typename Type> inline typename LinkedList<Type>::reverse_iterator &LinkedList<Type>::reverse_iterator::operator--() {
-		if (DEBUG) std::cerr << "In reverse_iterator::operator--; p = " << this->p << " (before)" << std::endl;
-		if (this->p != NULL)
-			this->p = this->p->next;
-		if (DEBUG) std::cerr << "In reverse_iterator::operator--; p = " << this->p << " (after)" << std::endl;
-		return *this;
-	}
-
-	template <typename Type> inline typename LinkedList<Type>::reverse_iterator LinkedList<Type>::reverse_iterator::operator--(int) {
-		reverse_iterator out (*this);
-		--out;
-		return out;
 	}
 
 	/*
@@ -668,34 +582,5 @@ namespace exscape {
 	   	if (DEBUG >= 2) std::cerr << "In const_reverse_iterator copy constructor, from const_iterator" << std::endl; 
 	}
 
-	template <typename Type> inline typename LinkedList<Type>::const_reverse_iterator &LinkedList<Type>::const_reverse_iterator::operator++() {
-		if (DEBUG) std::cerr << "In const_reverse_iterator::operator++; p = " << this->p << " (before)" << std::endl;
-		if (this->p != NULL)
-			this->p = this->p->prev;
-		//else if (this->list->tail != NULL) // XXX
-		//this->p = this->list->tail; // XXX
-		if (DEBUG) std::cerr << "In const_reverse_iterator::operator++; p = " << this->p << " (before)" << std::endl;
-		return *this;
-	}
-
-	template <typename Type> inline typename LinkedList<Type>::const_reverse_iterator LinkedList<Type>::const_reverse_iterator::operator++(int) {
-		const_reverse_iterator out (*this);
-		++out;
-		return out;
-	}
-
-	template <typename Type> inline typename LinkedList<Type>::const_reverse_iterator &LinkedList<Type>::const_reverse_iterator::operator--() {
-		if (DEBUG) std::cerr << "In const_reverse_iterator::operator--; p = " << this->p << " (before)" << std::endl;
-		if (this->p != NULL)
-			this->p = this->p->next;
-		if (DEBUG) std::cerr << "In const_reverse_iterator::operator--; p = " << this->p << " (after)" << std::endl;
-		return *this;
-	}
-
-	template <typename Type> inline typename LinkedList<Type>::const_reverse_iterator LinkedList<Type>::const_reverse_iterator::operator--(int) {
-		const_reverse_iterator out (*this);
-		--out;
-		return out;
-	}
 } // end namespace
 #endif
