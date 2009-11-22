@@ -44,7 +44,34 @@ namespace exscape {
 			typedef size_t size_type; //!< A typedef to help compatibility with existing classes
 			typedef ptrdiff_t difference_type; //!< A typedef to help compatibility with existing classes
 
+			class iterator;
+
+			class const_iterator : public std::iterator<std::bidirectional_iterator_tag, Type, difference_type> {
+				public:
+					const_iterator();
+					const_iterator(const LinkedList<Type> *, struct node *);
+					const_iterator(const const_iterator &);
+					const_iterator(const iterator &);
+					~const_iterator();
+		
+					bool operator==(const const_iterator &) const;
+					bool operator!=(const const_iterator &) const;
+
+					const Type &operator*() const;
+					const Type *operator->() const;
+
+					const_iterator &operator++();
+					const_iterator operator++(int);
+					const_iterator &operator--();
+					const_iterator operator--(int);
+
+				protected:
+					const LinkedList<Type> *list;
+					node *p;
+			};
+
 			class iterator : public std::iterator<std::bidirectional_iterator_tag, Type, difference_type> {
+					friend class const_iterator;
 				public:
 					iterator();
 					iterator(const LinkedList<Type> *, struct node *);
@@ -65,26 +92,6 @@ namespace exscape {
 				protected:
 					const LinkedList<Type> *list;
 					node *p;
-			};
-
-			class const_iterator : public iterator {
-				public:
-					const_iterator();
-					const_iterator(const LinkedList<Type> *, /* const XXX? */ struct node *);
-//					const_iterator(const const_iterator &); // Is this needed (i.e. can the below handle this?)
-					const_iterator(const iterator &);
-					//~const_iterator();
-		
-					//bool operator==(const const_iterator &) const;
-					//bool operator!=(const const_iterator &) const;
-
-					const Type &operator*() const;
-					const Type *operator->() const;
-
-					const_iterator &operator++();
-					const_iterator operator++(int);
-					const_iterator &operator--();
-					const_iterator operator--(int);
 			};
 
 		public:
@@ -466,10 +473,10 @@ namespace exscape {
 	}
 
 	template <typename Type> inline typename LinkedList<Type>::iterator &LinkedList<Type>::iterator::operator++() {
-		if (DEBUG) std::cerr << "In operator++; p = " << this->p << " (before)" << std::endl;
+		if (DEBUG) std::cerr << "In iterator::operator++; p = " << this->p << " (before)" << std::endl;
 		if (this->p != NULL)
 			this->p = this->p->next;
-		if (DEBUG) std::cerr << "In operator++; p = " << this->p << " (before)" << std::endl;
+		if (DEBUG) std::cerr << "In iterator::operator++; p = " << this->p << " (before)" << std::endl;
 		return *this;
 	}
 
@@ -480,12 +487,12 @@ namespace exscape {
 	}
 
 	template <typename Type> inline typename LinkedList<Type>::iterator &LinkedList<Type>::iterator::operator--() {
-		if (DEBUG) std::cerr << "In operator--; p = " << this->p << " (before)" << std::endl;
+		if (DEBUG) std::cerr << "In iterator::operator--; p = " << this->p << " (before)" << std::endl;
 		if (this->p != NULL)
 			this->p = this->p->prev;
 		else if (this->list->tail != NULL)
 			this->p = this->list->tail;
-		if (DEBUG) std::cerr << "In operator--; p = " << this->p << " (after)" << std::endl;
+		if (DEBUG) std::cerr << "In iterator::operator--; p = " << this->p << " (after)" << std::endl;
 		return *this;
 	}
 
@@ -502,20 +509,28 @@ namespace exscape {
 	 *
 	 */
 
-	template <typename Type>
-	LinkedList<Type>::const_iterator::const_iterator() : iterator() {}
-	template <typename Type>
-	LinkedList<Type>::const_iterator::const_iterator(const LinkedList<Type> *in_list, /* const XXX? */ struct node *in_node) : iterator(in_list, in_node) {}
+	template <typename Type> LinkedList<Type>::const_iterator::const_iterator() : list(NULL), p(NULL) { 
+		if (DEBUG >= 2) std::cerr << "In default constructor for const_iterator()" << std::endl; 
+	}
+	template <typename Type> 
+	LinkedList<Type>::const_iterator::const_iterator(const LinkedList<Type> *in_list, struct node *in_node) : list(in_list), p(in_node) {
+	   	if (DEBUG >= 2) std::cerr << "In const_iterator(node) constructor" << std::endl; 
+	}
+	template <typename Type> LinkedList<Type>::const_iterator::const_iterator(const const_iterator &other) : list(other.list), p(other.p) {
+		if (DEBUG >= 2) std::cerr << "In const_iterator copy constructor" << std::endl; 
+	}
+	template <typename Type> LinkedList<Type>::const_iterator::const_iterator(const iterator &other) : list(other.list), p(other.p) {
+		if (DEBUG >= 2) std::cerr << "In const_iterator copy constructor from regular iterator" << std::endl; 
+	}
+	template <typename Type> LinkedList<Type>::const_iterator::~const_iterator() {}
 
-	//const_iterator(const const_iterator &); // Is this needed (i.e. can the below handle this?)
-	template <typename Type>
-	LinkedList<Type>::const_iterator::const_iterator(const iterator &other) : iterator(other) {}
+	template <typename Type> inline bool LinkedList<Type>::const_iterator::operator==(const const_iterator &other) const {
+		return (this->p == other.p);
+	}
 
-	//template <typename Type>
-	//LinkedList<Type>::const_iterator::~const_iterator() {}
-
-	//bool operator==(const const_iterator &) const;
-	//bool operator!=(const const_iterator &) const;
+	template <typename Type> inline bool LinkedList<Type>::const_iterator::operator!=(const const_iterator &other) const {
+		return !(*this == other);
+	}
 
 	template <typename Type> inline const Type &LinkedList<Type>::const_iterator::operator*() const {
 		if (DEBUG >= 2) std::cerr << "In const_iterator::operator* for const_iterator " << this << std::endl;
@@ -529,10 +544,10 @@ namespace exscape {
 	}
 
 	template <typename Type> inline typename LinkedList<Type>::const_iterator &LinkedList<Type>::const_iterator::operator++() {
-		if (DEBUG) std::cerr << "In operator++; p = " << this->p << " (before)" << std::endl;
+		if (DEBUG) std::cerr << "In const_iterator::operator++; p = " << this->p << " (before)" << std::endl;
 		if (this->p != NULL)
 			this->p = this->p->next;
-		if (DEBUG) std::cerr << "In operator++; p = " << this->p << " (before)" << std::endl;
+		if (DEBUG) std::cerr << "In const_iterator::operator++; p = " << this->p << " (before)" << std::endl;
 		return *this;
 	}
 
@@ -543,12 +558,12 @@ namespace exscape {
 	}
 
 	template <typename Type> inline typename LinkedList<Type>::const_iterator &LinkedList<Type>::const_iterator::operator--() {
-		if (DEBUG) std::cerr << "In operator--; p = " << this->p << " (before)" << std::endl;
+		if (DEBUG) std::cerr << "In const_iterator::operator--; p = " << this->p << " (before)" << std::endl;
 		if (this->p != NULL)
 			this->p = this->p->prev;
 		else if (this->list->tail != NULL)
 			this->p = this->list->tail;
-		if (DEBUG) std::cerr << "In operator--; p = " << this->p << " (after)" << std::endl;
+		if (DEBUG) std::cerr << "In const_iterator::operator--; p = " << this->p << " (after)" << std::endl;
 		return *this;
 	}
 

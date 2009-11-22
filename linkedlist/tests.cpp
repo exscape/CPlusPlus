@@ -62,10 +62,11 @@ int main() {
 	}
 	std::cout << std::endl;
 
-	const LIST_TYPE<int> const_list = list;
-	for (LIST_TYPE<int>::iterator i = const_list.begin(); i != const_list.end(); ++i) {
-		std::cout << "iterator in const list: " << *i << std::endl;
-//		*i += 2;
+	const LIST_TYPE<int> const_list (list);
+	for (LIST_TYPE<int>::const_iterator ci = const_list.begin(); ci != const_list.end(); ++ci) {
+//		*ci += 2;
+//		std::cout << "ERROR: MODIFIED CONST LIST" << std::endl;
+		std::cout << "const iterator in const list: " << *ci << std::endl;
 	}
 	std::cout << std::endl;
 
