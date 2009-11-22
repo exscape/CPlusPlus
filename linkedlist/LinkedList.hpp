@@ -19,7 +19,6 @@
 
 // TODO:
 // * Document the iterator classes and functions
-// * Code cleanup; inline more methods
 
 /** My namespace. */
 namespace exscape {
@@ -136,7 +135,10 @@ namespace exscape {
 		/* Public methods */
 			void clear();
 			size_t size() const;
-			bool empty() const;
+
+            /** \brief Returns whether this list is empty or not. */
+			bool empty() const { return (this->_size == 0); }
+
 			void push_front(const Type &);
 			void push_back(const Type &);
 			void pop_front();
@@ -255,14 +257,6 @@ namespace exscape {
 		}
 
 		return this->_size;
-	}
-
-	/**
-	 * \brief Returns whether this list is empty or not.
-	 * \return true if the list is empty (size is 0), otherwise false.
-	 */
-	template <typename Type> inline bool LinkedList<Type>::empty() const {
-		return (this->_size == 0);
 	}
 
 	/**
