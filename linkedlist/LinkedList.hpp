@@ -115,6 +115,7 @@ namespace exscape {
 					const_reverse_iterator(const LinkedList<Type> *, struct node *);
 					const_reverse_iterator(const const_reverse_iterator &);
 					const_reverse_iterator(const const_iterator &);
+					const_reverse_iterator(const reverse_iterator &);
 				//	~const_reverse_iterator();
 		
 //					bool operator==(const const_reverse_iterator &) const;
@@ -688,6 +689,10 @@ namespace exscape {
 
 	template <typename Type> LinkedList<Type>::const_reverse_iterator::const_reverse_iterator(const const_reverse_iterator &other) : const_iterator(other) {
 	   	if (DEBUG >= 2) std::cerr << "In const_reverse_iterator copy constructor" << std::endl; 
+	}
+
+	template <typename Type> LinkedList<Type>::const_reverse_iterator::const_reverse_iterator(const reverse_iterator &other) : const_iterator(other) {
+	   	if (DEBUG >= 2) std::cerr << "In const_reverse_iterator copy constructor from reverse_iterator" << std::endl; 
 	}
 
 	template <typename Type> LinkedList<Type>::const_reverse_iterator::const_reverse_iterator(const const_iterator &other) : const_iterator(other) {

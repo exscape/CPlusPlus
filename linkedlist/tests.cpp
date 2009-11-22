@@ -56,9 +56,8 @@ int main() {
 	// Start const_iterator tests
 	//
 
-	LIST_TYPE<int>::const_iterator ci;
-	for (ci = cpy.begin(); ci != cpy.end(); ++ci) {
-		std::cout << "const iterator over non-const cpy: " << *ci << std::endl;
+	for (LIST_TYPE<int>::const_iterator ci = list.begin(); ci != list.end(); ++ci) {
+		std::cout << "const iterator over non-const list: " << *ci << std::endl;
 		// *ci += 2; // Fails, as it should
 	}
 	std::cout << std::endl;
@@ -94,5 +93,6 @@ int main() {
 	for (LIST_TYPE<int>::const_reverse_iterator cri = list.rbegin(); cri != list.rend(); ++cri) {
 		std::cout << "Reverse const iterator over non-const list: " << *cri << std::endl;
 	}
+
 	return 0;
 }
