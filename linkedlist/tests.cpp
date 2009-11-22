@@ -84,5 +84,15 @@ int main() {
 	for (LIST_TYPE<int>::reverse_iterator ri = cpy.rbegin(); ri != cpy.rend(); ++ri) {
 		std::cout << "Reverse iterator over cpy: " << *ri << std::endl;
 	}
+	std::cout << std::endl;
+
+	for (LIST_TYPE<int>::const_reverse_iterator cri = const_list.rbegin(); cri != const_list.rend(); ++cri) {
+		std::cout << "Reverse const iterator over const_list: " << *cri << std::endl;
+	}
+	std::cout << std::endl;
+
+	for (LIST_TYPE<int>::const_reverse_iterator cri = list.rbegin(); cri != list.rend(); ++cri) {
+		std::cout << "Reverse const iterator over non-const list: " << *cri << std::endl;
+	}
 	return 0;
 }
