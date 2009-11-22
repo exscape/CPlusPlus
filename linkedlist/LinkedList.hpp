@@ -47,10 +47,10 @@ namespace exscape {
 
 			class const_iterator : public std::iterator<std::bidirectional_iterator_tag, Type, difference_type> {
 				public:
-					const_iterator(const LinkedList<Type> *, struct node *);
-					const_iterator(const const_iterator &);
-					const_iterator(const iterator &);
-		
+					const_iterator(const LinkedList<Type> *in_list, struct node *in_node) : list(in_list), p(in_node) {}
+					const_iterator(const const_iterator &other) : list(other.list), p(other.p) {}
+					const_iterator(const iterator &other) : list(other.list), p(other.p) {}
+
 					bool operator==(const const_iterator &other) const { return (this->p == other.p); }
 					bool operator!=(const const_iterator &other) const { return (this->p != other.p); }
 
@@ -59,7 +59,8 @@ namespace exscape {
 
 					const_iterator &operator++() { if (this->p != NULL) this->p = this->p->next; return *this; }
 					const_iterator &operator--() { if (this->p != NULL) this->p = this->p->prev; 
-												   else if (this->list->tail != NULL) this->p = this->list->tail; return *this; 
+												   else if (this->list->tail != NULL) this->p = this->list->tail; 
+												   return *this; 
 					}
 					const_iterator operator++(int) { const_iterator out (*this); return ++out; }
 					const_iterator operator--(int) { const_iterator out (*this); return --out; }
@@ -72,9 +73,9 @@ namespace exscape {
 			class iterator : public std::iterator<std::bidirectional_iterator_tag, Type, difference_type> {
 				friend class const_iterator;
 				public:
-					iterator(const LinkedList<Type> *, struct node *);
-					iterator(const iterator &);
-		
+					iterator(const LinkedList<Type> *in_list = NULL, struct node *in_node = NULL) : list(in_list), p(in_node) {}
+					iterator(const iterator &other) : list(other.list), p(other.p) {}
+
 					bool operator==(const iterator &other) const { return (this->p == other.p); }
 					bool operator!=(const iterator &other) const { return (this->p != other.p); }
 
@@ -83,7 +84,8 @@ namespace exscape {
 
 					iterator &operator++() { if (this->p != NULL) this->p = this->p->next; return *this; }
 					iterator &operator--() { if (this->p != NULL) this->p = this->p->prev; 
-												   else if (this->list->tail != NULL) this->p = this->list->tail; return *this; 
+												   else if (this->list->tail != NULL) this->p = this->list->tail; 
+												   return *this; 
 					}
 					iterator operator++(int) { iterator out (*this); return ++out; }
 					iterator operator--(int) { iterator out (*this); return --out; }
@@ -95,9 +97,9 @@ namespace exscape {
 
 			class reverse_iterator : public iterator {
 				public:
-					reverse_iterator(const LinkedList<Type> *, struct node *);
-					reverse_iterator(const reverse_iterator &);
-					reverse_iterator(const iterator &);
+					reverse_iterator(const LinkedList<Type> *in_list, struct node *in_node) : iterator(in_list, in_node) {}
+					reverse_iterator(const reverse_iterator &other) : iterator(other) {}
+					reverse_iterator(const iterator &other) : iterator(other) {}
 
 					reverse_iterator &operator++() { if (this->p != NULL) this->p = this->p->prev; return *this; }
 					reverse_iterator &operator--() { if (this->p != NULL) this->p = this->p->next; return *this; }
@@ -107,10 +109,10 @@ namespace exscape {
 
 			class const_reverse_iterator : public const_iterator {
 				public:
-					const_reverse_iterator(const LinkedList<Type> *, struct node *);
-					const_reverse_iterator(const const_reverse_iterator &);
-					const_reverse_iterator(const const_iterator &);
-					const_reverse_iterator(const reverse_iterator &);
+					const_reverse_iterator(const LinkedList<Type> *in_list, struct node *in_node) : const_iterator(in_list, in_node) {}
+					const_reverse_iterator(const const_reverse_iterator &other) : const_iterator(other) {}
+					const_reverse_iterator(const const_iterator &other) : const_iterator(other) {}
+					const_reverse_iterator(const reverse_iterator &other) : const_iterator(other) {}
 
 					const_reverse_iterator &operator++() { if (this->p != NULL) this->p = this->p->prev; return *this; }
 					const_reverse_iterator &operator--() { if (this->p != NULL) this->p = this->p->next; return *this; }
@@ -467,82 +469,6 @@ namespace exscape {
 			}
 		}
 			std::cerr << std::endl;
-	}
-
-	/*
-	 *
-	 * END LinkedList,
-	 * START iterator
-	 *
-	 */
-
-	template <typename Type> 
-	LinkedList<Type>::iterator::iterator(const LinkedList<Type> *in_list = NULL, struct node *in_node = NULL) : list(in_list), p(in_node) {
-	   	if (DEBUG >= 2) std::cerr << "In iterator(node) constructor" << std::endl; 
-	}
-	template <typename Type> LinkedList<Type>::iterator::iterator(const iterator &other) : list(other.list), p(other.p) {
-		if (DEBUG >= 2) std::cerr << "In iterator copy constructor" << std::endl; 
-	}
-
-
-	/*
-	 *
-	 * END iterator,
-	 * START const_iterator
-	 *
-	 */
-
-	template <typename Type> 
-	LinkedList<Type>::const_iterator::const_iterator(const LinkedList<Type> *in_list = NULL, struct node *in_node = NULL) : list(in_list), p(in_node) {
-	   	if (DEBUG >= 2) std::cerr << "In const_iterator(node) constructor" << std::endl; 
-	}
-	template <typename Type> LinkedList<Type>::const_iterator::const_iterator(const const_iterator &other) : list(other.list), p(other.p) {
-		if (DEBUG >= 2) std::cerr << "In const_iterator copy constructor" << std::endl; 
-	}
-	template <typename Type> LinkedList<Type>::const_iterator::const_iterator(const iterator &other) : list(other.list), p(other.p) {
-		if (DEBUG >= 2) std::cerr << "In const_iterator copy constructor from regular iterator" << std::endl; 
-	}
-
-	/*
-	 *
-	 * END const_iterator,
-	 * START reverse_iterator
-	 *
-	 */
-
-	template <typename Type> LinkedList<Type>::reverse_iterator::reverse_iterator(const LinkedList<Type> *in_list, struct node *in_node) : iterator(in_list, in_node) {
-	   	if (DEBUG >= 2) std::cerr << "In reverse_iterator(node) constructor" << std::endl; 
-	}
-
-	template <typename Type> LinkedList<Type>::reverse_iterator::reverse_iterator(const reverse_iterator &other) : iterator(other) {
-	   	if (DEBUG >= 2) std::cerr << "In reverse_iterator copy constructor" << std::endl; 
-	}
-
-	template <typename Type> LinkedList<Type>::reverse_iterator::reverse_iterator(const iterator &other) : iterator(other) {
-	   	if (DEBUG >= 2) std::cerr << "In reverse_iterator copy constructor, from regular iterator" << std::endl; 
-	}
-
-	/*
-	 *
-	 * END reverse_iterator,
-	 * START const_reverse_iterator
-	 *
-	 */
-
-	template <typename Type> LinkedList<Type>::const_reverse_iterator::const_reverse_iterator(const LinkedList<Type> *in_list, struct node *in_node) : const_iterator(in_list, in_node) {
-	   	if (DEBUG >= 2) std::cerr << "In const_reverse_iterator(node) constructor" << std::endl; 
-	}
-
-	template <typename Type> LinkedList<Type>::const_reverse_iterator::const_reverse_iterator(const const_reverse_iterator &other) : const_iterator(other) {
-	   	if (DEBUG >= 2) std::cerr << "In const_reverse_iterator copy constructor" << std::endl; 
-	}
-
-	template <typename Type> LinkedList<Type>::const_reverse_iterator::const_reverse_iterator(const reverse_iterator &other) : const_iterator(other) {
-	   	if (DEBUG >= 2) std::cerr << "In const_reverse_iterator copy constructor from reverse_iterator" << std::endl; 
-	}
-
-	template <typename Type> LinkedList<Type>::const_reverse_iterator::const_reverse_iterator(const const_iterator &other) : const_iterator(other) {
-	   	if (DEBUG >= 2) std::cerr << "In const_reverse_iterator copy constructor, from const_iterator" << std::endl; 
 	}
 
 } // end namespace
