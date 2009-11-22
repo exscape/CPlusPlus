@@ -50,7 +50,6 @@ namespace exscape {
 					const_iterator(const LinkedList<Type> *, struct node *);
 					const_iterator(const const_iterator &);
 					const_iterator(const iterator &);
-					~const_iterator();
 		
 					bool operator==(const const_iterator &) const;
 					bool operator!=(const const_iterator &) const;
@@ -73,7 +72,6 @@ namespace exscape {
 				public:
 					iterator(const LinkedList<Type> *, struct node *);
 					iterator(const iterator &);
-					~iterator();
 		
 					bool operator==(const iterator &) const;
 					bool operator!=(const iterator &) const;
@@ -96,13 +94,6 @@ namespace exscape {
 					reverse_iterator(const LinkedList<Type> *, struct node *);
 					reverse_iterator(const reverse_iterator &);
 					reverse_iterator(const iterator &);
-				//	~reverse_iterator();
-		
-//					bool operator==(const reverse_iterator &) const;
-//					bool operator!=(const reverse_iterator &) const;
-
-//					Type &operator*();
-//					Type *operator->();
 
 					reverse_iterator &operator++();
 					reverse_iterator operator++(int);
@@ -116,13 +107,6 @@ namespace exscape {
 					const_reverse_iterator(const const_reverse_iterator &);
 					const_reverse_iterator(const const_iterator &);
 					const_reverse_iterator(const reverse_iterator &);
-				//	~const_reverse_iterator();
-		
-//					bool operator==(const const_reverse_iterator &) const;
-//					bool operator!=(const const_reverse_iterator &) const;
-
-//					Type &operator*();
-//					Type *operator->();
 
 					const_reverse_iterator &operator++();
 					const_reverse_iterator operator++(int);
@@ -508,7 +492,6 @@ namespace exscape {
 	template <typename Type> LinkedList<Type>::iterator::iterator(const iterator &other) : list(other.list), p(other.p) {
 		if (DEBUG >= 2) std::cerr << "In iterator copy constructor" << std::endl; 
 	}
-	template <typename Type> LinkedList<Type>::iterator::~iterator() {}
 
 	template <typename Type> inline bool LinkedList<Type>::iterator::operator==(const iterator &other) const {
 		return (this->p == other.p);
@@ -576,7 +559,6 @@ namespace exscape {
 	template <typename Type> LinkedList<Type>::const_iterator::const_iterator(const iterator &other) : list(other.list), p(other.p) {
 		if (DEBUG >= 2) std::cerr << "In const_iterator copy constructor from regular iterator" << std::endl; 
 	}
-	template <typename Type> LinkedList<Type>::const_iterator::~const_iterator() {}
 
 	template <typename Type> inline bool LinkedList<Type>::const_iterator::operator==(const const_iterator &other) const {
 		return (this->p == other.p);
