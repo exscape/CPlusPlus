@@ -117,7 +117,7 @@ namespace exscape {
 		public:
 		/* Constructors and destructors */
 			LinkedList();
-			LinkedList(const LinkedList<Type> &);
+			LinkedList(const LinkedList<Type> &other);
 			~LinkedList();
 		/* Public methods */
 			void clear();
@@ -133,13 +133,28 @@ namespace exscape {
 			const Type &back() const;
 			void dump(bool verbose) const; // XXX: Debugging only, until iterator support is added
 
+			/** \brief Creates a regular R/W iterator pointing at the list start */
 			iterator begin() { return iterator(this, this->head); }
+
+			/** \brief Creates a regular R/W iterator pointing one node after the list end */
 			iterator end() { return iterator(this, NULL); }
+
+			/** \brief Creates a const_iterator pointing at the list start */
 			const_iterator begin() const { return const_iterator(this, this->head); }
+
+			/** \brief Creates a const_iterator pointing one node after the list end */
 			const_iterator end() const { return const_iterator(this, NULL); }
+
+			/** \brief Creates a R/W reverse_iterator pointing at the last node */
 			reverse_iterator rbegin() { return reverse_iterator(this, this->tail); }
+
+			/** \brief Creates a R/W reverse_iterator pointing one node before the list start */
 			reverse_iterator rend() { return reverse_iterator(this, NULL); }
+
+			/** \brief Creates a const_reverse_iterator pointing at the last node */
 			const_reverse_iterator rbegin() const { return const_reverse_iterator(this, this->tail); }
+
+			/** \brief Creates a const_reverse_iterator pointing one node before the list start */
 			const_reverse_iterator rend() const { return const_reverse_iterator(this, NULL); }
 
 		/* Overloaded operators */
@@ -159,6 +174,10 @@ namespace exscape {
 	template <typename Type> LinkedList<Type>::LinkedList() : head(NULL), tail(NULL), _size(0) {
 		if (DEBUG) std::cerr << "Hello, LinkedList " << this << std::endl;
 	}
+
+	/**
+	 * \brief Copy constructor, creates a list equal to \a other 
+	 */
 	template <typename Type> LinkedList<Type>::LinkedList(const LinkedList<Type> &other) : head(NULL), tail(NULL), _size(0) {
 		*this = other;
 	}
