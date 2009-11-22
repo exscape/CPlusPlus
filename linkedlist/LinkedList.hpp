@@ -43,7 +43,7 @@ namespace exscape {
 			typedef size_t size_type; //!< A typedef to help compatibility with existing classes
 			typedef ptrdiff_t difference_type; //!< A typedef to help compatibility with existing classes
 
-			class iterator;
+			class iterator; // Forward delaration to allow for the const_iterator(iterator) constructor
 
 			class const_iterator : public std::iterator<std::bidirectional_iterator_tag, Type, difference_type> {
 				public:
@@ -121,10 +121,11 @@ namespace exscape {
 			};
 
 		public:
+
 		/* Constructors and destructors */
-			LinkedList();
-			LinkedList(const LinkedList<Type> &other);
-			~LinkedList();
+			LinkedList() : head(NULL), tail(NULL), _size(0) {}
+			LinkedList(const LinkedList<Type> &other) : head(NULL), tail(NULL), _size(0) { *this = other; }
+			~LinkedList() { this->clear(); }
 		/* Public methods */
 			void clear();
 			size_t size() const;
@@ -173,28 +174,6 @@ namespace exscape {
 			struct node *tail; //!< A pointer to the last element of the linked list
 			size_t _size; //!< The size/length of the linked list, in number of elements
 	};
-
-	/**
-	 * \brief The default constructor, does nothing but initialize all members to zero, thus creating an empty list 
-	 */
-	template <typename Type> LinkedList<Type>::LinkedList() : head(NULL), tail(NULL), _size(0) {
-		if (DEBUG) std::cerr << "Hello, LinkedList " << this << std::endl;
-	}
-
-	/**
-	 * \brief Copy constructor, creates a list equal to \a other 
-	 */
-	template <typename Type> LinkedList<Type>::LinkedList(const LinkedList<Type> &other) : head(NULL), tail(NULL), _size(0) {
-		*this = other;
-	}
-
-	/** 
-	 * \brief The destructor. Frees all memory associated with the list.
-	 */
-	template <typename Type> LinkedList<Type>::~LinkedList() {
-		this->clear();
-		if (DEBUG) std::cerr << "Goodbye, LinkedList " << this << std::endl;
-	}
 
 	/** 
 	 * \brief Add a node before the beginning of the list.
