@@ -123,9 +123,16 @@ namespace exscape {
 		public:
 
 		/* Constructors and destructors */
+
+            /** \brief Default constructor, creates an empty list. */
 			LinkedList() : head(NULL), tail(NULL), _size(0) {}
+
+            /** \brief Copy constructor, sets this to a copy of \a other */
 			LinkedList(const LinkedList<Type> &other) : head(NULL), tail(NULL), _size(0) { *this = other; }
+
+            /** \brief Destructor, frees all memory associated with this list. */
 			~LinkedList() { this->clear(); }
+
 		/* Public methods */
 			void clear();
 			size_t size() const;
@@ -437,8 +444,8 @@ namespace exscape {
 	template <typename Type> void LinkedList<Type>::dump(bool verbose = false) const {
 		if (verbose == false) {
 			std::cerr << "List " << this << " (size " << this->size() << "): ";
-			for (node *current = this->head; current != NULL; current = current->next) {
-				std::cerr << current->data << " ";
+			for (const_iterator ci = this->begin(); ci != this->end(); ++ci) {
+				std::cerr << *ci << " ";
 			}
 		}
 		else {
