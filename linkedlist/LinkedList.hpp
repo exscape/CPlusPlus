@@ -367,10 +367,6 @@ namespace exscape {
 		if (to_delete == NULL)
 			return end(); // XXX, what should we return here?
 
-		bool deleting_tail = false;
-		if (to_delete == this->tail)
-			deleting_tail = true;
-		
 		if (to_delete->prev != NULL) { // If this isn't the head node, fix its next pointer
 			to_delete->prev->next = to_delete->next; // The node before the one we delete should point to the one after
 		}
@@ -394,11 +390,8 @@ namespace exscape {
 		if (DEBUG >= 2) std::cerr << "After erase(iterator): " << std::endl;
 		if (DEBUG >= 2) this->dump(true);
 
-		// XXX: Is this correct? It appears to work, but isn't pretty.
-		if (!deleting_tail)
-			return iterator(this, next_node);
-		else
-			return end();
+		// XXX: Is this correct? iterator(this, next_node) == end() if next_node == NULL, so it should work
+		return iterator(this, next_node);
 	}
 
 	/** \brief Deletes all the elements between iterators \a start and \a end.
