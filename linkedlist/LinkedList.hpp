@@ -149,6 +149,8 @@ namespace exscape {
 			/* Methods that add items to the list */
 			void push_front(const Type &);
 			void push_back(const Type &);
+			iterator insert(iterator, const Type &);
+			template <typename InputIterator> void insert(iterator, InputIterator, InputIterator);
 
 			/** \brief Copies everything between InputIterators \a start and \a end, \a start included */
 			template <typename InputIterator> void assign (InputIterator start, InputIterator end) {
@@ -276,7 +278,10 @@ namespace exscape {
 			size_t len = 0;
 			for (node *current = this->head; current != NULL; current = current->next)
 				len++;
-			assert(len == this->_size);
+			if (len != this->_size) {
+				std::cerr << "in size(): actual len=" << len << ", this->_size=" << this->_size << std::endl;
+				exit(1);
+			}
 		}
 
 		return this->_size;
@@ -403,6 +408,66 @@ namespace exscape {
 		return end;
 	}
 
+	/** \brief Inserts element \a elem before \a position.
+	 *  \return An iterator pointing to the newly inserted element.
+	 */
+	template <typename Type> typename LinkedList<Type>::iterator LinkedList<Type>::insert(iterator position, const Type &elem) {
+		if (DEBUG >= 2) std::cerr << "Before insert(iterator, elem): " << std::endl;
+		if (DEBUG >= 2) this->dump(true);
+		
+		node *pos = position.p;
+		assert (pos == position.p); // XXX: WTF? Why would this not always work? (seems it doesn't)
+
+		node *new_node = new node;
+		new_node->data = elem;
+
+		if (pos != this->head) { // position isn't head
+			if (pos != NULL) {
+				new_node->prev = pos->prev;
+				new_node->next = pos->next;
+			}
+			else {
+				new_node->prev = NULL;
+				new_node->next = NULL;
+			}
+		}
+		else { // position is head
+			new_node->prev = NULL;
+			if (this->head != NULL)
+				new_node->next = this->head->next;
+			else
+				new_node->next = NULL;
+		}
+
+		// The node should be ready for insertion now...
+		if (pos != NULL) {
+			if (pos->prev != NULL) {
+				this->head = new_node;
+				pos->prev->next = new_node; // Set the previous node to point to this one as the next one
+			}
+			if (pos->next != NULL)
+				pos->next->prev = new_node; // Set the next node to point to this one as the previous one
+		}
+		else if ((--position).p == this->tail) { // We're adding to the end of the list; XXX: Isn't this pretty much == NULL?
+			pos->prev = this->tail;
+			pos->next = NULL;
+			this->tail->next = new_node;
+		}
+		else if (this->_size == 0) { // The first and only node
+			this->head = new_node;
+			this->tail = new_node;
+		}
+		else {
+			assert(0);
+		}
+
+		this->_size++;
+
+		if (DEBUG >= 2) std::cerr << "After insert(iterator, elem): " << std::endl;
+		if (DEBUG >= 2) this->dump(true);
+
+		return iterator(this, new_node);
+	}
 	/** 
 	 * \brief Gets a read-write reference to the first element of the list.
 	 * \return A read-write reference to the first element of the list.

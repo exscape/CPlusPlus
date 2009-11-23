@@ -125,25 +125,32 @@ int main() {
 		std::cout << "list after erase(begin+1): " << *ci << std::endl;
 	}
 	std::cout << std::endl;
-	list.dump(true);
+//	list.dump(true);
 
 	LIST_TYPE<int> one;
 	one.push_back(1);
 
 	std::cout << "One pre-erase: " << std::endl;
-	one.dump(true);
+//	one.dump(true);
 	for (LIST_TYPE<int>::const_iterator ci = one.begin(); ci != one.end(); ++ci) {
 		std::cout << "one-pre-erase: " << *ci << std::endl;
 	}
 	one.erase(one.begin());
 	std::cout << "One post-erase: " << std::endl;
-	one.dump(true);
+//	one.dump(true);
+	for (LIST_TYPE<int>::const_iterator ci = one.begin(); ci != one.end(); ++ci) {
+		std::cout << "one-pre-erase: " << *ci << std::endl;
+	}
 
 	for (int i=10; i<=70; i+=10)
 		list.push_back(i);
 
 	std::cout << "\n\nList pre-random-deletes: \n" << std::endl;
-	list.dump();
+	//list.dump();
+	for (LIST_TYPE<int>::const_iterator ci = list.begin(); ci != list.end(); ++ci) {
+		std::cout << "List pre-random-deletes: " << *ci << std::endl;
+	}
+	std::cout << std::endl;
 
 	LIST_TYPE<int>::iterator del_i; 
 	del_i = list.begin(); list.erase(del_i);			// Delete first element
@@ -152,14 +159,45 @@ int main() {
 	del_i = list.end(); --del_i; --del_i; --del_i; list.erase(del_i); // Delete middle(?) element
 
 	std::cout << "\n\nList post-random-deletes: \n" << std::endl;
-	list.dump();
+//	list.dump();
+	for (LIST_TYPE<int>::const_iterator ci = list.begin(); ci != list.end(); ++ci) {
+		std::cout << "List post-random-deletes: " << *ci << std::endl;
+	}
 
 	std::cout << "\n\ncpy pre-range-erase: \n" << std::endl;
-	cpy.dump();
+	for (LIST_TYPE<int>::const_iterator ci = cpy.begin(); ci != cpy.end(); ++ci) {
+		std::cout << "cpy pre-range-erase: " << *ci << std::endl;
+	}
+	//cpy.dump();
 	LIST_TYPE<int>::iterator cpy_before_end = --cpy.end();
 	cpy.erase(cpy.begin(), cpy_before_end);
 	std::cout << "\n\ncpy post-range-erase: \n" << std::endl;
-	cpy.dump();
+	//cpy.dump();
+	for (LIST_TYPE<int>::const_iterator ci = cpy.begin(); ci != cpy.end(); ++ci) {
+		std::cout << "cpy post-range-erase: " << *ci << std::endl;
+	}
+
+	//
+	// Start insert tests
+	//
+
+	std::cout << "\n\nList pre-insert: \n" << std::endl;
+	for (LIST_TYPE<int>::const_iterator ci = list.begin(); ci != list.end(); ++ci) {
+		std::cout << "List pre-insert: " << *ci << std::endl;
+	}
+
+	it = list.begin();
+	list.insert(it, 1000);
+	/*
+	it = list.end();
+	list.insert(it, 9000);
+	it = ++list.begin(); ++it;
+	list.insert(it, 5000);
+*/
+	std::cout << "\n\nList post-insert: \n" << std::endl;
+	for (LIST_TYPE<int>::const_iterator ci = list.begin(); ci != list.end(); ++ci) {
+		std::cout << "List post-insert: " << *ci << std::endl;
+	}
 
 	return 0;
 }
