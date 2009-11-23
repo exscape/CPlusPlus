@@ -129,6 +129,13 @@ namespace exscape {
             /** \brief Copy constructor, sets this to a copy of \a other */
 			LinkedList(const LinkedList<Type> &other) : head(NULL), tail(NULL), _size(0) { *this = other; }
 
+            /** \brief A copy constructor that takes two InputIterators and copies everything between them (including begin) */ // XXX
+            template <typename InputIterator>
+            LinkedList(InputIterator start, InputIterator end) : head(NULL), tail(NULL), _size(0) {
+                for (; start != end; ++start)
+                    this->push_back(*start);
+            }
+
             /** \brief Destructor, frees all memory associated with this list. */
 			~LinkedList() { this->clear(); }
 

@@ -72,6 +72,10 @@ int main() {
 	}
 	std::cout << std::endl;
 
+	//
+	// Start reverse iterator testing
+	//
+
 	std::cout << "\n\nReverse iterator testing (correct output: 4 3 2 1):" << std::endl;
 
 	cpy.clear();
@@ -93,6 +97,16 @@ int main() {
 	for (LIST_TYPE<int>::const_reverse_iterator cri = list.rbegin(); cri != list.rend(); ++cri) {
 		std::cout << "Reverse const iterator over non-const list: " << *cri << std::endl;
 	}
+
+	//
+	// Iterator copy constructor test
+	//
+	
+	LIST_TYPE<int> cpy2 (list.begin(), list.end());
+	for (LIST_TYPE<int>::const_iterator ci = list.begin(); ci != cpy2.end(); ++ci) {
+		std::cout << "iterator copy constructed list copy: " << *ci << std::endl;
+	}
+	std::cout << std::endl;
 
 	return 0;
 }
