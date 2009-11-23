@@ -151,14 +151,16 @@ namespace exscape {
 			 */
 			void push_front(const Type &);
 			void push_back(const Type &);
-			iterator insert(iterator, const Type &);
+			iterator insert(iterator position, const Type &elem);
+
+			/** \brief Copies everything in between \a start and \a end to before \a position */
 			template <typename InputIterator> void insert(iterator position, InputIterator start, InputIterator end) {
 				for (; start != end; ++start, ++position) {
 					this->insert(position, *start);
 				}
 			}
 
-			/** \brief Copies everything between InputIterators \a start and \a end, \a start included */
+			/** \brief Clears the list and copies everything between InputIterators \a start and \a end, \a start included, to it */
 			template <typename InputIterator> void assign (InputIterator start, InputIterator end) {
 				this->clear();
 				for (; start != end; ++start)
@@ -172,8 +174,10 @@ namespace exscape {
 			void pop_back();
 			iterator erase(iterator pos);
 			iterator erase(iterator start, iterator end);
+			/** \brief Removes all objects with value \a del from the list. */
 			void remove(const Type &del) {
-				for (iterator i = this->begin(); i != this->end();) {
+				iterator i = this->begin();
+				while (i != this->end()) {
 					if (*i == del) {
 						iterator i_del (i);
 						++i;

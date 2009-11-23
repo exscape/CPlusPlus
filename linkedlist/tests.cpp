@@ -218,5 +218,9 @@ int main() {
 		std::cout << "List post-remove-3: " << *ci << std::endl;
 	}
 
+	// Test std::copy w/ iterators and ostream_iterator
+	std::copy(list.begin(), list.end(), std::ostream_iterator<int>(std::cout, " "));
+	std::cout << std::endl;
+
 	return 0;
 }
