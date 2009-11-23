@@ -132,8 +132,7 @@ namespace exscape {
             /** \brief A copy constructor that takes two InputIterators and copies everything between them (including begin) */ // XXX
             template <typename InputIterator>
             LinkedList(InputIterator start, InputIterator end) : head(NULL), tail(NULL), _size(0) {
-                for (; start != end; ++start)
-                    this->push_back(*start);
+                this->assign(start, end);
             }
 
             /** \brief Destructor, frees all memory associated with this list. */
@@ -150,6 +149,11 @@ namespace exscape {
 			void push_back(const Type &);
 			void pop_front();
 			void pop_back();
+            template <typename InputIterator> void assign (InputIterator start, InputIterator end) {
+                this->clear();
+                for (; start != end; ++start)
+                    this->push_back(*start);
+            }
 			Type &front();
 			const Type &front() const;
 			Type &back();

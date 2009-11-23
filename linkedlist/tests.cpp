@@ -103,8 +103,14 @@ int main() {
 	//
 	
 	LIST_TYPE<int> cpy2 (list.begin(), list.end());
-	for (LIST_TYPE<int>::const_iterator ci = list.begin(); ci != cpy2.end(); ++ci) {
+	for (LIST_TYPE<int>::const_iterator ci = cpy2.begin(); ci != cpy2.end(); ++ci) {
 		std::cout << "iterator copy constructed list copy: " << *ci << std::endl;
+	}
+	std::cout << std::endl;
+	
+	list.assign(cpy.begin(), cpy.end());
+	for (LIST_TYPE<int>::const_iterator ci = list.begin(); ci != list.end(); ++ci) {
+		std::cout << "list after assign(cpy): " << *ci << std::endl;
 	}
 	std::cout << std::endl;
 
