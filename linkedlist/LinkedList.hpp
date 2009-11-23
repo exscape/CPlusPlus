@@ -367,13 +367,13 @@ namespace exscape {
 		if (to_delete == NULL)
 			return end(); // XXX, what should we return here?
 
-		if (to_delete->prev != NULL) { // If this isn't the head node, fix its next pointer
+		if (to_delete != this->head) { // If this isn't the head node, fix its next pointer
 			to_delete->prev->next = to_delete->next; // The node before the one we delete should point to the one after
 		}
 		else
 			this->head = this->head->next; // The head node was deleted; replace it (possibly with NULL)
 
-		if (to_delete->next != NULL) { // If  this isn't the tail node, fix its prev painter
+		if (to_delete != this->tail) { // If  this isn't the tail node, fix its prev painter
 			to_delete->next->prev = to_delete->prev; // The node after the one we delete should point to the one before
 			next_node = to_delete->next;
 		}
