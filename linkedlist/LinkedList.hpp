@@ -15,10 +15,13 @@
 #endif
 
 /*
- * The sometimes excessive comments is for Doxygen; one purpose is to shut it up (when not documenting a simple method), another is to get nice documentation for free. The namespace comment feels totally unnecessary, for instance. */
+ * The sometimes excessive comments are for Doxygen; one purpose is to shut it up 
+ * (it warns when not documenting a method, no matter how simple), another is to get nice documentation for free. 
+ * The namespace comment feels totally unnecessary, for instance. */
 
 // TODO:
-// * Document the iterator classes and functions
+// * Implement more functions? (splice, merge, sort, reverse?)
+// * Cleanup, especially XXX comments and possibly assert()s - not until everything is "finished", though
 
 /** My namespace. */
 namespace exscape {
@@ -46,16 +49,20 @@ namespace exscape {
 
 			class const_iterator : public std::iterator<std::bidirectional_iterator_tag, Type, difference_type> {
 				public:
+					/* Constructors */
 					const_iterator(const LinkedList<Type> *in_list, struct node *in_node) : list(in_list), p(in_node) {}
 					const_iterator(const const_iterator &other) : list(other.list), p(other.p) {}
 					const_iterator(const iterator &other) : list(other.list), p(other.p) {}
 
+					/* Equivalence-checking operators */
 					bool operator==(const const_iterator &other) const { return (this->p == other.p); }
 					bool operator!=(const const_iterator &other) const { return (this->p != other.p); }
 
+					/* Dereferencing operators */
 					const Type &operator*() const { return this->p->data; }
 					const Type *operator->() const { return &(**this); /* XXX: Hmm? */ }
 
+					/* Motion operators */
 					const_iterator &operator++() { if (this->p != NULL) this->p = this->p->next; return *this; }
 					const_iterator &operator--() { if (this->p != NULL) this->p = this->p->prev; 
 												   else if (this->list->tail != NULL) this->p = this->list->tail; 
@@ -73,15 +80,19 @@ namespace exscape {
 				friend class LinkedList<Type>;
 				friend class const_iterator;
 				public:
+					/* Constructors */
 					iterator(const LinkedList<Type> *in_list = NULL, struct node *in_node = NULL) : list(in_list), p(in_node) {}
 					iterator(const iterator &other) : list(other.list), p(other.p) {}
 
+					/* Equivalence-checking operators */
 					bool operator==(const iterator &other) const { return (this->p == other.p); }
 					bool operator!=(const iterator &other) const { return (this->p != other.p); }
 
+					/* Dereferencing operators */
 					Type &operator*() { return this->p->data; }
 					Type *operator->() { return &(**this); /* XXX: Hmm? */ }
 
+					/* Motion operators */
 					iterator &operator++() { if (this->p != NULL) this->p = this->p->next; return *this; }
 					iterator &operator--() { if (this->p != NULL) this->p = this->p->prev; 
 												   else if (/* this->p == NULL && */ this->list->tail != NULL) this->p = this->list->tail; 
@@ -91,16 +102,19 @@ namespace exscape {
 					iterator operator--(int) { iterator out (*this); return --out; }
 
 				protected:
+					/* Protected member variables */
 					const LinkedList<Type> *list;
 					node *p;
 			};
 
 			class reverse_iterator : public iterator {
 				public:
+					/* Constructors */
 					reverse_iterator(const LinkedList<Type> *in_list, struct node *in_node) : iterator(in_list, in_node) {}
 					reverse_iterator(const reverse_iterator &other) : iterator(other) {}
 					reverse_iterator(const iterator &other) : iterator(other) {}
 
+					/* Overridden motion operators */
 					reverse_iterator &operator++() { if (this->p != NULL) this->p = this->p->prev; return *this; }
 					reverse_iterator &operator--() { if (this->p != NULL) this->p = this->p->next; return *this; }
 					reverse_iterator operator++(int) { reverse_iterator out (*this); return ++out; }
@@ -109,11 +123,13 @@ namespace exscape {
 
 			class const_reverse_iterator : public const_iterator {
 				public:
+					/* Constructors */
 					const_reverse_iterator(const LinkedList<Type> *in_list, struct node *in_node) : const_iterator(in_list, in_node) {}
 					const_reverse_iterator(const const_reverse_iterator &other) : const_iterator(other) {}
 					const_reverse_iterator(const const_iterator &other) : const_iterator(other) {}
 					const_reverse_iterator(const reverse_iterator &other) : const_iterator(other) {}
 
+					/* Overridden motion operators */
 					const_reverse_iterator &operator++() { if (this->p != NULL) this->p = this->p->prev; return *this; }
 					const_reverse_iterator &operator--() { if (this->p != NULL) this->p = this->p->next; return *this; }
 					const_reverse_iterator operator++(int) { const_reverse_iterator out (*this); return ++out; }
