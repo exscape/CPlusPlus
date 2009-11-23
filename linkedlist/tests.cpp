@@ -12,9 +12,9 @@ int main() {
 	LIST_TYPE<int> list;
 	LIST_TYPE<int>::iterator it;
 
-	list.push_back(20);
-	list.push_back(30);
-	list.push_back(40);
+	list.push_back(1);
+	list.push_back(2);
+	list.push_back(3);
 
 	for (it = list.begin(); it != list.end(); ++it) {
 		std::cout << "Element: " << *it << std::endl;
@@ -83,6 +83,7 @@ int main() {
 	cpy.push_back(2);
 	cpy.push_back(3);
 	cpy.push_back(4);
+	LIST_TYPE<int> list_1234 = cpy;
 
 	for (LIST_TYPE<int>::reverse_iterator ri = cpy.rbegin(); ri != cpy.rend(); ++ri) {
 		std::cout << "Reverse iterator over cpy: " << *ri << std::endl;
@@ -176,7 +177,6 @@ int main() {
 	for (LIST_TYPE<int>::const_iterator ci = cpy.begin(); ci != cpy.end(); ++ci) {
 		std::cout << "cpy post-range-erase: " << *ci << std::endl;
 	}
-
 	//
 	// Start insert tests
 	//
@@ -187,16 +187,26 @@ int main() {
 	}
 
 	it = list.begin();
-	list.insert(it, 1000);
-	/*
+	list.insert(it, 1000); // Insert at start
+	
 	it = list.end();
-	list.insert(it, 9000);
-	it = ++list.begin(); ++it;
-	list.insert(it, 5000);
-*/
+	list.insert(it, 9000); // Insert at end
+	it = ++list.begin(); ++it; ++it;
+	list.insert(it, 5000); // Insert in the middle
+	list.insert(list.begin(), 400); // Insert at the start again
+
 	std::cout << "\n\nList post-insert: \n" << std::endl;
 	for (LIST_TYPE<int>::const_iterator ci = list.begin(); ci != list.end(); ++ci) {
 		std::cout << "List post-insert: " << *ci << std::endl;
+	}
+
+	// "Mass insert" tests
+
+	list.insert(list.end(), list_1234.begin(), list_1234.end());
+
+	std::cout << "\n\nList post-insert-1234: \n" << std::endl;
+	for (LIST_TYPE<int>::const_iterator ci = list.begin(); ci != list.end(); ++ci) {
+		std::cout << "List post-insert-1234: " << *ci << std::endl;
 	}
 
 	return 0;

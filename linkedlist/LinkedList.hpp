@@ -150,7 +150,11 @@ namespace exscape {
 			void push_front(const Type &);
 			void push_back(const Type &);
 			iterator insert(iterator, const Type &);
-			template <typename InputIterator> void insert(iterator, InputIterator, InputIterator);
+			template <typename InputIterator> void insert(iterator position, InputIterator start, InputIterator end) {
+				for (; start != end; ++start, ++position) {
+					this->insert(position, *start);
+				}
+			}
 
 			/** \brief Copies everything between InputIterators \a start and \a end, \a start included */
 			template <typename InputIterator> void assign (InputIterator start, InputIterator end) {
@@ -412,53 +416,57 @@ namespace exscape {
 	 *  \return An iterator pointing to the newly inserted element.
 	 */
 	template <typename Type> typename LinkedList<Type>::iterator LinkedList<Type>::insert(iterator position, const Type &elem) {
-		if (DEBUG >= 2) std::cerr << "Before insert(iterator, elem): " << std::endl;
+		//
+		// XXX: This code is REALLY UGLY!
+		//
+
+		if (DEBUG >= 2) std::cerr << "Before insert(iterator, elem=" << elem << "): " << std::endl;
 		if (DEBUG >= 2) this->dump(true);
 		
 		node *pos = position.p;
-		assert (pos == position.p); // XXX: WTF? Why would this not always work? (seems it doesn't)
+		enum { HEAD_EMPTY, HEAD_NONEMPTY, BETWEEN, TAIL } pos_type;
 
 		node *new_node = new node;
 		new_node->data = elem;
 
-		if (pos != this->head) { // position isn't head
-			if (pos != NULL) {
-				new_node->prev = pos->prev;
-				new_node->next = pos->next;
-			}
-			else {
-				new_node->prev = NULL;
+		if (pos == NULL && this->_size == 0)
+			pos_type = HEAD_EMPTY; // This is the first element
+		else if (pos == this->head && this->_size != 0) 
+			pos_type = HEAD_NONEMPTY; // This is the head element in a non-empty list
+		else if (pos == NULL && this->_size != 0)
+			pos_type = TAIL; // This is the tail element
+		else
+			pos_type = BETWEEN; // If none of the above... XXX: this must be true?
+
+
+		if (pos_type == HEAD_EMPTY || pos_type == HEAD_NONEMPTY) {
+			new_node->prev = NULL; // prev is always NULL for a head node
+			if (pos_type == HEAD_EMPTY) // Empty list
 				new_node->next = NULL;
+			else { // Non-empty list
+				new_node->next = this->head; 
+				this->head->prev = new_node;
 			}
-		}
-		else { // position is head
-			new_node->prev = NULL;
-			if (this->head != NULL)
-				new_node->next = this->head->next;
-			else
-				new_node->next = NULL;
+
+			this->head = new_node;
 		}
 
-		// The node should be ready for insertion now...
-		if (pos != NULL) {
-			if (pos->prev != NULL) {
-				this->head = new_node;
-				pos->prev->next = new_node; // Set the previous node to point to this one as the next one
-			}
-			if (pos->next != NULL)
-				pos->next->prev = new_node; // Set the next node to point to this one as the previous one
-		}
-		else if ((--position).p == this->tail) { // We're adding to the end of the list; XXX: Isn't this pretty much == NULL?
-			pos->prev = this->tail;
-			pos->next = NULL;
+		else if (pos_type == TAIL) {
+			new_node->next = NULL;
+			new_node->prev = this->tail;
 			this->tail->next = new_node;
-		}
-		else if (this->_size == 0) { // The first and only node
-			this->head = new_node;
 			this->tail = new_node;
 		}
+
+		else if (pos_type == BETWEEN) {
+			assert(this->_size >= 3); // Other cases should be taken care of above
+			new_node->prev = pos->prev;
+			new_node->next = pos;
+			pos->prev->next = new_node;
+		}
+
 		else {
-			assert(0);
+			assert(0); // There should be no other cases
 		}
 
 		this->_size++;
@@ -468,6 +476,7 @@ namespace exscape {
 
 		return iterator(this, new_node);
 	}
+
 	/** 
 	 * \brief Gets a read-write reference to the first element of the list.
 	 * \return A read-write reference to the first element of the list.
