@@ -70,6 +70,7 @@ namespace exscape {
 			};
 
 			class iterator : public std::iterator<std::bidirectional_iterator_tag, Type, difference_type> {
+				friend class LinkedList<Type>;
 				friend class const_iterator;
 				public:
 					iterator(const LinkedList<Type> *in_list = NULL, struct node *in_node = NULL) : list(in_list), p(in_node) {}
@@ -83,7 +84,7 @@ namespace exscape {
 
 					iterator &operator++() { if (this->p != NULL) this->p = this->p->next; return *this; }
 					iterator &operator--() { if (this->p != NULL) this->p = this->p->prev; 
-												   else if (this->list->tail != NULL) this->p = this->list->tail; 
+												   else if (/* this->p == NULL && */ this->list->tail != NULL) this->p = this->list->tail; 
 												   return *this; 
 					}
 					iterator operator++(int) { iterator out (*this); return ++out; }
@@ -123,42 +124,53 @@ namespace exscape {
 
 		/* Constructors and destructors */
 
-            /** \brief Default constructor, creates an empty list. */
-			LinkedList() : head(NULL), tail(NULL), _size(0) {}
+		/** \brief Default constructor, creates an empty list. */
+		LinkedList() : head(NULL), tail(NULL), _size(0) {}
 
-            /** \brief Copy constructor, sets this to a copy of \a other */
-			LinkedList(const LinkedList<Type> &other) : head(NULL), tail(NULL), _size(0) { *this = other; }
+		/** \brief Copy constructor, sets this to a copy of \a other */
+		LinkedList(const LinkedList<Type> &other) : head(NULL), tail(NULL), _size(0) { *this = other; }
 
-            /** \brief A copy constructor that takes two InputIterators and copies everything between them (including begin) */ // XXX
-            template <typename InputIterator>
-            LinkedList(InputIterator start, InputIterator end) : head(NULL), tail(NULL), _size(0) {
-                this->assign(start, end);
-            }
+		/** \brief A copy constructor that takes two InputIterators and copies everything between them (including begin) */
+		template <typename InputIterator>
+		LinkedList(InputIterator start, InputIterator end) : head(NULL), tail(NULL), _size(0) {
+			this->assign(start, end);
+		}
 
-            /** \brief Destructor, frees all memory associated with this list. */
-			~LinkedList() { this->clear(); }
+		/** \brief Destructor, frees all memory associated with this list. */
+		~LinkedList() { this->clear(); }
 
 		/* Public methods */
 			void clear();
 			size_t size() const;
 
-            /** \brief Returns whether this list is empty or not. */
+			/** \brief Returns whether this list is empty or not. */
 			bool empty() const { return (this->_size == 0); }
 
+			/* Methods that add items to the list */
 			void push_front(const Type &);
 			void push_back(const Type &);
+
+			/** \brief Copies everything between InputIterators \a start and \a end, \a start included */
+			template <typename InputIterator> void assign (InputIterator start, InputIterator end) {
+				this->clear();
+				for (; start != end; ++start)
+					this->push_back(*start);
+			}
+
+			/* Methods that remove items from the list */
 			void pop_front();
 			void pop_back();
-            template <typename InputIterator> void assign (InputIterator start, InputIterator end) {
-                this->clear();
-                for (; start != end; ++start)
-                    this->push_back(*start);
-            }
+			iterator erase(iterator pos);
+			iterator erase(iterator start, iterator end);
+
+			/* Access methods */
 			Type &front();
 			const Type &front() const;
 			Type &back();
 			const Type &back() const;
-			void dump(bool verbose) const; // XXX: Debugging only, until iterator support is added
+
+			/* Misc */
+			void dump(bool verbose) const; // Debugging only
 
 			/** \brief Creates a regular R/W iterator pointing at the list start */
 			iterator begin() { return iterator(this, this->head); }
@@ -260,7 +272,7 @@ namespace exscape {
 	 * \return The number of elements in the list.
 	 */
 	template <typename Type> inline size_t LinkedList<Type>::size() const {
-		if (DEBUG) { // XXX: Remove this whole block sooner or later
+		if (DEBUG) { // XXX: Remove this whole block sooner or later, when all erase() and insert() operations work
 			size_t len = 0;
 			for (node *current = this->head; current != NULL; current = current->next)
 				len++;
@@ -341,6 +353,61 @@ namespace exscape {
 			this->clear(); // If the list is now empty, reset all member variables to 0
 
 		if (DEBUG) this->dump();
+	}
+
+	/** \brief Deletes the element pointed to by \a position.
+	 *  \return An iterator pointing to the new location of the element that followed the one erased, or end() if the tail was deleted. // XXX
+	 */
+	template <typename Type> typename LinkedList<Type>::iterator LinkedList<Type>::erase(iterator position) {
+		std::cout << "Before erase(iterator): " << std::endl;
+		this->dump(true);
+
+		node *to_delete = position.p;
+		node *next_node = NULL;
+		if (to_delete == NULL)
+			return end(); // XXX, what should we return here?
+
+		bool deleting_tail = false;
+		if (to_delete == this->tail)
+			deleting_tail = true;
+		
+		if (to_delete->prev != NULL) { // If this isn't the head node, fix its next pointer
+			to_delete->prev->next = to_delete->next; // The node before the one we delete should point to the one after
+		}
+		else
+			this->head = this->head->next; // The head node was deleted; replace it (possibly with NULL)
+
+		if (to_delete->next != NULL) { // If  this isn't the tail node, fix its prev painter
+			to_delete->next->prev = to_delete->prev; // The node after the one we delete should point to the one before
+			next_node = to_delete->next;
+		}
+		else {
+			this->tail = this->tail->prev; // The tail node was deleted; replace it (possibly with NULL)
+			assert (next_node == NULL); // XXX: If this fails, set it here, too
+		}
+		
+		delete to_delete;
+
+		if (this->_size != 0)
+			this->_size--;
+
+		std::cout << "After erase(iterator): " << std::endl;
+		this->dump(true);
+
+		// XXX: Is this correct? It appears to work, but isn't pretty.
+		if (!deleting_tail)
+			return iterator(this, next_node);
+		else
+			return end();
+	}
+
+	/** \brief Deletes all the elements between iterators \a start and \a end.
+	 *  \return An iterator pointing to the new location of the element that followd the last elemen erased, or end() if the tail was deleted. // XXX
+	 */
+	template <typename Type> typename LinkedList<Type>::iterator LinkedList<Type>::erase(iterator start, iterator end) {
+		while (start != end)
+			start = this->erase(start);
+		return end;
 	}
 
 	/** 

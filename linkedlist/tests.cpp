@@ -99,7 +99,7 @@ int main() {
 	}
 
 	//
-	// Iterator copy constructor test
+	// Iterator copy constructor + assign() tests
 	//
 	
 	LIST_TYPE<int> cpy2 (list.begin(), list.end());
@@ -113,6 +113,53 @@ int main() {
 		std::cout << "list after assign(cpy): " << *ci << std::endl;
 	}
 	std::cout << std::endl;
+
+	//
+	// erase() tests
+	//
+	LIST_TYPE<int>::iterator erase_it = list.begin();
+	cpy = list;
+	++erase_it;
+	list.erase(erase_it);
+	for (LIST_TYPE<int>::const_iterator ci = list.begin(); ci != list.end(); ++ci) {
+		std::cout << "list after erase(begin+1): " << *ci << std::endl;
+	}
+	std::cout << std::endl;
+	list.dump(true);
+
+	LIST_TYPE<int> one;
+	one.push_back(1);
+
+	std::cout << "One pre-erase: " << std::endl;
+	one.dump(true);
+	for (LIST_TYPE<int>::const_iterator ci = one.begin(); ci != one.end(); ++ci) {
+		std::cout << "one-pre-erase: " << *ci << std::endl;
+	}
+	one.erase(one.begin());
+	std::cout << "One post-erase: " << std::endl;
+	one.dump(true);
+
+	for (int i=10; i<=70; i+=10)
+		list.push_back(i);
+
+	std::cout << "\n\nList pre-random-deletes: \n" << std::endl;
+	list.dump();
+
+	LIST_TYPE<int>::iterator del_i; 
+	del_i = list.begin(); list.erase(del_i);			// Delete first element
+	del_i = list.begin(); ++del_i; list.erase(del_i);	// Delete second element
+	del_i = list.end(); --del_i; list.erase(del_i);		// Delete last element
+	del_i = list.end(); --del_i; --del_i; --del_i; list.erase(del_i); // Delete middle(?) element
+
+	std::cout << "\n\nList post-random-deletes: \n" << std::endl;
+	list.dump();
+
+	std::cout << "\n\ncpy pre-range-erase: \n" << std::endl;
+	cpy.dump();
+	LIST_TYPE<int>::iterator cpy_before_end = cpy.end(); --cpy_before_end;
+	cpy.erase(cpy.begin(), cpy_before_end);
+	std::cout << "\n\ncpy post-range-erase: \n" << std::endl;
+	cpy.dump();
 
 	return 0;
 }
