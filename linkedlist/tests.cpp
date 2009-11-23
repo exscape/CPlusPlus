@@ -6,6 +6,13 @@
 #define LIST_TYPE LinkedList
 //#define LIST_TYPE std::list
 
+bool larger_than_56(int i) {
+	if (i > 56)
+		return true;
+	else
+		return false;
+}
+
 int main() {
 	using namespace exscape;
 	
@@ -219,6 +226,13 @@ int main() {
 	}
 
 	// Test std::copy w/ iterators and ostream_iterator
+	std::copy(list.begin(), list.end(), std::ostream_iterator<int>(std::cout, " "));
+	std::cout << std::endl;
+
+	// Test remove_if
+	list.remove_if(larger_than_56);
+
+	std::cout << "After remove_if > 56: ";
 	std::copy(list.begin(), list.end(), std::ostream_iterator<int>(std::cout, " "));
 	std::cout << std::endl;
 

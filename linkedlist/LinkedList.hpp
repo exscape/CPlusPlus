@@ -187,6 +187,18 @@ namespace exscape {
 					++i;
 				}
 			}
+			template <class Predicate> void remove_if(Predicate pred) {
+				iterator i = this->begin();
+				while (i != this->end()) {
+					if (pred(*i)) {
+						iterator i_del (i);
+						++i;
+						this->erase(i_del);
+						continue;
+					}
+					++i;
+				}
+			}
 
 			/* Access methods */
 			Type &front();
