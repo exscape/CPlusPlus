@@ -48,6 +48,7 @@ namespace exscape {
 			class iterator; // Forward delaration to allow for the const_iterator(iterator) constructor
 
 			class const_iterator : public std::iterator<std::bidirectional_iterator_tag, Type, difference_type> {
+				friend class iterator;
 				public:
 					/* Constructors */
 					const_iterator(const LinkedList<Type> *in_list, struct node *in_node) : list(in_list), p(in_node) {}
@@ -57,6 +58,8 @@ namespace exscape {
 					/* Equivalence-checking operators */
 					bool operator==(const const_iterator &other) const { return (this->p == other.p); }
 					bool operator!=(const const_iterator &other) const { return (this->p != other.p); }
+					bool operator==(const iterator &other) const { return (this->p == other.p); }
+					bool operator!=(const iterator &other) const { return (this->p != other.p); }
 
 					/* Dereferencing operators */
 					const Type &operator*() const { return this->p->data; }
@@ -87,6 +90,8 @@ namespace exscape {
 					/* Equivalence-checking operators */
 					bool operator==(const iterator &other) const { return (this->p == other.p); }
 					bool operator!=(const iterator &other) const { return (this->p != other.p); }
+					bool operator==(const const_iterator &other) const { return (this->p == other.p); }
+					bool operator!=(const const_iterator &other) const { return (this->p != other.p); }
 
 					/* Dereferencing operators */
 					Type &operator*() { return this->p->data; }
