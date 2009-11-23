@@ -146,7 +146,9 @@ namespace exscape {
 			/** \brief Returns whether this list is empty or not. */
 			bool empty() const { return (this->_size == 0); }
 
-			/* Methods that add items to the list */
+			/* 
+			 * Methods that add items to the list *
+			 */
 			void push_front(const Type &);
 			void push_back(const Type &);
 			iterator insert(iterator, const Type &);
@@ -163,11 +165,24 @@ namespace exscape {
 					this->push_back(*start);
 			}
 
-			/* Methods that remove items from the list */
+			/* 
+			 * Methods that remove items from the list *
+			 */
 			void pop_front();
 			void pop_back();
 			iterator erase(iterator pos);
 			iterator erase(iterator start, iterator end);
+			void remove(const Type &del) {
+				for (iterator i = this->begin(); i != this->end();) {
+					if (*i == del) {
+						iterator i_del (i);
+						++i;
+						this->erase(i_del);
+						continue;
+					}
+					++i;
+				}
+			}
 
 			/* Access methods */
 			Type &front();

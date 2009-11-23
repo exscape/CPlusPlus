@@ -204,9 +204,18 @@ int main() {
 
 	list.insert(list.end(), list_1234.begin(), list_1234.end());
 
-	std::cout << "\n\nList post-insert-1234: \n" << std::endl;
+	std::cout << "\n\nList post-insert-1234 (size " << list.size() << "): \n" << std::endl;
 	for (LIST_TYPE<int>::const_iterator ci = list.begin(); ci != list.end(); ++ci) {
 		std::cout << "List post-insert-1234: " << *ci << std::endl;
+	}
+
+	//
+	// Remove tests
+	//
+	list.remove(3);
+	std::cout << "\n\nList post-remove-3 (size " << list.size() << "): \n" << std::endl;
+	for (LIST_TYPE<int>::const_iterator ci = list.begin(); ci != list.end(); ++ci) {
+		std::cout << "List post-remove-3: " << *ci << std::endl;
 	}
 
 	return 0;
