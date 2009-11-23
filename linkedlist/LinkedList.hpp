@@ -359,8 +359,8 @@ namespace exscape {
 	 *  \return An iterator pointing to the new location of the element that followed the one erased, or end() if the tail was deleted. // XXX
 	 */
 	template <typename Type> typename LinkedList<Type>::iterator LinkedList<Type>::erase(iterator position) {
-		std::cout << "Before erase(iterator): " << std::endl;
-		this->dump(true);
+		if (DEBUG >= 2) std::cerr << "Before erase(iterator): " << std::endl;
+		if (DEBUG >= 2) this->dump(true);
 
 		node *to_delete = position.p;
 		node *next_node = NULL;
@@ -391,8 +391,8 @@ namespace exscape {
 		if (this->_size != 0)
 			this->_size--;
 
-		std::cout << "After erase(iterator): " << std::endl;
-		this->dump(true);
+		if (DEBUG >= 2) std::cerr << "After erase(iterator): " << std::endl;
+		if (DEBUG >= 2) this->dump(true);
 
 		// XXX: Is this correct? It appears to work, but isn't pretty.
 		if (!deleting_tail)

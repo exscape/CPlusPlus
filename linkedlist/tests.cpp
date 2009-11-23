@@ -156,7 +156,7 @@ int main() {
 
 	std::cout << "\n\ncpy pre-range-erase: \n" << std::endl;
 	cpy.dump();
-	LIST_TYPE<int>::iterator cpy_before_end = cpy.end(); --cpy_before_end;
+	LIST_TYPE<int>::iterator cpy_before_end = --cpy.end();
 	cpy.erase(cpy.begin(), cpy_before_end);
 	std::cout << "\n\ncpy post-range-erase: \n" << std::endl;
 	cpy.dump();
