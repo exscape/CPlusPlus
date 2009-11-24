@@ -148,20 +148,20 @@ namespace exscape {
 
 		/* Constructors and destructors */
 
-		/** \brief Default constructor, creates an empty list. */
-		LinkedList() : head(NULL), tail(NULL), _size(0) {}
+			/** \brief Default constructor, creates an empty list. */
+			LinkedList() : head(NULL), tail(NULL), _size(0) {}
 
-		/** \brief Copy constructor, sets this to a copy of \a other */
-		LinkedList(const LinkedList<Type> &other) : head(NULL), tail(NULL), _size(0) { *this = other; }
+			/** \brief Copy constructor, sets this to a copy of \a other */
+			LinkedList(const LinkedList<Type> &other) : head(NULL), tail(NULL), _size(0) { *this = other; }
 
-		/** \brief A copy constructor that takes two InputIterators and copies everything between them (including begin) */
-		template <typename InputIterator>
-		LinkedList(InputIterator start, InputIterator end) : head(NULL), tail(NULL), _size(0) {
-			this->assign(start, end);
-		}
+			/** \brief A copy constructor that takes two InputIterators and copies everything between them (including begin) */
+			template <typename InputIterator>
+			LinkedList(InputIterator start, InputIterator end) : head(NULL), tail(NULL), _size(0) {
+				this->assign(start, end);
+			}
 
-		/** \brief Destructor, frees all memory associated with this list. */
-		~LinkedList() { this->clear(); }
+			/** \brief Destructor, frees all memory associated with this list. */
+			~LinkedList() { this->clear(); }
 
 		/* Public methods */
 			void clear();
