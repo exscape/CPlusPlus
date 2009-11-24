@@ -430,7 +430,7 @@ namespace exscape {
 		for (; start != this->end(); ++start, ++end) {
 			if (*start != *end)
 				return false;
-			if (end.p <= start.p)
+			if (end <= start)
 				return true;
 		}
 
