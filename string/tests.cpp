@@ -93,14 +93,16 @@ int main() {
 	std::cout << std::endl;
 
 	// is_palindrome tests
-	std::cout << "Palindrome tests; expected output: 1 1 0 0" << std::endl;
-	STR_TYPE::string pal = "anna";
+	std::cout << "Palindrome tests; expected output: 1 1 1 0 0" << std::endl;
+	STR_TYPE::string pal = "anna"; // even length palindrome
 	std::cout << pal.is_palindrome() << std::endl;
-	pal = "gohangasalamiimalasagnahog";
+	pal = "gohangasalamiimalasagnahog"; // even length palindrome
 	std::cout << pal.is_palindrome() << std::endl;
-	pal = "Am I evil?";
+	pal = "ufotofu"; // odd length palindrome
 	std::cout << pal.is_palindrome() << std::endl;
-	pal = "yesiam";
+	pal = "Am I evil?"; // even length non-palindrome
+	std::cout << pal.is_palindrome() << std::endl;
+	pal = "Yes, I am"; // odd length non-palindrome
 	std::cout << pal.is_palindrome() << std::endl;
 
 	return 0;
