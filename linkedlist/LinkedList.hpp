@@ -208,6 +208,10 @@ namespace exscape {
 					++i;
 				}
 			}
+
+			/** \brief Removes all values in the list for which \a pred returns true. \a pred can be
+			 * either a function taking a parameter of type Type, or a class overloading operator().
+			 */
 			template <class Predicate> void remove_if(Predicate pred) {
 				iterator i = this->begin();
 				while (i != this->end()) {
