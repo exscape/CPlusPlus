@@ -450,8 +450,8 @@ namespace exscape {
 		
 		delete to_delete;
 
-		if (this->_size != 0)
-			this->_size--;
+		assert(this->_size != 0);
+		this->_size--;
 
 		if (DEBUG >= 2) std::cerr << "After erase(iterator): " << std::endl;
 		if (DEBUG >= 2) this->dump(true);
