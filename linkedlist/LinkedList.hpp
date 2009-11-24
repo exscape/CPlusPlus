@@ -6,6 +6,7 @@
 #define _LINKEDLIST_HPP
 
 #include <iostream> /* debugging */
+#include <iomanip>
 #include <stdexcept>
 #include <iterator>
 #include <assert.h>
@@ -540,7 +541,7 @@ namespace exscape {
 	template <typename Type> inline Type &LinkedList<Type>::front() {
 		if (DEBUG >= 2) std::cerr << "In Type &LinkedList::front for list " << this << std::endl;
 		if (this->head == NULL)
-			throw std::runtime_error("Tried to call LinkedList::front() on an empty list");
+			throw std::out_of_range("Tried to call LinkedList::front() on an empty list");
 
 		return this->head->data;
 	}
@@ -552,7 +553,7 @@ namespace exscape {
 	template <typename Type> inline const Type &LinkedList<Type>::front() const {
 		if (DEBUG >= 2) std::cerr << "In const Type &LinkedList::front for list " << this << std::endl;
 		if (this->head == NULL)
-			throw std::runtime_error("Tried to call LinkedList::front() on an empty list");
+			throw std::out_of_range("Tried to call LinkedList::front() on an empty list");
 
 		return this->head->data;
 	}
@@ -564,7 +565,7 @@ namespace exscape {
 	template <typename Type> inline Type &LinkedList<Type>::back() {
 		if (DEBUG >= 2) std::cerr << "In Type &LinkedList::back for list " << this << std::endl;
 		if (this->tail == NULL)
-			throw std::runtime_error("Tried to call LinkedList::back() on an empty list");
+			throw std::out_of_range("Tried to call LinkedList::back() on an empty list");
 
 		return this->tail->data;
 	}
@@ -576,7 +577,7 @@ namespace exscape {
 	template <typename Type> inline const Type &LinkedList<Type>::back() const {
 		if (DEBUG >= 2) std::cerr << "In const Type &LinkedList::back for list " << this << std::endl;
 		if (this->tail == NULL)
-			throw std::runtime_error("Tried to call LinkedList::back() on an empty list");
+			throw std::out_of_range("Tried to call LinkedList::back() on an empty list");
 
 		return this->tail->data;
 	}
@@ -646,7 +647,11 @@ namespace exscape {
 		else {
 			std::cerr << std::endl << "Verbose dump of list " << this << " (size " << this->size() << "):" << std::endl;
 			for (node *current = this->head; current != NULL; current = current->next) {
-				std::cerr << current->prev << " <- " << current << " -> " << current->next << ": " << current->data << std::endl;
+//				std::cerr << current->prev << " <- " << current << " -> " << current->next << ": " << current->data << std::endl;
+				const int width = 10; // Field width to use for pointers
+                std::cerr << std::setw(width) << current->prev << std::setw(0) << " <- " << std::setw(width) <<
+                             current << std::setw(0) << " -> " << std::setw(width) << current->next <<
+                             std::setw(0) << ": " << current->data << std::endl;
 			}
 		}
 			std::cerr << std::endl;
