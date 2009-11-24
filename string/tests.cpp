@@ -92,5 +92,16 @@ int main() {
 	}
 	std::cout << std::endl;
 
+	// is_palindrome tests
+	std::cout << "Palindrome tests; expected output: 1 1 0 0" << std::endl;
+	STR_TYPE::string pal = "anna";
+	std::cout << pal.is_palindrome() << std::endl;
+	pal = "gohangasalamiimalasagnahog";
+	std::cout << pal.is_palindrome() << std::endl;
+	pal = "Am I evil?";
+	std::cout << pal.is_palindrome() << std::endl;
+	pal = "yesiam";
+	std::cout << pal.is_palindrome() << std::endl;
+
 	return 0;
 }

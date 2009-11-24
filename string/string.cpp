@@ -424,6 +424,19 @@ namespace exscape {
 		return s;
 	}
 
+	bool string::is_palindrome(void) const {
+		iterator start = this->begin();
+		reverse_iterator end = this->rbegin();
+		for (; start != this->end(); ++start, ++end) {
+			if (*start != *end)
+				return false;
+			if (end.p >= start.p)
+				return true;
+		}
+
+		return true;
+	}
+
 	string::iterator string::end(void) const {
 		iterator e = iterator((char *)((char *)this->buf + (ptrdiff_t)this->_length)); // buf[_length] == '\0', so one past the end
 		char *tmp = (this->buf + this->_length);
@@ -433,7 +446,12 @@ namespace exscape {
 	}
 
 	string::reverse_iterator string::rbegin(void) const {
-		reverse_iterator s = reverse_iterator(this->buf + this->_length);
+		reverse_iterator s;
+		if (this->_length > 0)
+			s = reverse_iterator(this->buf + (this->_length - 1));
+		else
+			s = reverse_iterator(this->buf);
+
 		if (DEBUG) std::cerr << " In string::rbegin(), returning reverse_iterator " << &s << "; this->buf=" << &buf << ", this->_length = " << this->_length << std::endl;
 		return s;
 	}
