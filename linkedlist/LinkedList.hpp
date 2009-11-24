@@ -48,6 +48,7 @@ namespace exscape {
 
 			class iterator; // Forward delaration to allow for the const_iterator(iterator) constructor
 
+			/** \cond */
 			class const_iterator : public std::iterator<std::bidirectional_iterator_tag, Type, difference_type> {
 				friend class iterator;
 				public:
@@ -141,6 +142,7 @@ namespace exscape {
 					const_reverse_iterator operator++(int) { const_reverse_iterator out (*this); return ++out; }
 					const_reverse_iterator operator--(int) { const_reverse_iterator out (*this); return --out; }
 			};
+			/** \endcond */
 
 		public:
 

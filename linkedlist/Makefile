@@ -1,6 +1,5 @@
 APP = tests
-#program: doc
-program:
+program: doc
 	rm -f ${APP}
 	g++ -o ${APP} tests.cpp -Wall -Werror ${FLAGS}
 #clean:
