@@ -651,9 +651,9 @@ namespace exscape {
 			for (node *current = this->head; current != NULL; current = current->next) {
 //				std::cerr << current->prev << " <- " << current << " -> " << current->next << ": " << current->data << std::endl;
 				const int width = 10; // Field width to use for pointers
-                std::cerr << std::setw(width) << current->prev << std::setw(0) << " <- " << std::setw(width) <<
-                             current << std::setw(0) << " -> " << std::setw(width) << current->next <<
-                             std::setw(0) << ": " << current->data << std::endl;
+				std::cerr << std::setw(width) << current->prev << std::setw(0) << " <- " << std::setw(width) <<
+							 current << std::setw(0) << " -> " << std::setw(width) << current->next <<
+							 std::setw(0) << ": " << current->data << std::endl;
 			}
 		}
 			std::cerr << std::endl;
