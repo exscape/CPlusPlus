@@ -426,12 +426,13 @@ namespace exscape {
 
 	bool string::is_palindrome_strict(void) const {
 		iterator start = this->begin();
+		iterator string_end = this->end();
 		reverse_iterator end = this->rbegin();
 		// Simple: loop from both ends, comparing characters until:
 		// 1) We hit the end (not likely to happen!)
 		// 2) The "end" pointer is now before or at the same position as the start pointer,
 		//    at which point we've checked all we need to guarantee a correct result.
-		for (; start != this->end(); ++start, ++end) {
+		for (; start != string_end; ++start, ++end) {
 			if (*start != *end)
 				return false;
 			if (end <= start)
@@ -443,11 +444,12 @@ namespace exscape {
 
 	bool string::is_palindrome(void) const {
 		iterator start = this->begin();
+		iterator string_end = this->end();
 		reverse_iterator end = this->rbegin();
 		// This one is a bit more complicated than the above one, but not by much.
 		// We need to skip non-alphabetic characters, and only compare lowercase versions.
 		// As such, we can't use the a for loop's third slot, due to the continue statements.
-		while (start != this->end()) {
+		while (start != string_end) {
 			if (!::isalpha(*start)) {
 				++start;
 				continue;
