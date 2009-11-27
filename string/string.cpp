@@ -23,7 +23,7 @@ namespace exscape {
 	 *
 	 */
 
-	string::string() {
+	string::string() : buf(NULL), _length(0), _size(0) {
 		if (DEBUG) std::cerr << "In default constructor for string " << this << std::endl;
 		init();
 	}
@@ -37,14 +37,14 @@ namespace exscape {
 	}
 
 	/* Copy constructor from const char * */
-	string::string(const char *in) {
+	string::string(const char *in) : buf(NULL), _length(0), _size(0) {
 		if (DEBUG) std::cerr << "In const char* copy constructor for string " << this << std::endl;
 		this->init();
 		this->append(in);
 	}
 
 	/* Copy constructor from another string instance */
-	string::string(const string &in) {
+	string::string(const string &in) : buf(NULL), _length(0), _size(0) {
 		this->init();
 		this->append(in.c_str());
 	} 
@@ -363,7 +363,18 @@ namespace exscape {
 
 	/* Returns a reversed copy of this string */
 	string string::reverse(void) const {
+		if (DEBUG) std::cerr << "In reverse() for string " << this << "(length=" << this->_length << ")" << std::endl;
+	
 		string rev;
+	/*
+		rev.resize(this->_length);
+		iterator rev_it = rev.begin();
+		for (reverse_iterator ri = this->rbegin(); ri != this->rend(); ri++) {
+			*rev_it++ = *ri;
+		}
+		rev._length = this->_length;
+	*/
+
 		rev.alloc(this->_length + 1);
 
 		for (size_t i=0; i<this->_length; i++) {
@@ -371,7 +382,6 @@ namespace exscape {
 		}
 
 		rev._length = this->_length;
-
 		return rev;
 	}
 

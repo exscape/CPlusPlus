@@ -68,6 +68,9 @@ int main() {
 	std::reverse(reverse_str.begin(), reverse_str.end());
 	std::cout << ", out=" << reverse_str << std::endl;
 
+	STR_TYPE::string r2 = reverse_str.reverse();
+	std::cout << "Reversed AGAIN, i.e. original order: " << r2 << std::endl;
+
 	// constness test - FAILS, the iterator shouldn't be allowed to change the string (or even be created)
 	//const STR_TYPE::string c = "ABCDEF";
 	//STR_TYPE::string::iterator c_iter = c.begin();
