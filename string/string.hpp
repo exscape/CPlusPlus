@@ -159,6 +159,7 @@ namespace exscape {
 			size_t capacity(void) const;
 			bool empty(void) const;
 			bool equals(const char *str) const;
+			bool is_palindrome_strict(void) const;
 			bool is_palindrome(void) const;
 			size_t find (const char *) const;
 			size_t find(const string &) const;

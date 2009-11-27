@@ -91,30 +91,40 @@ int main() {
 		std::cout << *ri;
 	}
 	std::cout << std::endl;
-
 	// is_palindrome tests
-	std::cout << "Palindrome tests; expected output: 1 1 1 0 1 0 0" << std::endl;
+	std::cout << "Palindrome tests part 1" << std::endl;
+	std::cout << "Expected output: 1 1 1 1 1 0" << std::endl;
+	std::cout << "Actual output:   ";
 
 	STR_TYPE::string pal = "anna"; // even length palindrome
 	std::cout << pal.is_palindrome() << " ";
+	std::cout << pal.is_palindrome_strict() << " ";
 
 	pal = "gohangasalamiimalasagnahog"; // even length palindrome
 	std::cout << pal.is_palindrome() << " ";
+	std::cout << pal.is_palindrome_strict() << " ";
 
-	pal = "Go hang a salami, I'm a lasagna hog!"; // test non-strict on a palindrome
+	pal = "Go hang a salami, I'm a lasagna hog!"; // test non-strict and strict on a "non-strict" palindrome
 	std::cout << pal.is_palindrome() << " ";
+	std::cout << pal.is_palindrome_strict() << " ";
 
-	pal = "Go hang a salami, I'm a lasagna hog!"; // test strict on a "non-strict" palindrome
-	std::cout << pal.is_palindrome(true) << " ";
+	std::cout << std::endl;
+
+	std::cout << "Palindrome tests part 2" << std::endl;
+	std::cout << "Expected output: 1 1 0 0 0 0" << std::endl;
+	std::cout << "Actual output:   ";
 
 	pal = "ufotofu"; // odd length palindrome
 	std::cout << pal.is_palindrome() << " ";
+	std::cout << pal.is_palindrome_strict() << " ";
 
 	pal = "Am I evil?"; // even length non-palindrome
 	std::cout << pal.is_palindrome() << " ";
+	std::cout << pal.is_palindrome_strict() << " ";
 
 	pal = "Yes, I am"; // odd length non-palindrome
 	std::cout << pal.is_palindrome() << " ";
+	std::cout << pal.is_palindrome_strict() << " ";
 	std::cout << std::endl;
 
 	return 0;
