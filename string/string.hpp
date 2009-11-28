@@ -150,7 +150,6 @@ namespace exscape {
 
 		public:
 		/* Public methods */
-			string();
 			string(const string &);
 			string(const char *);
 			~string();

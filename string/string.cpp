@@ -23,11 +23,6 @@ namespace exscape {
 	 *
 	 */
 
-	string::string() : buf(NULL), _length(0), _size(0) {
-		if (DEBUG) std::cerr << "In default constructor for string " << this << std::endl;
-		init();
-	}
-
 	/* Initializes a string to an empty state */
 	void string::init(void) {
 		if (DEBUG) std::cerr << "In init() for string " << this << std::endl;
@@ -36,9 +31,9 @@ namespace exscape {
 		this->_size = 0;
 	}
 
-	/* Copy constructor from const char * */
-	string::string(const char *in) : buf(NULL), _length(0), _size(0) {
-		if (DEBUG) std::cerr << "In const char* copy constructor for string " << this << std::endl;
+	/* Default constructor + Copy constructor from const char * */
+	string::string(const char *in = NULL) : buf(NULL), _length(0), _size(0) {
+		if (DEBUG) std::cerr << "In default / const char* copy constructor for string " << this << std::endl;
 		*this = in;
 	}
 
