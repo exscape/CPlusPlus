@@ -151,7 +151,7 @@ namespace exscape {
 		public:
 		/* Public methods */
 			string(const string &);
-			string(const char *);
+			string(const char * = NULL);
 			~string();
 			const char *c_str(void) const;
 			size_t length(void) const;

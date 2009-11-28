@@ -32,7 +32,7 @@ namespace exscape {
 	}
 
 	/* Default constructor + Copy constructor from const char * */
-	string::string(const char *in = NULL) : buf(NULL), _length(0), _size(0) {
+	string::string(const char *in /* = NULL in .hpp */) : buf(NULL), _length(0), _size(0) {
 		if (DEBUG) std::cerr << "In default / const char* copy constructor for string " << this << std::endl;
 		*this = in;
 	}
