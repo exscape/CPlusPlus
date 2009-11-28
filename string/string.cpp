@@ -39,15 +39,13 @@ namespace exscape {
 	/* Copy constructor from const char * */
 	string::string(const char *in) : buf(NULL), _length(0), _size(0) {
 		if (DEBUG) std::cerr << "In const char* copy constructor for string " << this << std::endl;
-		this->init();
-		this->append(in);
+		*this = in;
 	}
 
 	/* Copy constructor from another string instance */
 	string::string(const string &in) : buf(NULL), _length(0), _size(0) {
 		if (DEBUG) std::cerr << "In string & copy constructor for string " << this << std::endl;
-		this->init();
-		this->append(in.c_str());
+		*this = in;
 	} 
 
 	/* Destructor */
