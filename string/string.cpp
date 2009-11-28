@@ -163,7 +163,8 @@ namespace exscape {
 
 	/* Set this string to str, by starting over and "appending" to it */
 	void string::assign(const char *str) {
-		this->clear();
+		if (this->buf != NULL)
+			this->clear();
 		this->append(str);
 	}
 
