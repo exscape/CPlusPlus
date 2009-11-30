@@ -361,21 +361,18 @@ namespace exscape {
 		if (DEBUG) std::cerr << "In reverse() for string " << this << "(length=" << this->_length << ")" << std::endl;
 	
 		string rev;
-/*
 		rev.resize(this->_length);
+
 		iterator rev_it = rev.begin();
-		for (reverse_iterator ri = this->rbegin(); ri != this->rend(); ri++) {
-			*rev_it++ = *ri;
+		reverse_iterator this_rend = this->rend(); // To use as a "cache"
+
+		for (reverse_iterator ri = this->rbegin(); ri != this_rend; ++ri) {
+			// Not sure if this is any faster than *rev_it++ = *ri, but...
+			*rev_it = *ri;
+			++rev_it;
 		}
 		rev._length = this->_length;
-*/
-		rev.alloc(this->_length + 1);
 
-		for (size_t i=0; i<this->_length; i++) {
-			rev.buf[this->_length-i-1] = this->buf[i];
-		}
-
-		rev._length = this->_length;
 		return rev;
 	}
 
@@ -639,7 +636,7 @@ namespace exscape {
 	/* Move the iterator back one step */
 	string::iterator string::iterator::operator--(int) {
 		if (DEBUG) std::cerr << "  in operator-- for iterator " << this << std::endl;
-		p--;
+		--(*this);
 		return iterator(this->p + 1);
 	}
 
@@ -732,9 +729,8 @@ namespace exscape {
 
 	string::reverse_iterator::reverse_iterator string::reverse_iterator::operator++(int) {
 		if (DEBUG) std::cerr << "  in operator++ for reverse_iterator " << this << std::endl;
-		reverse_iterator ret (*this);
-		++ret;
-		return ret;
+		++(*this);
+		return reverse_iterator(this->p + 1);
 	}
 
 	string::reverse_iterator &string::reverse_iterator::operator--() {
@@ -745,9 +741,8 @@ namespace exscape {
 
 	string::reverse_iterator string::reverse_iterator::operator--(int) {
 		if (DEBUG) std::cerr << "  in operator-- for reverse_iterator " << this << std::endl;
-		reverse_iterator ret (*this);
 		--(*this);
-		return ret;
+		return reverse_iterator(this->p - 1);
 	}
 
 	/* Arithmetic operators */
