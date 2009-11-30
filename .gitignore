@@ -10,3 +10,4 @@ main
 tests
 learncpp/
 string/test/
+*.dSYM/

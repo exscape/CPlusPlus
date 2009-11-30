@@ -29,7 +29,7 @@ namespace exscape {
 					iterator_base(void);
 					iterator_base(const iterator_base &rhs);
 					//iterator_base& operator=(const iterator_base &rhs);
-					iterator_base(char *in_ptr, bool);
+					iterator_base(char *in_ptr);
 
 					/* Destructor */
 					~iterator_base();
@@ -69,7 +69,6 @@ namespace exscape {
 				protected:
 					char *base; // The base of the string
 					char *p; // Points to the current character
-					size_t length; // The length, i.e. we can't go past base+length
 			}; // end string::iterator_base
 
 		public:
