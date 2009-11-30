@@ -366,10 +366,8 @@ namespace exscape {
 		iterator rev_it = rev.begin();
 		reverse_iterator this_rend = this->rend(); // To use as a "cache"
 
-		for (reverse_iterator ri = this->rbegin(); ri != this_rend; ++ri) {
-			// Not sure if this is any faster than *rev_it++ = *ri, but...
+		for (reverse_iterator ri = this->rbegin(); ri != this_rend; ++ri, ++rev_it) {
 			*rev_it = *ri;
-			++rev_it;
 		}
 		rev._length = this->_length;
 
