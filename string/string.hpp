@@ -47,8 +47,8 @@ namespace exscape {
 					/* Single-step movement operators */
 					iterator &operator++()   { p++; return *this; }
 					iterator &operator--()   { p--; return *this; }
-					iterator operator++(int) { ++(*this); return iterator(this->p - 1); }
-					iterator operator--(int) { --(*this); return iterator(this->p + 1); }
+					iterator operator++(int) { iterator out(*this); ++(*this); return out; }
+					iterator operator--(int) { iterator out(*this); --(*this); return out; }
 
 					/* Arithmetic operators */
 					iterator &operator+=(const difference_type offset) { p += offset; return *this; }
