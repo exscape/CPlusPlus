@@ -11,8 +11,7 @@
 //    ... using a protected compare() that uses strcmp() internally
 //    ... XXX: worth the trouble? str < str, str < char*, char* < str etc. 3 cases * 4 operators = 12 overloads...?
 //
-//  XXX: Does the class work well when declared const?
-//  * XXX: iterator can modify a const string!
+//  * const iterators; also, currently iterators can modidy const strings.
 
 namespace exscape {
 	using std::cerr;
@@ -503,83 +502,12 @@ namespace exscape {
 
 	/*
 	 *
-	 * Start of string::iterator_base implementation
-	 *
-	 */
-
-	/* Default constructor */
-	string::iterator_base::iterator_base(void) : base(NULL), p(NULL) {
-		if (DEBUG) std::cerr << "In DEFAULT constructor for iterator_base... what do we do here?" << std::endl;
-	}
-
-	/* Destructor */
-	string::iterator_base::~iterator_base() { 
-		if (DEBUG) std::cerr << "Goodbye, iterator_base " << this << ", pointing at " << &p << std::endl; 
-	}
-
-	/* Copy constructor */
-	string::iterator_base::iterator_base(const string::iterator_base &rhs) {
-		if (DEBUG) std::cerr << "In iterator_base(iterator_base &)" << std::endl;
-		*this = rhs;
-	}
-
-	/* Most-used constructor; used by string to pass a pointer to the string base */
-	string::iterator_base::iterator_base(char *in_ptr) : base(in_ptr), p(in_ptr) { }
-
-	/* Tests if these two iterators point to the same position */
-	bool string::iterator_base::operator==(const string::iterator_base &rhs) const {
-		return (p == rhs.p);
-	}
-
-	/* Tests if these two iterator_bases DON'T point to the same position */
-	bool string::iterator_base::operator!=(const string::iterator_base &rhs) const {
-		return (p != rhs.p);
-	}
-
-	bool string::iterator_base::operator<(const string::iterator_base &rhs) const {
-		return (p < rhs.p);
-	}
-
-	bool string::iterator_base::operator>(const string::iterator_base &rhs) const {
-		return (p > rhs.p);
-	}
-
-	bool string::iterator_base::operator<=(const string::iterator_base &rhs) const {
-		return (p <= rhs.p);
-	}
-
-	bool string::iterator_base::operator>=(const string::iterator_base &rhs) const {
-		return (p >= rhs.p);
-	}
-	
-	/* Dereference operator, return a reference to the currently pointed-to character */
-	char &string::iterator_base::operator*(void) {
-		if (DEBUG) std::cerr << "in iterator_base::operator* for " << this << "; p=" << &p << ", base=" << &base << ")" << std::endl;
-		return *p;
-	}
-
-	char *string::iterator_base::operator->(void) {
-		return p;
-	}
-
-	char &string::iterator_base::operator[](const int offset) {
-		return *(p + offset);
-	}
-
-	/*
-	 *
-	 * End of string::iterator_base implementation
-	 *
-	 */
-
-	/*
-	 *
 	 * Start of string::iterator implementation
 	 *
 	 */
 
 	/* Default constructor */
-	string::iterator::iterator(void) : iterator_base() {
+	string::iterator::iterator(void) : base(NULL), p(NULL) {
 		if (DEBUG) std::cerr << "In DEFAULT constructor for iterator... what do we do here?" << std::endl;
 	}
 
@@ -594,6 +522,49 @@ namespace exscape {
 		*this = rhs;
 	}
 
+	/* Most-used constructor; used by string to pass a pointer to the string base */
+	string::iterator::iterator(char *in_ptr) : base(in_ptr), p(in_ptr) { }
+
+	/* Tests if these two iterators point to the same position */
+	bool string::iterator::operator==(const string::iterator &rhs) const {
+		return (p == rhs.p);
+	}
+
+	/* Tests if these two iterators DON'T point to the same position */
+	bool string::iterator::operator!=(const string::iterator &rhs) const {
+		return (p != rhs.p);
+	}
+
+	bool string::iterator::operator<(const string::iterator &rhs) const {
+		return (p < rhs.p);
+	}
+
+	bool string::iterator::operator>(const string::iterator &rhs) const {
+		return (p > rhs.p);
+	}
+
+	bool string::iterator::operator<=(const string::iterator &rhs) const {
+		return (p <= rhs.p);
+	}
+
+	bool string::iterator::operator>=(const string::iterator &rhs) const {
+		return (p >= rhs.p);
+	}
+	
+	/* Dereference operator, return a reference to the currently pointed-to character */
+	char &string::iterator::operator*(void) {
+		if (DEBUG) std::cerr << "in iterator::operator* for " << this << "; p=" << &p << ", base=" << &base << ")" << std::endl;
+		return *p;
+	}
+
+	char *string::iterator::operator->(void) {
+		return p;
+	}
+
+	char &string::iterator::operator[](const int offset) {
+		return *(p + offset);
+	}
+
 	string::iterator::iterator& string::iterator::operator=(const string::iterator &rhs) {
 		if (DEBUG) std::cerr << "In iterator::operator=" << std::endl;
 		if (this != &rhs) {
@@ -603,11 +574,6 @@ namespace exscape {
 		if (DEBUG) std::cerr << "In operator= for iterator " << this << " (rhs = " << &rhs << "), pointing at " << &p << std::endl;
 
 		return *this;
-	}
-
-	/* Most-used constructor; used by string to pass a pointer to the string base */
-	string::iterator::iterator(char *in_ptr) : iterator_base(in_ptr) {
-		if (DEBUG) std::cerr << "Hello, iterator (in iterator (char *)) " << this << ", pointing at " << &p << std::endl;
 	}
 
 	/* Move the iterator forward one step */
@@ -688,7 +654,7 @@ namespace exscape {
 	 */
 
 	/* Default constructor */
-	string::reverse_iterator::reverse_iterator(void) : iterator_base() {
+	string::reverse_iterator::reverse_iterator(void) : iterator() {
 		if (DEBUG) std::cerr << "In DEFAULT constructor for reverse_iterator... what do we do here?" << std::endl;
 	}
 
@@ -703,19 +669,8 @@ namespace exscape {
 		*this = rhs;
 	}
 
-	string::reverse_iterator::reverse_iterator& string::reverse_iterator::operator=(const string::reverse_iterator &rhs) {
-		if (DEBUG) std::cerr << "In reverse_iterator::operator=" << std::endl;
-		if (this != &rhs) {
-			this->p = rhs.p;
-			this->base = rhs.base;
-		}
-		if (DEBUG) std::cerr << "In operator= for reverse_iterator " << this << " (rhs = " << &rhs << "), pointing at " << &p << std::endl;
-
-		return *this;
-	}
-
 	/* Most-used constructor; used by string to pass a pointer to the string base */
-	string::reverse_iterator::reverse_iterator(char *in_ptr) : iterator_base(in_ptr) {
+	string::reverse_iterator::reverse_iterator(char *in_ptr) : iterator(in_ptr) {
 		if (DEBUG) std::cerr << "Hello, reverse_iterator (in reverse_iterator (char *)) " << this << ", pointing at " << &p << std::endl;
 	}
 

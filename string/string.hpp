@@ -12,75 +12,12 @@ namespace exscape {
 	class string {
 		typedef ptrdiff_t difference_type;
 		public:
-			friend class iterator_base;
 			friend class iterator;
 			friend class reverse_iterator;
-		protected:
-			/* 
-			 * A class that is the base class for both iterator and reverse_iterator, implementing common methods.
-			 * Commented out methods are implemented in the subclasses.
-			 */
-			class iterator_base : public std::iterator<std::random_access_iterator_tag, char, difference_type> {
+
+			class iterator : public std::iterator<std::random_access_iterator_tag, char, difference_type> {
 				public:
 					friend class string;
-					//friend iterator operator+(const int, iterator);
-					//friend iterator operator-(const int, iterator);
-					/* Constructors and operator= */
-					iterator_base(void);
-					iterator_base(const iterator_base &rhs);
-					//iterator_base& operator=(const iterator_base &rhs);
-					iterator_base(char *in_ptr);
-
-					/* Destructor */
-					~iterator_base();
-
-					/* Tests if these two iterators point to the same position */
-					bool operator==(const iterator_base &rhs) const;
-
-					/* Tests if these two iterator_bases DON'T point to the same position */
-					bool operator!=(const iterator_base &rhs) const;
-					bool operator<(const iterator_base &rhs) const;
-					bool operator>(const iterator_base &rhs) const;
-
-					/* A little of both... */
-					bool operator<=(const iterator_base &rhs) const;
-					bool operator>=(const iterator_base &rhs) const;
-
-					/* Dereference operators */
-					char &operator*(void);
-					char *operator->(void);
-					char &operator[](const int offset);
-
-					///* Move the iterator forward one step */
-					//iterator &operator++();
-					//iterator operator++(int);
-
-					///* Move the iterator back one step */
-					//iterator &operator--();
-					//iterator operator--(int);
-
-					///* Arithmetic operators */
-					//iterator &operator+=(const difference_type offset);
-					//iterator &operator-=(const difference_type offset);
-					//iterator operator+(const difference_type offset);
-					//iterator operator-(const difference_type offset);
-					//difference_type operator-(iterator &rhs);
-
-				protected:
-					char *base; // The base of the string
-					char *p; // Points to the current character
-			}; // end string::iterator_base
-
-		public:
-			/* 
-			 * A regular random access iterator
-			 */
-			class iterator : public iterator_base {
-				public:
-					friend class string;
-					friend iterator operator+(const int, iterator);
-					friend iterator operator-(const int, iterator);
-
 					/* Constructors and operator= */
 					iterator(void);
 					iterator(const iterator &rhs);
@@ -90,11 +27,27 @@ namespace exscape {
 					/* Destructor */
 					~iterator();
 
-					/* Move the iterator forward one step */
+					/* Tests if these two iterators point to the same position */
+					bool operator==(const iterator &rhs) const;
+
+					/* Tests if these two iterators DON'T point to the same position */
+					bool operator!=(const iterator &rhs) const;
+					bool operator<(const iterator &rhs) const;
+					bool operator>(const iterator &rhs) const;
+
+					/* A little of both... */
+					bool operator<=(const iterator &rhs) const;
+					bool operator>=(const iterator &rhs) const;
+
+					/* Dereference operators */
+					char &operator*(void);
+					char *operator->(void);
+					char &operator[](const int offset);
+
+
+					/* Single-step movement operators */
 					iterator &operator++();
 					iterator operator++(int);
-
-					/* Move the iterator back one step */
 					iterator &operator--();
 					iterator operator--(int);
 
@@ -103,30 +56,35 @@ namespace exscape {
 					iterator &operator-=(const difference_type offset);
 					iterator operator+(const difference_type offset);
 					iterator operator-(const difference_type offset);
+					friend iterator operator+(const int, iterator);
+					friend iterator operator-(const int, iterator);
 					difference_type operator-(iterator &rhs);
+
+				protected:
+					char *base; // The base of the string
+					char *p; // Points to the current character
 			}; // end string::iterator
 
 			/* 
 			 * A regular reverse random access iterator
 			 */
-			class reverse_iterator : public iterator_base {
+			class reverse_iterator : public iterator {
 				public:
 					friend class string;
 					friend reverse_iterator operator+(const int, reverse_iterator);
 					friend reverse_iterator operator-(const int, reverse_iterator);
 
-					/* Constructors and operator= */
+					/* Constructors */
 					reverse_iterator(void);
 					reverse_iterator(const reverse_iterator &rhs);
-					reverse_iterator& operator=(const reverse_iterator &rhs);
 					reverse_iterator(char *in_ptr);
 
 					/* Destructor */
 					~reverse_iterator();
 
+					/* Single-step movement operators */
 					reverse_iterator &operator++();
 					reverse_iterator operator++(int);
-
 					reverse_iterator &operator--();
 					reverse_iterator operator--(int);
 
