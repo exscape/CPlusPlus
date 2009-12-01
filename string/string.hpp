@@ -19,31 +19,30 @@ namespace exscape {
 				public:
 					friend class string;
 					/* Constructors and operator= */
-					iterator(void);
-					iterator(const iterator &rhs);
-					iterator& operator=(const iterator &rhs);
-					iterator(char *in_ptr);
+					iterator(char *in_ptr = NULL) : base(in_ptr), p(in_ptr) {};
+					iterator(const iterator &rhs) { *this = rhs; }
 
 					/* Destructor */
-					~iterator();
+					~iterator() {}
 
 					/* Tests if these two iterators point to the same position */
-					bool operator==(const iterator &rhs) const;
+					bool operator==(const iterator &rhs) const { return (p == rhs.p); }
 
 					/* Tests if these two iterators DON'T point to the same position */
-					bool operator!=(const iterator &rhs) const;
-					bool operator<(const iterator &rhs) const;
-					bool operator>(const iterator &rhs) const;
+					bool operator!=(const iterator &rhs) const { return p != rhs.p; }
+					bool operator<(const iterator &rhs)  const { return p < rhs.p; }
+					bool operator>(const iterator &rhs)  const { return p > rhs.p; }
 
 					/* A little of both... */
-					bool operator<=(const iterator &rhs) const;
-					bool operator>=(const iterator &rhs) const;
+					bool operator<=(const iterator &rhs) const { return p <= rhs.p; }
+					bool operator>=(const iterator &rhs) const { return p >= rhs.p; }
 
 					/* Dereference operators */
-					char &operator*(void);
-					char *operator->(void);
-					char &operator[](const int offset);
+					char &operator*(void)  { return *p; }
+					char *operator->(void) { return p; }
+					char &operator[](const int offset) { return *(p + offset); }
 
+					iterator& operator=(const iterator &rhs);
 
 					/* Single-step movement operators */
 					iterator &operator++();

@@ -500,67 +500,6 @@ namespace exscape {
 	 *
 	 */
 
-	/*
-	 *
-	 * Start of string::iterator implementation
-	 *
-	 */
-
-	/* Default constructor */
-	string::iterator::iterator(void) : base(NULL), p(NULL) {
-	}
-
-	/* Destructor */
-	string::iterator::~iterator() { 
-	}
-
-	/* Copy constructor */
-	string::iterator::iterator(const string::iterator &rhs) {
-		*this = rhs;
-	}
-
-	/* Most-used constructor; used by string to pass a pointer to the string base */
-	string::iterator::iterator(char *in_ptr) : base(in_ptr), p(in_ptr) { }
-
-	/* Tests if these two iterators point to the same position */
-	bool string::iterator::operator==(const string::iterator &rhs) const {
-		return (p == rhs.p);
-	}
-
-	/* Tests if these two iterators DON'T point to the same position */
-	bool string::iterator::operator!=(const string::iterator &rhs) const {
-		return (p != rhs.p);
-	}
-
-	bool string::iterator::operator<(const string::iterator &rhs) const {
-		return (p < rhs.p);
-	}
-
-	bool string::iterator::operator>(const string::iterator &rhs) const {
-		return (p > rhs.p);
-	}
-
-	bool string::iterator::operator<=(const string::iterator &rhs) const {
-		return (p <= rhs.p);
-	}
-
-	bool string::iterator::operator>=(const string::iterator &rhs) const {
-		return (p >= rhs.p);
-	}
-	
-	/* Dereference operator, return a reference to the currently pointed-to character */
-	char &string::iterator::operator*(void) {
-		return *p;
-	}
-
-	char *string::iterator::operator->(void) {
-		return p;
-	}
-
-	char &string::iterator::operator[](const int offset) {
-		return *(p + offset);
-	}
-
 	string::iterator::iterator& string::iterator::operator=(const string::iterator &rhs) {
 		if (this != &rhs) {
 			this->p = rhs.p;
@@ -607,14 +546,12 @@ namespace exscape {
 
 	string::iterator string::iterator::operator+(const string::difference_type offset) {
 		iterator out (*this);
-		out += offset;
-		return out;
+		return out += offset;
 	}
 
 	string::iterator string::iterator::operator-(const string::difference_type offset) { 
 		iterator out = (*this);
-		out -= offset;
-		return out;
+		return out -= offset;
 	}
 
 	string::difference_type string::iterator::operator-(string::iterator &rhs) {
@@ -622,13 +559,11 @@ namespace exscape {
 	}
 
 	string::iterator operator+(const int n, string::iterator out) {
-		out += n;
-		return out;
+		return out += n;
 	}
 
 	string::iterator operator-(const int n, string::iterator out) {
-		out -= n;
-		return out;
+		return out -= n;
 	}
 
 	/*
