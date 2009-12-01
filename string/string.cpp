@@ -11,7 +11,7 @@
 //    ... using a protected compare() that uses strcmp() internally
 //    ... XXX: worth the trouble? str < str, str < char*, char* < str etc. 3 cases * 4 operators = 12 overloads...?
 //
-//  * const iterators; also, currently iterators can modidy const strings.
+//  * const iterators; also, iterators can currently modify const strings.
 
 namespace exscape {
 	using std::cerr;
@@ -508,17 +508,14 @@ namespace exscape {
 
 	/* Default constructor */
 	string::iterator::iterator(void) : base(NULL), p(NULL) {
-		if (DEBUG) std::cerr << "In DEFAULT constructor for iterator... what do we do here?" << std::endl;
 	}
 
 	/* Destructor */
 	string::iterator::~iterator() { 
-		if (DEBUG) std::cerr << "Goodbye, iterator " << this << ", pointing at " << &p << std::endl; 
 	}
 
 	/* Copy constructor */
 	string::iterator::iterator(const string::iterator &rhs) {
-		if (DEBUG) std::cerr << "In iterator(iterator &)" << std::endl;
 		*this = rhs;
 	}
 
@@ -553,7 +550,6 @@ namespace exscape {
 	
 	/* Dereference operator, return a reference to the currently pointed-to character */
 	char &string::iterator::operator*(void) {
-		if (DEBUG) std::cerr << "in iterator::operator* for " << this << "; p=" << &p << ", base=" << &base << ")" << std::endl;
 		return *p;
 	}
 
@@ -566,40 +562,34 @@ namespace exscape {
 	}
 
 	string::iterator::iterator& string::iterator::operator=(const string::iterator &rhs) {
-		if (DEBUG) std::cerr << "In iterator::operator=" << std::endl;
 		if (this != &rhs) {
 			this->p = rhs.p;
 			this->base = rhs.base;
 		}
-		if (DEBUG) std::cerr << "In operator= for iterator " << this << " (rhs = " << &rhs << "), pointing at " << &p << std::endl;
 
 		return *this;
 	}
 
 	/* Move the iterator forward one step */
 	string::iterator::iterator &string::iterator::operator++() {
-		if (DEBUG) std::cerr << "  in ++operator for iterator " << this << std::endl;
 		p++;
 		return *this;
 	}
 
 	/* Move the iterator forward one step */
 	string::iterator::iterator string::iterator::operator++(int) {
-		if (DEBUG) std::cerr << "  in operator++ for iterator " << this << std::endl;
 		++(*this);
 		return iterator(this->p - 1);
 	}
 
 	/* Move the iterator back one step */
 	string::iterator &string::iterator::operator--() {
-		if (DEBUG) std::cerr << "  in --operator for iterator " << this << std::endl;
 		p--;
 		return *this;
 	}
 
 	/* Move the iterator back one step */
 	string::iterator string::iterator::operator--(int) {
-		if (DEBUG) std::cerr << "  in operator-- for iterator " << this << std::endl;
 		--(*this);
 		return iterator(this->p + 1);
 	}
@@ -655,45 +645,37 @@ namespace exscape {
 
 	/* Default constructor */
 	string::reverse_iterator::reverse_iterator(void) : iterator() {
-		if (DEBUG) std::cerr << "In DEFAULT constructor for reverse_iterator... what do we do here?" << std::endl;
 	}
 
 	/* Destructor */
 	string::reverse_iterator::~reverse_iterator() { 
-		if (DEBUG) std::cerr << "Goodbye, reverse_iterator " << this << ", pointing at " << &p << std::endl; 
 	}
 
 	/* Copy constructor */
 	string::reverse_iterator::reverse_iterator(const string::reverse_iterator &rhs) {
-		if (DEBUG) std::cerr << "In reverse_iterator(reverse_iterator &)" << std::endl;
 		*this = rhs;
 	}
 
 	/* Most-used constructor; used by string to pass a pointer to the string base */
 	string::reverse_iterator::reverse_iterator(char *in_ptr) : iterator(in_ptr) {
-		if (DEBUG) std::cerr << "Hello, reverse_iterator (in reverse_iterator (char *)) " << this << ", pointing at " << &p << std::endl;
 	}
 
 	string::reverse_iterator::reverse_iterator &string::reverse_iterator::operator++() {
-		if (DEBUG) std::cerr << "  in ++operator for reverse_iterator " << this << std::endl;
 		p--;
 		return *this;
 	}
 
 	string::reverse_iterator::reverse_iterator string::reverse_iterator::operator++(int) {
-		if (DEBUG) std::cerr << "  in operator++ for reverse_iterator " << this << std::endl;
 		++(*this);
 		return reverse_iterator(this->p + 1);
 	}
 
 	string::reverse_iterator &string::reverse_iterator::operator--() {
-		if (DEBUG) std::cerr << "  in --operator for reverse_iterator " << this << std::endl;
 		p++;
 		return *this;
 	}
 
 	string::reverse_iterator string::reverse_iterator::operator--(int) {
-		if (DEBUG) std::cerr << "  in operator-- for reverse_iterator " << this << std::endl;
 		--(*this);
 		return reverse_iterator(this->p - 1);
 	}
