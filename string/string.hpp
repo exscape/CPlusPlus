@@ -42,22 +42,22 @@ namespace exscape {
 					char *operator->(void) { return p; }
 					char &operator[](const int offset) { return *(p + offset); }
 
-					iterator& operator=(const iterator &rhs);
+					iterator& operator=(const iterator &rhs); // XXX: NOT INLINED!
 
 					/* Single-step movement operators */
-					iterator &operator++();
-					iterator operator++(int);
-					iterator &operator--();
-					iterator operator--(int);
+					iterator &operator++()   { p++; return *this; }
+					iterator operator++(int) { ++(*this); return iterator(this->p - 1); }
+					iterator &operator--()   { p--; return *this; }
+					iterator operator--(int) { --(*this); return iterator(this->p + 1); }
 
 					/* Arithmetic operators */
-					iterator &operator+=(const difference_type offset);
-					iterator &operator-=(const difference_type offset);
-					iterator operator+(const difference_type offset);
-					iterator operator-(const difference_type offset);
-					friend iterator operator+(const int, iterator);
-					friend iterator operator-(const int, iterator);
-					difference_type operator-(iterator &rhs);
+					iterator &operator+=(const difference_type offset) { p += offset; return *this; }
+					iterator &operator-=(const difference_type offset) { p -= offset; return *this; }
+					iterator operator+(const difference_type offset)   { iterator out (*this); return (out += offset); }
+					iterator operator-(const difference_type offset)   { iterator out (*this); return (out -= offset); }
+					friend iterator operator+(const int, iterator);    // XXX: Not inlined
+					friend iterator operator-(const int, iterator);    // XXX: Not inlined
+					difference_type operator-(iterator &rhs)           { return p - rhs.p; }
 
 				protected:
 					char *base; // The base of the string

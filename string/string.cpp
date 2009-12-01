@@ -500,6 +500,7 @@ namespace exscape {
 	 *
 	 */
 
+	/* XXX: Doesn't the default operator= do this? */
 	string::iterator::iterator& string::iterator::operator=(const string::iterator &rhs) {
 		if (this != &rhs) {
 			this->p = rhs.p;
@@ -509,68 +510,15 @@ namespace exscape {
 		return *this;
 	}
 
-	/* Move the iterator forward one step */
-	string::iterator::iterator &string::iterator::operator++() {
-		p++;
-		return *this;
-	}
-
-	/* Move the iterator forward one step */
-	string::iterator::iterator string::iterator::operator++(int) {
-		++(*this);
-		return iterator(this->p - 1);
-	}
-
-	/* Move the iterator back one step */
-	string::iterator &string::iterator::operator--() {
-		p--;
-		return *this;
-	}
-
-	/* Move the iterator back one step */
-	string::iterator string::iterator::operator--(int) {
-		--(*this);
-		return iterator(this->p + 1);
-	}
-
-	/* Arithmetic operators */
-	string::iterator &string::iterator::operator+=(const string::difference_type offset) {
-		p += offset;
-		return *this;
-	}
-
-	string::iterator &string::iterator::operator-=(const string::difference_type offset) {
-		p -= offset;
-		return *this;
-	}
-
-	string::iterator string::iterator::operator+(const string::difference_type offset) {
-		iterator out (*this);
-		return out += offset;
-	}
-
-	string::iterator string::iterator::operator-(const string::difference_type offset) { 
-		iterator out = (*this);
-		return out -= offset;
-	}
-
-	string::difference_type string::iterator::operator-(string::iterator &rhs) {
-		return p - rhs.p;
-	}
-
+	/* Friend function */
 	string::iterator operator+(const int n, string::iterator out) {
 		return out += n;
 	}
 
+	/* Friend function */
 	string::iterator operator-(const int n, string::iterator out) {
 		return out -= n;
 	}
-
-	/*
-	 *
-	 * End of string::iterator implementation
-	 *
-	 */
 
 	/*
 	 *
