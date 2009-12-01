@@ -19,7 +19,7 @@ namespace exscape {
 				public:
 					friend class string;
 					/* Constructors and operator= */
-					iterator(char *in_ptr = NULL) : base(in_ptr), p(in_ptr) {};
+					iterator(char *in_ptr = NULL) : base(in_ptr), p(in_ptr) {}
 					iterator(const iterator &rhs) { *this = rhs; }
 
 					/* Destructor */
@@ -46,8 +46,8 @@ namespace exscape {
 
 					/* Single-step movement operators */
 					iterator &operator++()   { p++; return *this; }
-					iterator operator++(int) { ++(*this); return iterator(this->p - 1); }
 					iterator &operator--()   { p--; return *this; }
+					iterator operator++(int) { ++(*this); return iterator(this->p - 1); }
 					iterator operator--(int) { --(*this); return iterator(this->p + 1); }
 
 					/* Arithmetic operators */
