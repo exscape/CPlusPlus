@@ -12,7 +12,7 @@
 #include <assert.h>
 
 #ifndef DEBUG
-#define DEBUG 2 //!< Sets the debug level. 0 = no debug output, 1 = very verbose, 2 = ridiculously verbose.
+#define DEBUG 0 //!< Sets the debug level. 0 = no debug output, 1 = very verbose, 2 = ridiculously verbose.
 #endif
 
 /*
@@ -73,8 +73,8 @@ namespace exscape {
 												   else if (this->list->tail != NULL) this->p = this->list->tail; 
 												   return *this; 
 					}
-					const_iterator operator++(int) { const_iterator out (*this); return ++out; }
-					const_iterator operator--(int) { const_iterator out (*this); return --out; }
+					const_iterator operator++(int) { const_iterator out (*this); ++(*this); return out; }
+					const_iterator operator--(int) { const_iterator out (*this); --(*this); return out; }
 
 				protected:
 					const LinkedList<Type> *list;
@@ -105,8 +105,8 @@ namespace exscape {
 												   else if (/* this->p == NULL && */ this->list->tail != NULL) this->p = this->list->tail; 
 												   return *this; 
 					}
-					iterator operator++(int) { iterator out (*this); return ++out; }
-					iterator operator--(int) { iterator out (*this); return --out; }
+					iterator operator++(int) { iterator out (*this); ++(*this); return out; }
+					iterator operator--(int) { iterator out (*this); --(*this); return out; }
 
 				protected:
 					/* Protected member variables */
@@ -124,8 +124,8 @@ namespace exscape {
 					/* Overridden motion operators */
 					reverse_iterator &operator++() { if (this->p != NULL) this->p = this->p->prev; return *this; }
 					reverse_iterator &operator--() { if (this->p != NULL) this->p = this->p->next; return *this; }
-					reverse_iterator operator++(int) { reverse_iterator out (*this); return ++out; }
-					reverse_iterator operator--(int) { reverse_iterator out (*this); return --out; }
+					reverse_iterator operator++(int) { reverse_iterator out (*this); ++(*this); return out; }
+					reverse_iterator operator--(int) { reverse_iterator out (*this); --(*this); return out; }
 			};
 
 			class const_reverse_iterator : public const_iterator {
@@ -139,8 +139,8 @@ namespace exscape {
 					/* Overridden motion operators */
 					const_reverse_iterator &operator++() { if (this->p != NULL) this->p = this->p->prev; return *this; }
 					const_reverse_iterator &operator--() { if (this->p != NULL) this->p = this->p->next; return *this; }
-					const_reverse_iterator operator++(int) { const_reverse_iterator out (*this); return ++out; }
-					const_reverse_iterator operator--(int) { const_reverse_iterator out (*this); return --out; }
+					const_reverse_iterator operator++(int) { const_reverse_iterator out (*this); ++(*this); return out; }
+					const_reverse_iterator operator--(int) { const_reverse_iterator out (*this); --(*this); return out; }
 			};
 			/** \endcond */
 
