@@ -10,8 +10,7 @@
 //  * Implement comparison operators, i.e. <, >, <=, >=
 //    ... using a protected compare() that uses strcmp() internally
 //    ... XXX: worth the trouble? str < str, str < char*, char* < str etc. 3 cases * 4 operators = 12 overloads...?
-//
-//  * const iterators; also, iterators can currently modify const strings.
+//    * Make _sure_ that iterators can't modify const strings any longer
 
 namespace exscape {
 	using std::cerr;
@@ -363,9 +362,9 @@ namespace exscape {
 		rev.resize(this->_length);
 
 		iterator rev_it = rev.begin();
-		reverse_iterator this_rend = this->rend(); // To use as a "cache"
+		const_reverse_iterator this_rend = this->rend(); // To use as a "cache"
 
-		for (reverse_iterator ri = this->rbegin(); ri != this_rend; ++ri, ++rev_it) {
+		for (const_reverse_iterator ri = this->rbegin(); ri != this_rend; ++ri, ++rev_it) {
 			*rev_it = *ri;
 		}
 		rev._length = this->_length;
@@ -416,16 +415,10 @@ namespace exscape {
 		std::cerr << "String \"" << (this->buf != NULL ? this->buf : "(null)") << "\", length=" << this->_length << ", size=" << this->_size << std::endl;
 	}
 
-	string::iterator string::begin(void) const {
-		iterator s = iterator(this->buf);
-		if (DEBUG) std::cerr << " In string::begin(), returning iterator " << &s << "; this->buf=" << &buf << ", this->_length = " << this->_length << ", so pointing to " << &(this->buf) << std::endl;
-		return s;
-	}
-
 	bool string::is_palindrome_strict(void) const {
-		iterator start = this->begin();
-		iterator string_end = this->end();
-		reverse_iterator end = this->rbegin();
+		const_iterator start = this->begin();
+		const_iterator string_end = this->end();
+		const_reverse_iterator end = this->rbegin();
 		// Simple: loop from both ends, comparing characters until:
 		// 1) We hit the end (not likely to happen!)
 		// 2) The "end" pointer is now before or at the same position as the start pointer,
@@ -441,9 +434,9 @@ namespace exscape {
 	}
 
 	bool string::is_palindrome(void) const {
-		iterator start = this->begin();
-		iterator string_end = this->end();
-		reverse_iterator end = this->rbegin();
+		const_iterator start = this->begin();
+		const_iterator string_end = this->end();
+		const_reverse_iterator end = this->rbegin();
 		// This one is a bit more complicated than the above one, but not by much.
 		// We need to skip non-alphabetic characters, and only compare lowercase versions.
 		// As such, we can't use the a for loop's third slot, due to the continue statements.
@@ -467,31 +460,48 @@ namespace exscape {
 		return true;
 	}
 
-
-	string::iterator string::end(void) const {
-		iterator e = iterator((char *)((char *)this->buf + (ptrdiff_t)this->_length)); // buf[_length] == '\0', so one past the end
-		char *tmp = (this->buf + this->_length);
-		if (DEBUG) std::cerr << " In string::end(), returning iterator " << &e << "; this->buf=" << &buf << ", this->_length = " << this->_length << ", so pointing to " << &tmp << std::endl;
-
-		return e;
+	string::iterator string::begin(void) {
+		return iterator(this->buf);
 	}
 
-	string::reverse_iterator string::rbegin(void) const {
+	string::iterator string::end(void) {
+		return iterator(this->buf + this->_length);
+	}
+
+	string::const_iterator string::begin(void) const {
+		return const_iterator(this->buf);
+	}
+
+	string::const_iterator string::end(void) const {
+		return const_iterator(this->buf + this->_length);
+	}
+
+	string::reverse_iterator string::rbegin(void) {
 		reverse_iterator s;
 		if (this->_length > 0)
 			s = reverse_iterator(this->buf + (this->_length - 1));
 		else
 			s = reverse_iterator(this->buf);
 
-		if (DEBUG) std::cerr << " In string::rbegin(), returning reverse_iterator " << &s << "; this->buf=" << &buf << ", this->_length = " << this->_length << std::endl;
 		return s;
 	}
 
-	string::reverse_iterator string::rend(void) const {
-		reverse_iterator e = reverse_iterator(this->buf - 1);
-		if (DEBUG) std::cerr << " In string::rend(), returning reverse_iterator " << &e << "; this->buf=" << &buf << ", this->_length = " << this->_length << ", so pointing to " << (&(this->buf)) - 1 << std::endl;
+	string::reverse_iterator string::rend(void) {
+		return reverse_iterator(this->buf - 1);
+	}
 
-		return e;
+	string::const_reverse_iterator string::rbegin(void) const {
+		const_reverse_iterator s;
+		if (this->_length > 0)
+			s = const_reverse_iterator(this->buf + (this->_length - 1));
+		else
+			s = const_reverse_iterator(this->buf);
+
+		return s;
+	}
+
+	string::const_reverse_iterator string::rend(void) const {
+		return const_reverse_iterator(this->buf - 1);
 	}
 
 	/*
@@ -502,6 +512,14 @@ namespace exscape {
 
 	/* XXX: Doesn't the default operator= do this? */
 	string::iterator::iterator& string::iterator::operator=(const string::iterator &rhs) {
+		if (this != &rhs) {
+			this->p = rhs.p;
+			this->base = rhs.base;
+		}
+
+		return *this;
+	}
+	string::const_iterator::const_iterator& string::const_iterator::operator=(const string::const_iterator &rhs) {
 		if (this != &rhs) {
 			this->p = rhs.p;
 			this->base = rhs.base;
@@ -528,6 +546,28 @@ namespace exscape {
 
 	/* Friend function */
 	string::reverse_iterator operator-(const int n, string::reverse_iterator out) {
+		out -= n;
+		return out;
+	}
+
+	/* Friend function */
+	string::const_iterator operator+(const int n, string::const_iterator out) {
+		return out += n;
+	}
+
+	/* Friend function */
+	string::const_iterator operator-(const int n, string::const_iterator out) {
+		return out -= n;
+	}
+
+	/* Friend function */
+	string::const_reverse_iterator operator+(const int n, string::const_reverse_iterator out) {
+		out += n;
+		return out;
+	}
+
+	/* Friend function */
+	string::const_reverse_iterator operator-(const int n, string::const_reverse_iterator out) {
 		out -= n;
 		return out;
 	}

@@ -96,6 +96,88 @@ namespace exscape {
 
 			}; // end string::reverse_iterator
 
+			class const_iterator : public std::iterator<std::random_access_iterator_tag, char, difference_type> {
+				public:
+					friend class string;
+					/* Constructors and operator= */
+					const_iterator(char *in_ptr = NULL) : base(in_ptr), p(in_ptr) {}
+					const_iterator(const const_iterator &rhs) { *this = rhs; }
+
+					/* Destructor */
+					~const_iterator() {}
+
+					/* Tests if these two const_iterators point to the same position */
+					bool operator==(const const_iterator &rhs) const { return (p == rhs.p); }
+
+					/* Tests if these two const_iterators DON'T point to the same position */
+					bool operator!=(const const_iterator &rhs) const { return p != rhs.p; }
+					bool operator<(const const_iterator &rhs)  const { return p < rhs.p; }
+					bool operator>(const const_iterator &rhs)  const { return p > rhs.p; }
+
+					/* A little of both... */
+					bool operator<=(const const_iterator &rhs) const { return p <= rhs.p; }
+					bool operator>=(const const_iterator &rhs) const { return p >= rhs.p; }
+
+					/* Dereference operators */
+					const char &operator*(void) const { return *p; }
+					const char *operator->(void) const { return p; }
+					const char &operator[](const int offset) const { return *(p + offset); }
+
+					const_iterator& operator=(const const_iterator &rhs); // XXX: NOT INLINED!
+
+					/* Single-step movement operators */
+					const_iterator &operator++()   { p++; return *this; }
+					const_iterator &operator--()   { p--; return *this; }
+					const_iterator operator++(int) { const_iterator out(*this); ++(*this); return out; }
+					const_iterator operator--(int) { const_iterator out(*this); --(*this); return out; }
+
+					/* Arithmetic operators */
+					const_iterator &operator+=(const difference_type offset) { p += offset; return *this; }
+					const_iterator &operator-=(const difference_type offset) { p -= offset; return *this; }
+					const_iterator operator+(const difference_type offset)   { const_iterator out (*this); return (out += offset); }
+					const_iterator operator-(const difference_type offset)   { const_iterator out (*this); return (out -= offset); }
+					friend const_iterator operator+(const int, const_iterator);    // XXX: Not inlined
+					friend const_iterator operator-(const int, const_iterator);    // XXX: Not inlined
+					difference_type operator-(const_iterator &rhs)           { return p - rhs.p; }
+
+				protected:
+					char *base; // The base of the string
+					char *p; // Points to the current character
+			}; // end string::const_iterator
+
+			/* 
+			 * A regular reverse random access iterator
+			 */
+			class const_reverse_iterator : public const_iterator {
+				public:
+					friend class string;
+
+					/* Constructors */
+					const_reverse_iterator(void) : const_iterator() {}
+					const_reverse_iterator(const const_reverse_iterator &rhs) { *this = rhs; }
+					const_reverse_iterator(char *in_ptr) : const_iterator(in_ptr) {}
+
+					/* Destructor */
+					~const_reverse_iterator() {}
+
+					/* Single-step movement operators */
+					const_reverse_iterator &operator++()   { p--; return *this; }
+					const_reverse_iterator &operator--()   { p++; return *this; }
+					const_reverse_iterator operator++(int) { const_reverse_iterator out; ++(*this); return out; }
+					const_reverse_iterator operator--(int) { const_reverse_iterator out; --(*this); return out; }
+
+					/* Arithmetic operators */
+					const_reverse_iterator &operator+=(const difference_type offset) { p -= offset; return *this; }
+					const_reverse_iterator &operator-=(const difference_type offset) { p += offset; return *this; }
+					const_reverse_iterator operator+(const difference_type offset)   { const_reverse_iterator out(*this); return (out += offset); }
+					const_reverse_iterator operator-(const difference_type offset)   { const_reverse_iterator out(*this); return (out -= offset); }
+					friend const_reverse_iterator operator+(const int, const_reverse_iterator); // XXX: Not inlined
+					friend const_reverse_iterator operator-(const int, const_reverse_iterator); // XXX: Not inlined
+					difference_type operator-(const_reverse_iterator &rhs)           { return p - rhs.p; }
+
+			}; // end string::const_reverse_iterator
+
+
 		protected:
 		/* Protected methods */
 			void init();
@@ -140,10 +222,14 @@ namespace exscape {
 			friend std::ostream &operator<<(std::ostream &, string);
 			friend std::istream &operator>>(std::istream &, string &);
 			void dump(void) const;
-			string::iterator begin(void) const;
-			string::iterator end(void) const;
-			string::reverse_iterator rbegin(void) const;
-			string::reverse_iterator rend(void) const;
+			string::iterator begin(void);
+			string::iterator end(void);
+			string::reverse_iterator rbegin(void);
+			string::reverse_iterator rend(void);
+			string::const_iterator begin(void) const;
+			string::const_iterator end(void) const;
+			string::const_reverse_iterator rbegin(void) const;
+			string::const_reverse_iterator rend(void) const;
 
 		protected:
 		/* Protected member variables */
