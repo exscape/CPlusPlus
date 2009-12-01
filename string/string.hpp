@@ -70,29 +70,30 @@ namespace exscape {
 			class reverse_iterator : public iterator {
 				public:
 					friend class string;
-					friend reverse_iterator operator+(const int, reverse_iterator);
-					friend reverse_iterator operator-(const int, reverse_iterator);
 
 					/* Constructors */
-					reverse_iterator(void);
-					reverse_iterator(const reverse_iterator &rhs);
-					reverse_iterator(char *in_ptr);
+					reverse_iterator(void) : iterator() {}
+					reverse_iterator(const reverse_iterator &rhs) { *this = rhs; }
+					reverse_iterator(char *in_ptr) : iterator(in_ptr) {}
 
 					/* Destructor */
-					~reverse_iterator();
+					~reverse_iterator() {}
 
 					/* Single-step movement operators */
-					reverse_iterator &operator++();
-					reverse_iterator operator++(int);
-					reverse_iterator &operator--();
-					reverse_iterator operator--(int);
+					reverse_iterator &operator++()   { p--; return *this; }
+					reverse_iterator &operator--()   { p++; return *this; }
+					reverse_iterator operator++(int) { reverse_iterator out; ++(*this); return out; }
+					reverse_iterator operator--(int) { reverse_iterator out; --(*this); return out; }
 
 					/* Arithmetic operators */
-					reverse_iterator &operator+=(const difference_type offset);
-					reverse_iterator &operator-=(const difference_type offset);
-					reverse_iterator operator+(const difference_type offset);
-					reverse_iterator operator-(const difference_type offset);
-					difference_type operator-(reverse_iterator &rhs);
+					reverse_iterator &operator+=(const difference_type offset) { p -= offset; return *this; }
+					reverse_iterator &operator-=(const difference_type offset) { p += offset; return *this; }
+					reverse_iterator operator+(const difference_type offset)   { reverse_iterator out(*this); return (out += offset); }
+					reverse_iterator operator-(const difference_type offset)   { reverse_iterator out(*this); return (out -= offset); }
+					friend reverse_iterator operator+(const int, reverse_iterator); // XXX: Not inlined
+					friend reverse_iterator operator-(const int, reverse_iterator); // XXX: Not inlined
+					difference_type operator-(reverse_iterator &rhs)           { return p - rhs.p; }
+
 			}; // end string::reverse_iterator
 
 		protected:

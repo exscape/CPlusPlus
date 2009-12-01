@@ -520,90 +520,15 @@ namespace exscape {
 		return out -= n;
 	}
 
-	/*
-	 *
-	 * Start of string::reverse_iterator implementation
-	 *
-	 */
-
-	/* Default constructor */
-	string::reverse_iterator::reverse_iterator(void) : iterator() {
-	}
-
-	/* Destructor */
-	string::reverse_iterator::~reverse_iterator() { 
-	}
-
-	/* Copy constructor */
-	string::reverse_iterator::reverse_iterator(const string::reverse_iterator &rhs) {
-		*this = rhs;
-	}
-
-	/* Most-used constructor; used by string to pass a pointer to the string base */
-	string::reverse_iterator::reverse_iterator(char *in_ptr) : iterator(in_ptr) {
-	}
-
-	string::reverse_iterator::reverse_iterator &string::reverse_iterator::operator++() {
-		p--;
-		return *this;
-	}
-
-	string::reverse_iterator::reverse_iterator string::reverse_iterator::operator++(int) {
-		++(*this);
-		return reverse_iterator(this->p + 1);
-	}
-
-	string::reverse_iterator &string::reverse_iterator::operator--() {
-		p++;
-		return *this;
-	}
-
-	string::reverse_iterator string::reverse_iterator::operator--(int) {
-		--(*this);
-		return reverse_iterator(this->p - 1);
-	}
-
-	/* Arithmetic operators */
-	string::reverse_iterator &string::reverse_iterator::operator+=(const string::difference_type offset) {
-		p -= offset;
-		return *this;
-	}
-
-	string::reverse_iterator &string::reverse_iterator::operator-=(const string::difference_type offset) {
-		p += offset;
-		return *this;
-	}
-
-	string::reverse_iterator string::reverse_iterator::operator+(const string::difference_type offset) {
-		reverse_iterator out (*this);
-		out -= offset;
-		return out;
-	}
-
-	string::reverse_iterator string::reverse_iterator::operator-(const string::difference_type offset) { 
-		reverse_iterator out = (*this);
-		out += offset;
-		return out;
-	}
-
-	string::difference_type string::reverse_iterator::operator-(string::reverse_iterator &rhs) {
-		return p - rhs.p;
-	}
-
+	/* Friend function */
 	string::reverse_iterator operator+(const int n, string::reverse_iterator out) {
-		out -= n;
-		return out;
-	}
-
-	string::reverse_iterator operator-(const int n, string::reverse_iterator out) {
 		out += n;
 		return out;
 	}
 
-	/*
-	 *
-	 * End of string::reverse_iterator implementation
-	 *
-	 */
-
+	/* Friend function */
+	string::reverse_iterator operator-(const int n, string::reverse_iterator out) {
+		out -= n;
+		return out;
+	}
 } // end namespace
