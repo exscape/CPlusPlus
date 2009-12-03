@@ -510,24 +510,6 @@ namespace exscape {
 	 *
 	 */
 
-	/* XXX: Doesn't the default operator= do this? */
-	string::iterator::iterator& string::iterator::operator=(const string::iterator &rhs) {
-		if (this != &rhs) {
-			this->p = rhs.p;
-			this->base = rhs.base;
-		}
-
-		return *this;
-	}
-	string::const_iterator::const_iterator& string::const_iterator::operator=(const string::const_iterator &rhs) {
-		if (this != &rhs) {
-			this->p = rhs.p;
-			this->base = rhs.base;
-		}
-
-		return *this;
-	}
-
 	/* Friend function */
 	string::iterator operator+(const int n, string::iterator out) {
 		return out += n;

@@ -42,8 +42,6 @@ namespace exscape {
 					char *operator->(void) { return p; }
 					char &operator[](const int offset) { return *(p + offset); }
 
-					iterator& operator=(const iterator &rhs); // XXX: NOT INLINED!
-
 					/* Single-step movement operators */
 					iterator &operator++()   { p++; return *this; }
 					iterator &operator--()   { p--; return *this; }
@@ -122,8 +120,6 @@ namespace exscape {
 					const char &operator*(void) const { return *p; }
 					const char *operator->(void) const { return p; }
 					const char &operator[](const int offset) const { return *(p + offset); }
-
-					const_iterator& operator=(const const_iterator &rhs); // XXX: NOT INLINED!
 
 					/* Single-step movement operators */
 					const_iterator &operator++()   { p++; return *this; }
