@@ -6,7 +6,7 @@
 #include <typeinfo>
 
 #ifndef DEBUG
-#define DEBUG 2
+#define DEBUG 0
 #endif
 
 /* Written: 2009-11-02, 2009-11-03, 2009-11-04, 2009-11-12 (refactoring), 2009-11-19 (remake to use any container), XXX */

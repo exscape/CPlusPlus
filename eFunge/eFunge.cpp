@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <assert.h>
 #include "../stack/stack.hpp"
+#include "../linkedlist/LinkedList.hpp"
 
 /*
  * PLEASE NOTE:
@@ -42,7 +43,7 @@ short rnd()
 	return i;
 }
 
-static exscape::stack<int64_t> stack;
+static exscape::stack<int64_t, exscape::LinkedList<int64_t> > stack;
 static enum { RIGHT, LEFT, UP, DOWN } dir;
 int64_t space[50][80];
 

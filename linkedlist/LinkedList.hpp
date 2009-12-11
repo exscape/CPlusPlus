@@ -337,7 +337,7 @@ namespace exscape {
 	 * \return The number of elements in the list.
 	 */
 	template <typename Type> inline size_t LinkedList<Type>::size() const {
-		if (DEBUG) { // XXX: Remove this whole block sooner or later, when all erase() and insert() operations work
+/*		if (DEBUG) { // XXX: Remove this whole block sooner or later, when all erase() and insert() operations work
 			size_t len = 0;
 			for (node *current = this->head; current != NULL; current = current->next)
 				len++;
@@ -346,7 +346,7 @@ namespace exscape {
 				exit(1);
 			}
 		}
-
+*/
 		return this->_size;
 	}
 

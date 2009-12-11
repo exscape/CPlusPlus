@@ -1,0 +1,20 @@
+eFunge: 
+A Befunge-93 interpreter using 64-bit signed integers as storage, both
+in the program space and on the stack. Written several years ago, originally
+for Windows. Quick and dirty port to use my stack implementation. The vast
+majority of the code is still ancient.
+
+The following classes were written for learning purposes only.
+
+linkedlist:
+A templated doubly-linked list class, similar to std::list. Support
+bidirectional iterators.
+
+stack:
+A simple stack class, similar to std::stack. As expected, it has very few
+public, non-debug operations: push(), pop(), top(), size() and empty().
+
+string:
+A simple string class; basically a wrapper around char pointers. NOT
+templated; as such, it does not support wide characters without (likely) heavy
+modification.
